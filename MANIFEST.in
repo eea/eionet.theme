@@ -1,0 +1,5 @@
+recursive-include eionet *
+include docs/*
+global-exclude *pyc
+
+global-include *.mo
