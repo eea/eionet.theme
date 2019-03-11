@@ -1,5 +1,14 @@
 //*// BUTTONS //*//
 
+.pull-right{
+	.standalone{	
+		width:65px;
+		} 
+	.destructive{
+		width:65px;
+	}
+}
+
 .standalone, .context, .destructive, [type="submit"], button {
   display: inline-block;
   margin-bottom: 0; // For input.btn
@@ -60,7 +69,7 @@
 
 .link-parent {
   .standalone; margin-bottom: @plone-padding-base-horizontal;
-  &:before {content: "↩ ";top: 3px;position: relative;}
+  &::before {content: "↩ ";top: 3px;position: relative;}
 }
 
 
@@ -176,4 +185,25 @@
       margin-left: -1px;
     }
   }
+}
+
+// Dropdown arrow/caret
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 2px;
+  vertical-align: middle;
+  border-top:   @plone-caret-width-base dashed;
+  border-right: @plone-caret-width-base solid transparent;
+  border-left:  @plone-caret-width-base solid transparent;
+}
+// Reposition the caret
+.btn .caret {
+  margin-left: 0;
+}
+// Carets in other button sizes
+.btn-lg .caret {
+  border-width: @plone-caret-width-large @plone-caret-width-large 0;
+  border-bottom-width: 0;
 }

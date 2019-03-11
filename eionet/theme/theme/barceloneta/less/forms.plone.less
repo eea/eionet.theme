@@ -27,7 +27,10 @@ legend {
 
 label {
   display: inline-block;
-  max-width: 100%; // Force IE8 to wrap long content (see https://github.com/twbs/bootstrap/issues/13141)
+  // Force IE8 to wrap long content (see https://github.com/twbs/bootstrap/issues/13141)
+  // and 95% to fit labels with fieldhelp in the same line as leading checkbox.
+  max-width: 95%;
+  vertical-align: top;
   margin-bottom: @plone-padding-base-vertical;
   font-weight: bold;
 }
@@ -88,9 +91,25 @@ output {
   color: @plone-input-color;
 }
 
-/*.form-control,*/ input[type="text"], input[type="password"], textarea, select {
-  display: block;
+/*.form-control,*/
+input[type="color"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="month"],
+input[type="number"],
+input[type="password"],
+input[type="range"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="time"],
+input[type="url"],
+input[type="week"],
+textarea,
+select {
   width: 100%;
+  display: block;
   height: @plone-input-height-base; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
   padding: @plone-padding-base-vertical @plone-padding-base-horizontal;
   font-size: @plone-font-size-base;
@@ -108,20 +127,34 @@ output {
 
   // Placeholder
   .placeholder();
+}
 
-  // Disabled and read-only inputs
-  //
-  // HTML5 says that controls under a fieldset > legend:first-child won't be
-  // disabled if the fieldset is disabled. Due to implementation difficulty, we
-  // don't honor that edge case; we style them as disabled anyway.
-  &[disabled],
-  &[readonly],
-  fieldset[disabled] & {
+// Disabled and read-only inputs
+//
+// HTML5 says that controls under a fieldset > legend:first-child won't be
+// disabled if the fieldset is disabled. Due to implementation difficulty, we
+// don't honor that edge case; we style them as disabled anyway.
+input[disabled],
+input[readonly],
+textarea[disabled],
+textarea[readonly],
+select[disabled],
+select[readonly],
+fieldset[disabled] & {
     cursor: not-allowed;
     background-color: @plone-input-bg-disabled;
     opacity: 1; // iOS fix for unreadable disabled content
-  }
 }
+
+input[disabled],
+textarea[disabled],
+select[disabled],
+fieldset[disabled] & {
+    cursor: @cursor-disabled;
+}
+
+
+
 // Reset height for `textarea`s
 textarea {
   min-height: 9em;
@@ -132,6 +165,11 @@ textarea {
     min-height: 12em;
     font-family: @plone-font-family-monospace;  // when typing without richtext editor
   }
+}
+// Reset width for `select` elements
+select {
+  width: unset;
+  display: inline-block;
 }
 
 // Search inputs in iOS
@@ -191,17 +229,17 @@ input[type="checkbox"] {
   div.error {
     padding-left: 30px;
     font-weight: @plone-font-weight-regular;
-    &:before {
+    &::before {
       background-color: @plone-alert-error-bullet; content:"×";
-      font-size:@plone-font-size-base; 
-      font-weight: @plone-font-weight-regular; 
+      font-size:@plone-font-size-base;
+      font-weight: @plone-font-weight-regular;
       margin-left: -30px;
       margin-right: 5px;
-      display: inline-block; 
+      display: inline-block;
       border-radius: 20px;
       text-align:center;
-      color:rgba(255, 255, 255, 0.9); 
-      width:16px; 
+      color:rgba(255, 255, 255, 0.9);
+      width:16px;
       height:16px;
       line-height: 16px; //IE fix
       text-shadow: 0 -1px rgba(0,0,0,.5);
@@ -243,7 +281,7 @@ input[type="checkbox"] {
 
 //*// Required
 label .required {
-  &:after{
+  &::after{
     color: @plone-toolbar-private-color;
     content:"•";
     font-size: 200%;
@@ -255,7 +293,7 @@ label .required {
 }
 
 //*// Input + Submit groups (manual because we still have no standard for this)
-.searchField.portlet-search-gadget, 
+.searchField.portlet-search-gadget,
 #sharing-user-group-search,
 #select-rules  {width: 100%; display: inline-block;}
 
@@ -285,8 +323,8 @@ margin-right: 12px;
     text-align: center;
   }
   td button{
-    float: left;
-    margin-left: 2rem;
+    display: block;
+    margin: auto;
   }
 }
 
@@ -298,3 +336,9 @@ margin-right: 12px;
 .widget input + label {
   display: inline;
 }
+
+.row{
+  .form{
+    margin-top:20px;
+  }
+} 

@@ -1,10 +1,15 @@
 //*// Site Setup
-.portlet.portletSiteSetup .portletContent > ul > li a:before {content:"";}
+.portlet.portletSiteSetup .portletContent > ul > li a::before {content:"";}
 .portlet.portletSiteSetup .portletContent > ul li:hover {background: #edecec;}
 .portletNavigationTree {
     // nav.portletContent > ul > li a {border:none; padding:0px;}
     &.portletSiteSetup {
-        nav.portletContent > ul > li a {border:none; padding:0px;}
+        nav.portletContent > ul > li a {border:none; padding:0px;color: #4D4D4D;
+            &:hover {
+                text-decoration: none;
+            }   
+        }
+       
         a {
             // padding-left: 30px; //adjust icons of products
             border: none;
@@ -21,12 +26,13 @@
         }
         ul {background: #edecec; padding-bottom: 20px;}
         li {vertical-align: top;}
-        ul > li > a:hover:after {content:""}
+        ul > li > a:hover::after {content:""}
         .inner-configlet {
             margin-top: 10px; padding-bottom: 10px;
             &:hover {
                 background: rgba(255,255,255,.67);
                 border-radius: 5px;
+                box-shadow: inset 1px 1px 3px #bbbbbb;
                 span {
                     color: #333;
                 }
@@ -43,7 +49,7 @@
         a {
             text-align: inherit;
             padding-left: 40px;
-            &:before {
+            &::before {
                 content:"•"; position: absolute; font-size: @plone-font-size-h3+1; margin-top: -9px; left: 15px;
                 color: lighten(@plone-portlet-list-bullet, 15%);
             }
@@ -66,4 +72,16 @@
 .template-usergroup-groupprefs,
 .template-usergroup-userprefs {
     form { overflow: scroll; }
+}
+
+.template-actions-controlpanel #content-core {
+    .addAction {
+        height: 2em;
+    }
+    section.portlet {
+        clear: both;
+    }
+    ol.configlets li {
+        margin: 1.2em;
+    }
 }

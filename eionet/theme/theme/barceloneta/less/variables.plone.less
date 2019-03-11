@@ -9,9 +9,10 @@
 @plone-gray-lighter:						lighten(#000, 80%);   // #ccc //disableds like
 
 //colors
-@plone-link-color:							#007bb3; //plone blue
+@plone-link-color:							#007bb1; //plone blue made slightly darker for wcag 2.0
 @plone-link-color-on-dark:					#16a1e3; //plone blue
 											//if you need different contrast
+@plone-link-color-on-grey:		  			#086ca3; //valid wcag 2.0
 @plone-default-published-color:				@plone-link-color; //published and external same color
 @plone-default-draft-color:					darken(@plone-toolbar-draft-color, 15%); // lime-yellow //draft is visible
 @plone-default-pending-color:				darken(@plone-toolbar-pending-color, 15%); // orange
@@ -19,6 +20,8 @@
 @plone-default-internal-color:				darken(@plone-toolbar-internal-color, 15%); // is draft
 @plone-default-internally-published-color:	darken(@plone-toolbar-internally-published-color, 5%); // is intranet
 
+//** Disabled cursor for form controls and buttons.
+@cursor-disabled:                           not-allowed;
 
 
 //*// SCAFFOLDING
@@ -53,13 +56,14 @@
 @plone-line-height-computed:    floor((@plone-font-size-base * @plone-line-height-base)); // ~20px
 
 @plone-headings-font-family:    inherit;
-	@plone-headings-font-weight:    300;
+	@plone-headings-font-weight:    @plone-font-weight-regular;
 	@plone-headings-line-height:    1.1;
 	@plone-headings-color:          inherit;
 
-@plone-font-weight-light:		100; //default theme uses 100, 300, 500, change it on your site. Standard regular is 400
-	@plone-font-weight-regular:		300;
-	@plone-font-weight-bold:		500;
+@plone-font-weight-light:		300;
+@plone-font-weight-regular:		400;
+@plone-font-weight-medium:		500;
+@plone-font-weight-bold:		700;
 
 
 
@@ -81,7 +85,7 @@
 @plone-component-active-color:    #fff;
 //** Global background color for active items (e.g., navs or dropdowns).
 @plone-component-active-bg:       @plone-link-color;
-//** Width of the `border` for generating carets that indicator dropdowns.
+//** Width of the `border` for generating carets that indicate dropdowns.
 @plone-caret-width-base:          4px;
 //** Carets increase slightly in size for larger components.
 @plone-caret-width-large:         5px;
@@ -124,31 +128,32 @@
 @plone-screen-sm-min:              768px;
 @plone-screen-md-min:              992px;
 @plone-screen-lg-min:              1200px;
-
-@plone-container-sm: 			   750px;
-@plone-container-md:               970px;
-@plone-container-lg:               1170px;
+@plone-screen-xl-min:              1600px;
 
 @plone-screen-xs-max:              (@plone-screen-sm-min - 1);
 @plone-screen-sm-max:              (@plone-screen-md-min - 1);
 @plone-screen-md-max:              (@plone-screen-lg-min - 1);
+@plone-screen-lg-max:              (@plone-screen-xl-min - 1);
 
-@plone-grid-columns:				12;
+@plone-grid-columns:        12;
 @plone-grid-gutter-width:         30px;
 @plone-grid-float-breakpoint:     @plone-screen-sm-min;
 //** Point at which the navbar begins collapsing.
 @plone-grid-float-breakpoint-max: (@plone-grid-float-breakpoint - 1);
 
-
 //*// CONTAINERS
-@plone-container-tablet:             ((720px + @plone-grid-gutter-width));
-@plone-container-sm:                 @plone-container-tablet;
+@plone-container-xs:                 (540px + @plone-grid-gutter-width);
+@plone-container-sm:                 (720px + @plone-grid-gutter-width);
+@plone-container-md:                 (960px + @plone-grid-gutter-width);
+@plone-container-lg:                 (1140px + @plone-grid-gutter-width);
+@plone-container-xl:                 (1540px + @plone-grid-gutter-width);
 
-@plone-container-desktop:            ((940px + @plone-grid-gutter-width));
-@plone-container-md:                 @plone-container-desktop;
-
-@plone-container-large-desktop:      ((1140px + @plone-grid-gutter-width));
-@plone-container-lg:                 @plone-container-large-desktop;
+//*// CONTAINER SIZE ALIASES
+@plone-container-mobile:              @plone-container-xs;
+@plone-container-tablet:              @plone-container-sm;
+@plone-container-desktop:             @plone-container-md;
+@plone-container-large-desktop:       @plone-container-lg;
+@plone-container-extra-large:         @plone-container-xl;
 
 
 //*// Buttons
@@ -156,7 +161,7 @@
 	@plone-btn-standalone-bg:             	   	#e5e5e5;
 	@plone-btn-standalone-border:          	   	darken(@plone-btn-standalone-bg, 20%);
 @plone-btn-context-color:              		#fff;
-	@plone-btn-context-bg:                 		#2385c4;
+	@plone-btn-context-bg:                 		#007bb1;
 	@plone-btn-context-border:             		darken(@plone-btn-context-bg, 10%);
 @plone-btn-destructive-color:              #fff;
 	@plone-btn-destructive-bg:                 #bb4f45;
@@ -197,7 +202,7 @@
 @plone-alert-icon-size:							20px;
 @plone-alert-padding:							15px;
 	@plone-alert-border-radius:					4px;
-	@plone-alert-link-font-weight:				300; //it depends on your font-family
+	@plone-alert-link-font-weight:				@plone-font-weight-regular; //it depends on your font-family
 @plone-alert-info-bg:						@plone-state-info-bg;
 	@plone-alert-info-text:						@plone-state-info-text; //the text on alert is black with opacity to use the same color and match the bg.
 	@plone-alert-info-border:					@plone-state-info-border;
@@ -214,17 +219,18 @@
 
 
 //*// PORTLETS
+@plone-border-base:							1px solid;
 @plone-portlet-header-bg:					#f2f1f1;
 @plone-portlet-header-color:				@plone-gray;
 @plone-portlet-content-bg:					#fff;
 @plone-portlet-footer-bg:					#fcfcfd;
-@plone-portlet-border:						1px solid #e5e5e5;
+@plone-portlet-border:						@plone-border-base #e5e5e5;
 @plone-portlet-contrast-bg:					#e5e5e5;
 @plone-portlet-event-bullet:				#dbecfe;
 @plone-portlet-list-bullet:					#64bee8;
 @plone-portlet-list-hover-bg:				#fcfcfd;
-@plone-portlet-list-small-text:				@plone-gray-light;
-
+@plone-portlet-list-small-text:				@plone-gray;
+@plone-portlet-navtree-maxlevel:			5;
 
 
 //*// THUMBS
@@ -253,6 +259,7 @@
 //** Text color of current page in the breadcrumb
 @plone-breadcrumb-active-color:       @plone-gray-light;
 
+
 //*// SITE NAV
 @plone-sitenav-height:                        50px;
 	@plone-sitenav-margin-bottom:             @plone-line-height-computed;
@@ -261,7 +268,7 @@
 	@plone-sitenav-padding-vertical:          ((@plone-sitenav-height - @plone-line-height-computed) / 2);
 	@plone-sitenav-collapse-max-height:       340px;
 	@plone-sitenav-link-padding:              10px 15px;
-	@plone-sitenav-link-hover-bg:             #9abdd6;
+	@plone-sitenav-link-hover-bg:             #7099bf;
 	@plone-sitenav-bg:      			      @plone-link-color;
 	@plone-sitenav-hover-bg:      			  @plone-link-color;
 
@@ -274,7 +281,7 @@
 	@plone-pagination-hover-border:              @plone-portlet-border;
 @plone-pagination-active-color:              @plone-portlet-content-bg;
 	@plone-pagination-active-bg:                 @plone-link-color;
-	@plone-pagination-active-border:             @plone-link-color;
+	@plone-pagination-active-border:             @plone-border-base @plone-link-color;
 @plone-pagination-disabled-color:            @plone-gray-lighter;
 	@plone-pagination-disabled-bg:               @plone-portlet-footer-bg;
 	@plone-pagination-disabled-border:           @plone-portlet-border;
@@ -295,7 +302,7 @@
 
 //*// TYPE
 //** Text muted color
-@plone-text-discreet:               @plone-gray-light;
+@plone-text-discreet:               @plone-gray;
 //** Abbreviations and acronyms border color
 @plone-abbr-border-color:           @plone-gray-light;
 //** Headings small color
