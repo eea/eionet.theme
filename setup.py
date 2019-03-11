@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Installer for the eionet.theme package."""
 
-from setuptools import find_packages
-from setuptools import setup
+import os
+
+from setuptools import find_packages, setup
 
 NAME = 'eionet.theme'
 PATH = NAME.split('.') + ['version.txt']
@@ -13,7 +14,7 @@ setup(
     version=VERSION,
     description="Installable theme: eionet.theme",
     long_description=open("README.txt").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
+    open(os.path.join("docs", "HISTORY.txt")).read(),
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         "Environment :: Web Environment",
@@ -29,9 +30,9 @@ setup(
     author_email='krisztina.elekes@eaudeweb.ro',
     url='https://github.com/eea/eionet.plone.theme',
     license='GPL version 2',
-    packages=find_packages('src', exclude=['ez_setup']),
+    packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['eionet'],
-    package_dir={'': 'src'},
+    # package_dir={'': ''},
     include_package_data=True,
     zip_safe=False,
     install_requires=[
