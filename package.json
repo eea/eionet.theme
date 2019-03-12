@@ -7,6 +7,8 @@
     "grunt-browser-sync": "^0.8.2",
     "grunt-contrib-less": "^2.0.0",
     "grunt-contrib-watch": "^1.1.0",
-    "request": "~2.75.0"
+    "grunt-postcss": "^0.8.0",
+    "request": "~2.75.0",
+    "autoprefixer": "^6.5.1"
   }
 }

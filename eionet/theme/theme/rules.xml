@@ -186,9 +186,13 @@
   <drop css:theme="#portal-toolbar" css:if-content=".userrole-anonymous" />
   <replace css:theme="#anonymous-actions" css:content-children="#portal-personaltools-wrapper" css:if-not-content=".ajax_load" css:if-content=".userrole-anonymous" />
 
-<!--hide breadcrumb on homepage-->
-<rules css:if-content=".section-front-page">
-  <drop css:content="#viewlet-above-content"/>
-</rules>
+  <!--global search-->
+  <drop css:content="#portal-searchbox" />
+  <copy attributes="action method" css:content="#portal-searchbox form" css:theme=".search-box form" />
+
+  <!--hide breadcrumb on homepage-->
+  <rules css:if-content=".section-index">
+    <drop css:content="#viewlet-above-content"/>
+  </rules>
 
 </rules>
