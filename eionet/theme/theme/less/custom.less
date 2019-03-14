@@ -67,6 +67,7 @@ ul {
 
 #content-core a {
   border-bottom: none;
+  font-weight: 600;
 }
 
 .documentFirstHeading {
@@ -209,100 +210,66 @@ ul {
   margin-right: 1em;
 }
 
-#portal-globalnav {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  margin: 0;
+#portal-globalnav-wrapper {
+  background-color: transparent;
+  min-height:auto;
+  margin-bottom: 0;
+  box-shadow: none;
 
-  >li {
-    list-style-type: none;
-    position: relative;
-    display: inline-block;
+  .container {
+    width: auto;
+  }
 
-    >a {
-      color: @text-color;
-      padding: 1.7em 1.3em;
-      text-decoration: none;
-      display: inline-block;
+  .plone-navbar-nav {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    margin: 0;
 
-      i {
-        font-size: 10px;
+    li {
+      >a {
+        color: @text-color;
+        padding: 1.7em 1.3em;
+        text-decoration: none;
+      }
+
+      .submenu {
+        background-color: #F6F6F6 !important;
+        top: 75px;
+        border: none;
+        a {
+          background-color: #F6F6F6;
+          color: @text-color;
+          padding: 0.8em;
+          font-size: 14px;
+
+          &:hover {
+            color: #fff;
+            background-color: @blue-color;
+          }
+        }
       }
     }
-    a.menuTabLink:not(.clickandgo)::after {
-      display: inline-block;
-      content:"\e259";
-      font-family: 'Glyphicons Halflings';
-      margin-left: 5px;
-      font-size: 0.7em;
+    >li:hover>.submenu {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1!important;
     }
-  }
-  li.tabOpen {
-    a.menuTabLink:not(.clickandgo)::after {
-      content:"\e260";
+    >li:hover {
+      >a {
+        color: #005e9d;
+        background-color: #F6F6F6;
+      }
     }
-    a.menuTabLink {
-      color: #005e9d;
-      background-color: #F6F6F6;
+    .selected > a,
+    .selected > a:hover,
+    .selected > a:focus {
+        color: @blue-color;
+        font-weight: 600;
+        background-color: #F6F6F6;
     }
-  }
-
-  // >li:hover>#submenu-details {
-  //   display: block !important;
-  // }
-  >li:hover {
-    >a {
-      color: #005e9d;
-      background-color: #F6F6F6;
-    }
-  }
-  // .selected > a,
-  // .selected > a:hover,
-  // .selected > a:focus {
-  //     color: #005e9d;
-  //     font-weight: 600;
-  //     background-color: #F6F6F6;
-  // }
-}
-
-#submenu-details {
-  position: absolute;
-  top: 77px;
-  z-index: 99;
-  left: 0;
-  padding: 0;
-  background-color: #f6f6f6;
-  border-bottom: 2px solid #ddd;
-  // display: none !important;
-  width: auto;
-
-  .submenuDynamicItems {
-    padding: 0;
-    min-width: 250px;
-
-    >li {
-      display: block;
-    }
-    .subitem {
-      color: @text-color;
-      padding: 0.8em;
-      display: block;
-      font-size: 14px;
-    }
-
-    >li:hover > a {
-      background-color: @blue-color;
-      color: #fff;
-    }
-  }
-
-  .dynamicSectionExploreLabel {
-    padding: 1em;
-    font-size: 12px;
-    display: block;
   }
 }
 

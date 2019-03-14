@@ -1,5 +1,2 @@
-$(document).ready(function() {
-
-  // $("a.menuTabLink").trigger("click");
-
-});
+// $(document).ready(function() {
+// });
