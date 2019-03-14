@@ -62,6 +62,7 @@ ul {
 
 #main-container {
   margin-top: 1.5em;
+  min-height: 550px;
 }
 
 #content-core a {
@@ -231,11 +232,27 @@ ul {
         font-size: 10px;
       }
     }
+    a.menuTabLink:not(.clickandgo)::after {
+      display: inline-block;
+      content:"\e259";
+      font-family: 'Glyphicons Halflings';
+      margin-left: 5px;
+      font-size: 0.7em;
+    }
+  }
+  li.tabOpen {
+    a.menuTabLink:not(.clickandgo)::after {
+      content:"\e260";
+    }
+    a.menuTabLink {
+      color: #005e9d;
+      background-color: #F6F6F6;
+    }
   }
 
-  >li:hover>#submenu-details {
-    display: block;
-  }
+  // >li:hover>#submenu-details {
+  //   display: block !important;
+  // }
   >li:hover {
     >a {
       color: #005e9d;
@@ -258,7 +275,8 @@ ul {
   left: 0;
   padding: 0;
   background-color: #f6f6f6;
-  display: none;
+  border-bottom: 2px solid #ddd;
+  // display: none !important;
   width: auto;
 
   .submenuDynamicItems {
@@ -272,7 +290,7 @@ ul {
       color: @text-color;
       padding: 0.8em;
       display: block;
-      font-size: 13px;
+      font-size: 14px;
     }
 
     >li:hover > a {
@@ -347,12 +365,13 @@ ul {
   box-shadow: none;
   border-bottom: 1px solid #ddd;
   border-radius: 0;
-  padding-bottom: 20px;
+  padding-bottom: 0.5em;
 
   .portletHeader {
     color: @text-color;
     background: none;
-    padding: 0 15px;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
     font-size: 20px;
     font-weight: 600;
 
@@ -371,12 +390,12 @@ ul {
     border: none;
     ul {
       .portletItemDetails {
-        padding: 0 15px 10px 15px;
+        padding: 0.5em;
       }
 
       li {
         a {
-          padding: 10px 15px 26px 15px;
+          padding: 0.5em 0.5em 1.5em 0.5em;
           font-size: 16px;
           color: @blue-color;
           border-top: none;
@@ -404,11 +423,23 @@ ul {
     box-shadow: none;
     background: none;
     border: none;
+    padding: 0.5em;
   }
 }
 
 .portletNavigationTree {
   nav.portletContent {
+    .navTreeCurrentNode {
+       >a {
+         background: none;
+         color: @green-color;
+         font-weight: 600;
+
+         &:after {
+           content: '';
+         }
+       }
+      }
     > ul > li a {
       background: none;
     }
@@ -463,6 +494,40 @@ ul {
   }
 }
 
+// TABLES
+
+#parent-fieldname-text {
+  table {
+    border-left: none;
+    border-right: none;
+
+    > thead,
+    > tbody,
+    > tfoot {
+      > tr {
+        th {
+          background-color: #f9f9f9;
+        }
+        th,
+        td {
+          padding: 0.3em;
+          border: 1px solid #ddd;
+        }
+
+        th:first-child,
+        td:first-child {
+          border-left: 1px solid transparent;
+        }
+        th:last-child,
+        td:last-child {
+          border-right: 1px solid transparent;
+        }
+      }
+    }
+  }
+}
+
+
 // BUTTONS
 
 #form-buttons-add,
@@ -500,4 +565,9 @@ button:hover {
   background-color: #ddd;
   border: 1px solid #ddd;
   color: @text-color;
+}
+
+.alert.status,
+.portalMessage {
+  margin-top: 20px;
 }
