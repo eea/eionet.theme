@@ -100,6 +100,7 @@
 
   <!-- Content header -->
   <!--<replace css:theme="#portal-top" css:content-children="#portal-top" />-->
+  <replace css:theme="#portal-logo" css:content="#portal-logo" />
   <replace css:theme="#portal-anontools" css:content-children="#portal-anontools" />
 
   <!-- Footer -->

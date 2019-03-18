@@ -104,22 +104,24 @@ ul {
     display: flex;
     justify-content: space-between;
 
-    .logo,
-    .logo:hover {
+    #portal-logo {
+      float: none;
+      height: 100%;
+    }
+
+    .logo-text,
+    .logo-text:hover {
       color: #000;
       text-decoration: none;
+      float: right;
     }
 
     .header-logo {
-      display: -webkit-box;
-      display: -moz-box;
-      display: -ms-flexbox;
-      display: -webkit-flex;
-      display: flex;
-      height: 75px;
+      height: 78px;
 
       img {
-        width: 55px;
+        height: 100%;
+        width: auto;
         margin-right: 1em;
       }
 
@@ -133,7 +135,7 @@ ul {
         font-size: 125%;
       }
 
-      .logo-text {
+      .logo-desc {
         font-weight: bold;
         font-size: 8px;
         position: relative;
