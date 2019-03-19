@@ -1,0 +1,53 @@
+// BREADCRUMBS
+
+.plone-breadcrumb {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+
+  ol {
+    padding: 4px 0;
+
+    li {
+      font-size: 12px;
+
+      a {
+        color: @text-color;
+
+        &:hover {
+          color: @orange-color;
+          text-decoration: none;
+        }
+      }
+    }
+
+    li:first-child {
+      a {
+        font-size: 0;
+
+        &:before {
+          content:"\e021";
+          font-family: 'Glyphicons Halflings';
+          font-size: 12px;
+          display: inline-block;
+        }
+      }
+    }
+
+    li + li:before {
+      content: '•';
+      border: none;
+      top: 0px;
+      color: @text-color;
+    }
+
+    li + li:after {
+      border: none;
+    }
+  }
+
+  #breadcrumbs-current {
+    color: @green-color;
+    font-weight: 600;
+  }
+}
