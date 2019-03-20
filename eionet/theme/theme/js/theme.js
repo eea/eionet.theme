@@ -20,22 +20,27 @@ $(document).ready(function() {
   });
 
   // sticky header on mobile devices
+  var $win = $(window);
   var $sfw = $('.header-container');
   var headerPos = $sfw.offset().top;
-  var $win = $(window);
+  var $toolbar = $('.plone-toolbar-logo');
 
   if ($win.width() <= 767) {
     $win.scroll(function() {
-      var currentScroll = $(window).scrollTop();
-
+      var currentScroll = $win .scrollTop();
       if (currentScroll >= headerPos) {
         $sfw.addClass('sticky-header');
-        $('.plone-toolbar-logo').css('top', '14px');
+        $toolbar.css('top', '14px');
       } else {
         $sfw.removeClass('sticky-header');
-        $('.plone-toolbar-logo').css('top', '50px');
+        $toolbar.css('top', '50px');
       }
     });
   }
+
+  // Breadcrumb home section
+  var $bh = $('#breadcrumbs-home a');
+  $bh.text('Eionet');
+  $bh.prepend('<i class="glyphicon glyphicon-home"/>');
 
 });

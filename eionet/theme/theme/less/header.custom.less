@@ -8,7 +8,7 @@
     justify-content: space-between;
 
     #portal-logo {
-      float: none;
+      // float: none;
       height: 100%;
     }
 
@@ -29,7 +29,7 @@
       img {
         height: 100%;
         width: auto;
-        margin-right: 1em;
+        margin-right: 0.6em;
       }
 
       .logo-title {
@@ -97,7 +97,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    background-color: #0000;
+    background-color: transparent;
     border: none;
 
     &:hover {
@@ -134,11 +134,12 @@
     height: 100%;
 
     .plone-navbar-nav {
-      li {
+      >li {
         >a {
           color: @text-color;
           padding: 1.8em 1em;
           font-size: 16px;
+          background-color: transparent;
         }
 
         .submenu {
@@ -150,7 +151,9 @@
           height: auto;
           box-shadow: none;
           float: none;
-          min-width: 250px;
+          min-width: 300px;
+          box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.2);
+          -webkit-box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.2);
 
           li:not(:last-child) {
             a {
@@ -179,7 +182,7 @@
 
       >li:hover {
         >a {
-          color: @blue-color;
+          // color: @blue-color;
           background-color: #f1f1f1;
         }
 
@@ -200,11 +203,30 @@
         }
       }
 
-      .selected > a {
+      >.selected > a {
         background-color: transparent;
         color: @blue-color;
         font-weight: 600;
+        position: relative;
+
+        &:before {
+          content: '';
+          top: 0;
+          left: 0;
+          right: 0;
+          position: absolute;
+          width: 100%;
+          height: 3px;
+          background-color: @blue-color;
+        }
       }
+
+      >.selected:hover > a {
+        &:before {
+          height: 0;
+        }
+      }
+
       .selected > a:hover,
       .selected > a:focus {
         color: @blue-color;
@@ -291,6 +313,8 @@
       .selected > a,
       .selected > a:hover,
       .selected > a:focus {
+        box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.2);
+        -webkit-box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.2);
         color: @blue-color;
         font-weight: 600;
         background-color: #f1f1f1;

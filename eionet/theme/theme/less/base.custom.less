@@ -88,10 +88,29 @@ ul {
   font-size: 14px;
 }
 
-.pat-structure .pagination>li>a,
-.pat-structure .pagination>li>span,
-.pat-structure .itemRow.folder .title a {
-  color: @blue-color;
+.pat-structure {
+  .pagination {
+    li {
+      a,
+      span {
+        color: @blue-color;
+      }
+      a:hover {
+        color: @orange-color;
+      }
+    }
+  }
+  .itemRow,
+  .itemRow.folder {
+    .title a {
+      color: @blue-color;
+
+      &:hover {
+        color: @orange-color;
+        text-decoration: none;
+      }
+    }
+  }
 }
 
 .pat-structure .pagination>.active>a {
@@ -106,18 +125,21 @@ ul {
   box-shadow: none;
   border-bottom: 1px solid #ddd;
   border-radius: 0;
-  padding-bottom: 0.5em;
+  padding-bottom: 10px;
 
   .portletHeader {
     color: @text-color;
     background: none;
-    padding: 0 0.5em 0.5em 0.5em;
     font-size: 20px;
     font-weight: 600;
+    padding: 0;
+    padding-bottom: 10px;
 
-    a {
+    >a {
       color: @text-color;
       font-weight: 600;
+      padding: 0;
+      // padding-bottom: 10px;
 
       &:hover {
         color: @orange-color;
@@ -136,13 +158,13 @@ ul {
 
     ul {
       .portletItemDetails {
-        padding: 0.5em;
-        margin-top: 0;
+        padding: 0;
+        margin-top: -9px;
       }
 
       li {
         a {
-          padding: 0.5em;
+          padding: 10px 0;
           color: @blue-color;
           border-top: none;
 
@@ -162,17 +184,11 @@ ul {
           background: none;
         }
       }
-
-      li:last-child {
-        a {
-          padding-bottom: 0;
-        }
-      }
     }
 
     > *,
     > div:not(.portalMessage) {
-      padding: 10px 0.5em;
+      padding: 10px 0;
     }
   }
 
@@ -180,7 +196,7 @@ ul {
     box-shadow: none;
     background: none;
     border: none;
-    padding: 0.5em;
+    padding: 10px 0;
   }
 }
 
@@ -197,10 +213,22 @@ ul {
         }
       }
     }
-    > ul > li a {
-      background: none;
+    > ul {
+      > li a {
+        padding: 0.6em 0;
+        background: none;
+      }
+      li:last-child {
+        a {
+          padding-bottom: 0;
+        }
+      }
     }
   }
+}
+
+i.glyphicon {
+  padding-right: 0.3em;
 }
 
 
@@ -240,4 +268,9 @@ ul {
 .alert.status,
 .portalMessage {
   margin-top: 20px;
+}
+
+[class*="contenttype-"]::before,
+.contenttype-file #crud-edit-File-widgets-view_title::before {
+  margin-right: 0;
 }

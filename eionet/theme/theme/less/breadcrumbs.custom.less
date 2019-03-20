@@ -10,35 +10,32 @@
 
     li {
       font-size: 13px;
+      padding: 0 20px 0 0;
 
       a {
         color: @text-color;
 
-        &:hover {
+        &:hover,
+        &:focus {
           color: @orange-color;
           text-decoration: none;
         }
-      }
-    }
 
-    li:first-child {
-      a {
-        font-size: 0;
-
-        &:before {
-          content:"\e021";
-          font-family: 'Glyphicons Halflings';
-          font-size: 12px;
-          display: inline-block;
+        i {
+          font-size: 11px;
+          margin-right: 2px;
         }
       }
     }
 
     li + li:before {
-      content: '•';
+      content:"\e258";
+      font-family: 'Glyphicons Halflings';
       border: none;
       top: 0px;
-      color: @text-color;
+      left: -18px;
+      color: #333;
+      font-size: 9px;
     }
 
     li + li:after {
