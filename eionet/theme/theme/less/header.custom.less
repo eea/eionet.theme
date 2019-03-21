@@ -10,6 +10,7 @@
     #portal-logo {
       // float: none;
       height: 100%;
+      padding: 10px 0;
     }
 
     .logo-text {
@@ -107,8 +108,9 @@
     }
 
     i {
-      font-size: 15px;
+      padding-right: 0;
       color: @green-color;
+      top: 0;
     }
   }
 }
@@ -221,12 +223,6 @@
         }
       }
 
-      >.selected:hover > a {
-        &:before {
-          height: 0;
-        }
-      }
-
       .selected > a:hover,
       .selected > a:focus {
         color: @blue-color;
@@ -308,6 +304,12 @@
 
       li:hover > a {
         color: @blue-color;
+      }
+
+      >.selected > a {
+        &:before {
+          height: 0;
+        }
       }
 
       .selected > a,
@@ -400,6 +402,7 @@
     }
 
     .header-container {
+      height: 62px;
       .navbar-header {
         margin-right: 15px;
       }
