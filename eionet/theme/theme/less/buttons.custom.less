@@ -4,35 +4,49 @@
 .context,
 .btn-primary {
   background-color: @blue-color;
-  border: 1px solid @blue-color;
+  border: 1px solid #003a61;
   border-radius: 0;
   font-weight: 600;
   color: #fff;
+  box-shadow: none;
 }
 
 #form-buttons-add:hover,
 .context:hover,
 .btn-primary:hover {
   background-color: @orange-color;
-  border: 1px solid @orange-color;
+  border: 1px solid #9c4900;
   color: #fff;
+  box-shadow: none;
 }
 
 #form-buttons-cancel_add,
 .standalone,
+.link-parent,
 button {
   background-color: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid #ddd !important;
   border-radius: 0;
   color: @text-color;
   font-weight: 600;
   text-shadow: none;
+  box-shadow: none;
 }
 
 #form-buttons-cancel_add:hover,
 .standalone:hover,
+.link-parent:hover,
 button:hover {
   background-color: #ddd;
-  border: 1px solid #ddd;
+  border: 1px solid #bdbcbc !important;
   color: @text-color;
+  box-shadow: none;
+}
+
+[type="submit"] {
+  border-radius: 0;
+}
+
+.pull-right .destructive {
+  width: auto;
 }

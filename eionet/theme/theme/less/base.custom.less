@@ -69,9 +69,15 @@ ul {
   margin-top: 1.5em;
 }
 
-#content-core a {
-  border-bottom: none;
-  font-weight: 600;
+
+#content-core {
+  a {
+    border-bottom: none;
+    font-weight: 600;
+  }
+  i.glyphicon {
+    font-size: 80%;
+  }
 }
 
 .documentFirstHeading {
@@ -178,6 +184,9 @@ ul {
           &:hover::after {
             content: '';
           }
+          &:focus {
+            text-decoration: none;
+          }
         }
 
         &:hover {
@@ -202,6 +211,35 @@ ul {
 
 .portletNavigationTree {
   nav.portletContent {
+    .navTreeLevel1 > li {
+      a {
+        padding-left: 15px;
+      }
+    }
+
+    >.navTree {
+      >li.navTreeItemInPath {
+        >a {
+          font-weight: 600;
+        }
+      }
+    }
+
+    .navTree {
+      a:before {
+        font-family: 'Glyphicons Halflings';
+        font-size: 80%;
+        margin-right: 0;
+        top: 1px;
+      }
+      a.navTreeFolderish:before {
+        content:"\e258";
+      }
+      a.contenttype-link:before {
+        content:"\e164";
+      }
+    }
+
     .navTreeCurrentNode {
       >a {
         background: none;
@@ -225,6 +263,12 @@ ul {
       }
     }
   }
+}
+
+.managedPortletActions {
+  float: none;
+  display: block;
+  margin-top: 10px;
 }
 
 i.glyphicon {
@@ -275,4 +319,33 @@ i.glyphicon {
   margin-right: 3px;
   width: auto;
   height: auto;
+}
+
+
+i.link-https:after {
+  content:"\e164";
+}
+
+
+@media (min-width: 992px) {
+    #main-container {
+      .col-md-3 {
+        width: 20%;
+      }
+      .col-md-push-3 {
+        left: 20%;
+      }
+      .col-md-pull-6 {
+        right: 60%;
+      }
+      .col-md-6 {
+        width: 60%;
+      }
+      .col-md-9 {
+        width: 80%;
+      }
+      .col-md-pull-9 {
+        right: 80%;
+      }
+    }
 }
