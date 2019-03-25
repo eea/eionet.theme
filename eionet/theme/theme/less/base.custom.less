@@ -278,36 +278,44 @@ i.glyphicon {
 
 // TABLES
 
-#parent-fieldname-text {
-  table {
-    border-left: none;
-    border-right: none;
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  margin: 10px 0;
+}
 
-    > thead,
-    > tbody,
-    > tfoot {
-      > tr {
-        th {
-          background-color: #f9f9f9;
-        }
-        th,
-        td {
-          padding: 0.3em;
-          border: 1px solid #ddd;
-        }
+table {
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
 
-        th:first-child,
-        td:first-child {
-          border-left: 1px solid transparent;
-        }
-        th:last-child,
-        td:last-child {
-          border-right: 1px solid transparent;
-        }
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      th {
+        padding: 0.8em 0.3em;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+      }
+      td {
+        padding: 0.3em;
+        border: 1px solid #ddd;
+      }
+
+      th:first-child,
+      td:first-child {
+        border-left: 1px solid transparent;
+      }
+      th:last-child,
+      td:last-child {
+        border-right: 1px solid transparent;
       }
     }
   }
 }
+
 
 .alert.status,
 .portalMessage {
@@ -327,26 +335,26 @@ i.link-external:after {
   content:"\e164";
 }
 
-
 @media (min-width: 992px) {
-    #main-container {
-      .col-md-3 {
-        width: 20%;
-      }
-      .col-md-push-3 {
-        left: 20%;
-      }
-      .col-md-pull-6 {
-        right: 60%;
-      }
-      .col-md-6 {
-        width: 60%;
-      }
-      .col-md-9 {
-        width: 80%;
-      }
-      .col-md-pull-9 {
-        right: 80%;
-      }
+  // Reduce the portlets width
+  #main-container {
+    .col-md-3 {
+      width: 20%;
     }
+    .col-md-push-3 {
+      left: 20%;
+    }
+    .col-md-pull-6 {
+      right: 60%;
+    }
+    .col-md-6 {
+      width: 60%;
+    }
+    .col-md-9 {
+      width: 80%;
+    }
+    .col-md-pull-9 {
+      right: 80%;
+    }
+  }
 }
