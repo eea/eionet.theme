@@ -34,9 +34,9 @@
   <replace css:theme-children="#mainnavigation" css:content-children="#portal-mainnavigation" method="raw" />
 
   <!-- move hero to top -->
-  <replace css:theme-children="#hero .gigantic" css:content-children=".hero"/>
+  <!-- <replace css:theme-children="#hero .gigantic" css:content-children=".hero"/>
   <drop css:theme="#hero" css:if-not-content=".hero" />
-  <drop css:content=".hero" />
+  <drop css:content=".hero" /> -->
 
   <!-- full-width breadcrumb -->
   <replace css:content="#viewlet-above-content" css:theme="#above-content" />
@@ -59,7 +59,7 @@
       </div>
       <footer class="row">
         <div class="col-xs-12 col-sm-12">
-          <xsl:copy-of css:select="#viewlet-below-content" />
+          <!-- <xsl:copy-of css:select="#viewlet-below-content" /> -->
         </div>
       </footer>
     </div>
@@ -104,33 +104,33 @@
   <replace css:theme="#portal-anontools" css:content-children="#portal-anontools" />
 
   <!-- Footer -->
-  <xsl:variable name="footer_portlets" select="//footer[@id='portal-footer-wrapper']//div[@class='portletWrapper']/*[not(contains(@id,'portal-colophon')) and not(contains(@id,'portal-footer-signature')) and not(contains(@class,'portletActions'))]"></xsl:variable>
-  <xsl:variable name="footer_portlets_count" select="count($footer_portlets)"></xsl:variable>
+  <!-- <xsl:variable name="footer_portlets" select="//footer[@id='portal-footer-wrapper']//div[@class='portletWrapper']/*[not(contains(@id,'portal-colophon')) and not(contains(@id,'portal-footer-signature')) and not(contains(@class,'portletActions'))]"></xsl:variable>
+  <xsl:variable name="footer_portlets_count" select="count($footer_portlets)"></xsl:variable> -->
 
 
   <!-- Replace footer information with Plone version. -->
-  <replace
+  <!-- <replace
       css:theme-children="#portal-footer .copyright > div"
       css:content-children="#portal-footer-wrapper #portal-footer-signature .portletContent"
       />
-  <drop css:theme="#portal-footer .copyright" css:if-not-content="#portal-footer-wrapper #portal-footer-signature" />
+  <drop css:theme="#portal-footer .copyright" css:if-not-content="#portal-footer-wrapper #portal-footer-signature" /> -->
 
   <!-- Replace colophon information with Plone version. -->
-  <replace
+  <!-- <replace
       css:theme-children="#portal-footer .colophon > div"
       css:content-children="#portal-footer-wrapper #portal-colophon .portletContent"
       />
-  <drop css:theme="#portal-footer .colophon" css:if-not-content="#portal-footer-wrapper #portal-colophon" />
+  <drop css:theme="#portal-footer .colophon" css:if-not-content="#portal-footer-wrapper #portal-colophon" /> -->
 
   <!-- Replace site-actions with Plone version. -->
-  <replace
+  <!-- <replace
       css:theme-children="#portal-footer .site-actions > div"
       css:content="#portal-footer-wrapper .actions-site_actions"
       />
-  <drop css:theme="#portal-footer .site-actions" css:if-not-content="#portal-footer-wrapper .actions-site_actions" />
+  <drop css:theme="#portal-footer .site-actions" css:if-not-content="#portal-footer-wrapper .actions-site_actions" /> -->
 
   <!-- Move all other footer portlets into doormat area. -->
-  <replace css:theme-children="#portal-footer .doormat">
+  <!-- <replace css:theme-children="#portal-footer .doormat">
     <xsl:variable name="columns">
       <xsl:if test="$footer_portlets_count=1">col-md-12</xsl:if>
       <xsl:if test="$footer_portlets_count=2">col-md-6</xsl:if>
@@ -174,13 +174,16 @@
         </xsl:for-each>
       </div>
     </xsl:for-each>
-  </replace>
+  </replace> -->
 
   <!-- Add additional footer content, like script tags (from site settings). -->
   <after
       css:theme-children="html body"
       content="//footer[@id='portal-footer-wrapper']/*[not(@class='row')]"
       />
+
+  <!-- custom footer -->
+  <replace css:theme-children="#portal-footer-wrapper" css:content=".custom-footer" href="/footer-template" method="document" />
 
   <!-- toolbar -->
   <replace css:theme="#portal-toolbar" css:content="#edit-bar" css:if-not-content=".ajax_load" css:if-content=".userrole-authenticated" />

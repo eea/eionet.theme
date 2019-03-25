@@ -4,29 +4,26 @@
   background-color: @blue-color;
   padding: 1.5em 0;
 
-  .site-actions {
-    border-top: none !important;
+  .footer-nav {
     border-bottom: 1px solid #fff;
     padding-bottom: 1.5em;
-    margin-top: 0;
-    ul > li {
-      padding: 0;
+    text-align: center;
+
+    .footer-nav-item {
+      list-style-type: none;
+      display: inline-block;
+
+      .footer-nav-link {
+        color: #fff;
+        font-size: 16px;
+        &:hover {
+          color: #fff;
+          text-decoration: underline;
+        }
+      }
     }
-    ul > li:not(:last-child) {
+    .footer-nav-item:not(:last-child) {
       padding-right: 1.5em;
-    }
-  }
-
-  .portlet .portletContent li {
-    padding: 0 2em;
-  }
-
-  a {
-    color: #fff;
-    font-size: 16px;
-    &:hover {
-      color: #fff;
-      text-decoration: underline;
     }
   }
 
@@ -43,6 +40,11 @@
 
     a {
       font-size: 14px;
+      color: #fff;
+      &:hover {
+        color: #fff;
+        text-decoration: underline;
+      }
     }
   }
 }
