@@ -335,6 +335,16 @@ i.link-external:after {
   content:"\e164";
 }
 
+#portal-sitemap {
+  ul {
+    li {
+      &:before {
+        content: '';
+      }
+    }
+  }
+}
+
 @media (min-width: 992px) {
   // Reduce the portlets width
   #main-container {
