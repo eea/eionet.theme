@@ -43,7 +43,4 @@ $(document).ready(function() {
   $bh.text('Eionet');
   $bh.prepend('<i class="glyphicon glyphicon-home"/>');
 
-  // Wrap each table with a div for horizontally scrolling
-  $('table').wrap('<div class="table-responsive"/>');
-
 });

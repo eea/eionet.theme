@@ -278,29 +278,24 @@ i.glyphicon {
 
 // TABLES
 
-.table-responsive {
-  display: block;
-  width: 100%;
-  overflow-x: auto;
-  margin: 10px 0;
-}
-
 table {
   border-left: none;
   border-right: none;
   border-radius: 0;
+  word-break: break-all;
+  margin: 1em 0;
 
   > thead,
   > tbody,
   > tfoot {
     > tr {
       th {
-        padding: 0.8em 0.3em;
+        padding: 0.8em 0.6em;
         background-color: #f9f9f9;
         border: 1px solid #ddd;
       }
       td {
-        padding: 0.3em;
+        padding: 0.6em;
         border: 1px solid #ddd;
       }
 
@@ -313,6 +308,12 @@ table {
         border-right: 1px solid transparent;
       }
     }
+  }
+}
+
+@media (max-width: 480px) {
+  table {
+    table-layout: fixed;
   }
 }
 
