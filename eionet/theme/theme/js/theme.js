@@ -28,24 +28,39 @@ $(document).ready(function() {
     }
   });
 
-  // sticky header on mobile devices
   var $win = $(window);
   var $sfw = $('.header-container');
   var headerPos = $sfw.offset().top;
   var $toolbar = $('.plone-toolbar-logo');
+  var resizeTimer;
 
+  // fire resize event after the browser window resizing it's completed
+  $win.resize(function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(doneResizing, 500);
+  });
+
+  function doneResizing() {
+    var windowsize = $win.width();
+    if (windowsize <= 480) {
+      $('.logo-text').prependTo('.plone-navbar-collapse');
+    }
+  }
+
+  // sticky header on mobile devices
   if ($win.width() <= 767) {
     $win.scroll(function() {
       var currentScroll = $win .scrollTop();
       if (currentScroll >= headerPos) {
         $sfw.addClass('sticky-header');
-        $toolbar.css('top', '14px');
+        $toolbar.css('top', '10px');
       } else {
         $sfw.removeClass('sticky-header');
-        $toolbar.css('top', '50px');
+        $toolbar.css('top', '46px');
       }
     });
   }
+
 
   // Breadcrumb home section
   var $bh = $('#breadcrumbs-home a');

@@ -13,9 +13,9 @@
     }
 
     .logo-text {
-      text-decoration: none;
-      float: right;
-      margin-top: 3px;
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 1;
     }
 
     .logo-text,
@@ -25,6 +25,16 @@
 
     .header-logo {
       height: 78px;
+
+      >a {
+        height: 100%;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
 
       img {
         height: 100%;
@@ -100,7 +110,7 @@
     right: 0;
     background-color: transparent;
     border: none !important;
-    color: @blue-color;
+    color: @green-color;
 
     &:hover {
       box-shadow: none;
@@ -284,7 +294,7 @@
       li {
         a {
           color: #fff;
-          padding: 1em;
+          padding: 1em 0.5em;
         }
 
         .submenu {
@@ -297,13 +307,27 @@
             background-color: #fff;
           }
 
-          li > a {
-            color: @text-color;
+          li {
+            > a {
+              color: @text-color;
+              white-space: normal;
+              font-size: 13px;
+              padding: 0.5em;
+
+              .submenu_title {
+                padding-left: 0;
+              }
+
+              .opener {
+                display: none;
+              }
+            }
           }
         }
 
         .opener {
           display: block;
+          margin-right: 0;
           .caret {
             margin-bottom: 0;
           }
@@ -361,7 +385,7 @@
   }
 }
 
-@media (max-width: 1250px) {
+@media (max-width: 1350px) {
   .container {
     width: 100% !important;
   }
@@ -370,6 +394,10 @@
     margin-top: 2.3em;
     position: relative;
     border-top: 1px solid #ddd;
+
+    .logo-text {
+      font-size: 14px !important;
+    }
 
     .header-right-section {
       .login {
@@ -401,7 +429,46 @@
   }
 }
 
+@media (max-width: 1250px) {
+  #content-header {
+    .header-container {
+      .header-logo {
+        width: 30%;
+      }
+      .header-right-section {
+        width: 70%;
+        display: block;
+
+        #mainnavigation-wrapper {
+          float: right;
+        }
+      }
+    }
+  }
+}
+
+
 @media (max-width: 980px) {
+  #content-header {
+    .container  {
+      padding-right: 0;
+    }
+
+    .header-container {
+      .logo-text {
+        font-size: 12px !important;
+      }
+
+      .navbar-header {
+        margin-right: 15px;
+      }
+
+      .header-logo {
+        height: 60px;
+      }
+    }
+  }
+
   .plone-navbar {
     .plone-navbar-collapse {
       .plone-navbar-nav {
@@ -417,27 +484,43 @@
       }
     }
   }
+}
+
+@media (max-width: 850px) {
+  .plone-navbar {
+    .plone-navbar-collapse.in {
+      top: 61px;
+      .opener {
+        background: transparent;
+        border: 1px solid #fff;
+        border-radius: 4px;
+        float: right;
+        text-align: center;
+        width: 32px;
+        height: 32px;
+        margin-top: -6.4px;
+        margin-right: -11.2px;
+      }
+      .opener .caret {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: 0;
+        margin-bottom: 0.2em;
+        vertical-align: bottom;
+        border-top: 0.5em dashed;
+        border-right: 0.5em solid transparent;
+        border-left: 0.5em solid transparent;
+        border-bottom: 0;
+      }
+    }
+  }
 
   #content-header {
-    .container  {
-      padding-right: 0;
-    }
-
     .header-container {
-      height: 63px;
-      .navbar-header {
-        margin-right: 15px;
-      }
-
-      .header-logo {
-        height: 60px;
-        .logo-title {
-          font-size: 17px;
-        }
-
-        .logo-desc {
-          font-size: 6px;
-        }
+      .header-logo,
+      .header-right-section {
+        width: auto;
       }
     }
   }
@@ -455,7 +538,7 @@
     left: -102px;
     width: 38px;
     height: 38px;
-    top: 50px;
+    top: 46px;
     z-index: 9999;
 
     img {
@@ -464,27 +547,25 @@
       position: relative;
     }
   }
-
-  .plone-navbar .plone-navbar-collapse.in {
-    top: 61px;
-  }
 }
 
 @media (max-width: 480px) {
   #content-header {
-     .header-container {
-       .header-logo {
-         height: 60px;
-
-         .logo-title {
-           font-size: 16px;
-         }
-       }
-     }
-  }
-
-  #edit-zone .plone-toolbar-logo,
-  .plone-toolbar-expanded #edit-zone .plone-toolbar-logo {
-    top: 50px;
+    .header-container {
+      .header-logo {
+        .logo-title {
+         font-size: 16px;
+        }
+      }
+      .logo-text {
+        padding: 1em 0;
+        float: none;
+        color: #fff;
+        margin: 0 -5px 0;
+      }
+      .logo-text:hover {
+        color: #fff;
+      }
+    }
   }
 }
