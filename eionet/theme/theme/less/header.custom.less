@@ -8,7 +8,6 @@
     justify-content: space-between;
 
     #portal-logo {
-      // float: none;
       height: 100%;
       padding: 10px 0;
     }
@@ -101,6 +100,7 @@
     right: 0;
     background-color: transparent;
     border: none !important;
+    color: @blue-color;
 
     &:hover {
       box-shadow: none;
@@ -111,7 +111,7 @@
 
     i {
       padding-right: 0;
-      color: @green-color;
+      color: inherit;
       top: 0;
     }
   }
@@ -139,6 +139,7 @@
 
     .plone-navbar-nav {
       >li {
+        color: @text-color;
         >a {
           color: @text-color;
           padding: 1.8em 1em;
@@ -147,7 +148,7 @@
         }
 
         .submenu {
-          background-color: #f1f1f1 !important;
+          background-color: #f8f8f8 !important;
           top: 76px;
           left: 0;
           border: none;
@@ -160,34 +161,52 @@
           -webkit-box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.2);
 
           li:not(:last-child) {
+            border-bottom: 1px solid #dcdcdc;
+          }
+
+          li {
+
             a {
-              border-bottom: 1px solid #dcdcdc;
+              background-color: #f8f8f8;
+              padding: 0.8em;
+              color: @text-color;
+              font-size: 14px;
+
+              &:hover {
+                background-color: #e8e8e8;
+              }
+            }
+
+            .external-icon {
+              margin-left: 3px;
+              font-size: 12px;
+            }
+
+            .state-private {
+              >.submenu_title {
+                position: relative;
+              }
+              >.submenu_title:after {
+                content:"\e033";
+                font-family: 'Glyphicons Halflings';
+                position: absolute;
+                top: 0;
+                right: -20px;
+                font-size: 12px;
+              }
+            }
+
+            >.link-https {
+              display: none;
             }
           }
 
-          a {
-            background-color: #f1f1f1;
-            color: @text-color;
-            padding: 0.8em;
-            font-size: 14px;
-            white-space: inherit;
-
-            &:hover {
-              color: #fff;
-              background-color: @blue-color;
-            }
-          }
-
-          .link-https {
-            display: none;
-          }
         }
       }
 
       >li:hover {
         >a {
-          // color: @blue-color;
-          background-color: #f1f1f1;
+          background-color: #f8f8f8;
         }
 
         >.submenu {
@@ -209,7 +228,7 @@
 
       >.selected > a {
         background-color: transparent;
-        color: @blue-color;
+        color: @orange-color;
         font-weight: 600;
         position: relative;
 
@@ -221,15 +240,15 @@
           position: absolute;
           width: 100%;
           height: 3px;
-          background-color: @blue-color;
+          background-color: @orange-color;
         }
       }
 
-      .selected > a:hover,
-      .selected > a:focus {
-        color: @blue-color;
+      >.selected > a:hover,
+      >.selected > a:focus {
+        color: @orange-color;
         font-weight: 600;
-        background-color: #f1f1f1;
+        background-color: #f8f8f8;
       }
     }
   }
@@ -322,7 +341,7 @@
         -webkit-box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.2);
         color: @blue-color;
         font-weight: 600;
-        background-color: #f1f1f1;
+        background-color: #f8f8f8;
       }
     }
   }

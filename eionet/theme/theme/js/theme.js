@@ -1,6 +1,6 @@
 $(document).ready(function() {
-  // Navigation menu: align submenu to the right
-  // if overflows the main navigation menu
+  // GLOBAL MENU:
+  // Align submenu to the right if overflows the main navigation menu
   var mainMenuWidth = $('.header-container').width();
 
   $('#portal-globalnav li').mouseenter(function() {
@@ -16,6 +16,15 @@ $(document).ready(function() {
         'right': 0,
         'left': 'auto'
       });
+    }
+  });
+
+  // insert icon for external links inside the <a> tag
+  var submenuItem = $('#portal-globalnav').find('.submenu li a');
+  submenuItem.each(function() {
+    var $ext = $('<i class="glyphicon external-icon link-https"/>');
+    if (!(location.hostname === this.hostname || !this.hostname.length)) {
+      $ext.appendTo($(this));
     }
   });
 
