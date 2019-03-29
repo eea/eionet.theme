@@ -39,6 +39,17 @@ module.exports = function (grunt) {
         src: 'less/*.css'
       }
     },
+    cssmin: {
+      options: {
+        mergeIntoShorthands: false,
+        roundingPrecision: -1
+      },
+      target: {
+        files: {
+          'less/theme-compiled.css': ['less/theme-compiled.css'],
+        }
+      }
+    },
     watch: {
       scripts: {
         files: [
@@ -90,12 +101,13 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-postcss');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   // CWD to theme folder
   grunt.file.setBase('./eionet/theme/theme');
 
   grunt.registerTask('compile', ['less', 'postcss']);
-  grunt.registerTask('default', ['compile']);
+  grunt.registerTask('default', ['compile', 'cssmin']);
   grunt.registerTask('bsync', ["browserSync:html", "watch"]);
   grunt.registerTask('plone-bsync', ["browserSync:plone", "watch"]);
 };
