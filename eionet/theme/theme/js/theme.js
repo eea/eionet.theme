@@ -44,6 +44,8 @@ $(document).ready(function() {
     var windowsize = $win.width();
     if (windowsize <= 480) {
       $('.logo-text').prependTo('.plone-navbar-collapse');
+    } else {
+      $('.logo-text').appendTo('.header-logo a');
     }
   }
 
