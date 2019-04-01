@@ -7,33 +7,27 @@
     display: flex;
     justify-content: space-between;
 
-    #portal-logo {
-      height: 100%;
-      padding: 7px 0;
-    }
-
-    .logo-text {
-      font-size: 18px;
-      font-weight: bold;
-      line-height: 1;
-    }
-
-    .logo-text,
-    .logo-text:hover {
-      color: #000;
-    }
-
     .header-logo {
       height: 78px;
-
       >a {
         height: 100%;
         display: flex;
         align-items: center;
-
+        color: #000;
         &:hover,
         &:focus {
           text-decoration: none;
+        }
+
+        #portal-logo {
+          height: 100%;
+          padding: 7px 0;
+        }
+
+        .logo-text {
+          font-size: 18px;
+          font-weight: bold;
+          line-height: 1;
         }
       }
 
@@ -42,25 +36,6 @@
         width: auto;
         margin-right: 0.6em;
       }
-
-      // .logo-title {
-      //   font-size: 21px;
-      //   font-weight: bold;
-      //   margin: 0;
-      // }
-      //
-      // .logo-title::first-letter {
-      //   font-size: 125%;
-      // }
-
-      // span {
-      //   font-weight: bold;
-      //   font-size: 8px;
-      //   position: relative;
-      //   margin-top: -4px;
-      //   margin-bottom: 0;
-      //   display: block;
-      // }
     }
 
     .header-right-section {
@@ -76,6 +51,10 @@
             a {
               color: #666;
               font-size: 13px;
+              &:hover {
+                color: @orange-color;
+                text-decoration: none;
+              }
             }
             a:before {
               content: "\e161";
@@ -85,9 +64,6 @@
               margin-right: 0.5em;
               position: relative;
               top: 1px;
-            }
-            a:hover {
-              color: @orange-color;
             }
           }
         }
@@ -112,7 +88,6 @@
     background-color: transparent;
     border: none !important;
     color: @green-color;
-
     &:hover {
       box-shadow: none;
       background: none;
@@ -142,6 +117,17 @@
   .plone-navbar-collapse {
     .plone-navbar-nav {
       >li {
+        &:hover {
+          >a {
+            background-color: #f8f8f8;
+          }
+          >.submenu {
+            display: block;
+            visibility: visible;
+            opacity: 1;
+          }
+        }
+
         >a {
           color: @text-color;
           padding: 1.8em 1em;
@@ -202,17 +188,6 @@
             }
           }
         }
-
-        &:hover {
-          >a {
-            background-color: #f8f8f8;
-          }
-          >.submenu {
-            display: block;
-            visibility: visible;
-            opacity: 1;
-          }
-        }
       }
 
       li.hasDropDown {
@@ -226,28 +201,19 @@
       }
 
       >.selected > a {
-        background-color: transparent;
         color: @orange-color;
         font-weight: 600;
         position: relative;
-
         &:before {
           content: '';
+          position: absolute;
           top: 0;
           left: 0;
           right: 0;
-          position: absolute;
           width: 100%;
           height: 3px;
           background-color: @orange-color;
         }
-      }
-
-      >.selected > a:hover,
-      >.selected > a:focus {
-        color: @orange-color;
-        font-weight: 600;
-        background-color: #f8f8f8;
       }
     }
   }
@@ -281,7 +247,7 @@
       background-color: @blue-color;
 
       li {
-        a {
+        >a {
           color: #fff;
           padding: 1em 0.5em;
         }
@@ -292,21 +258,18 @@
           width: 100%;
           display: none;
 
-          a:hover {
-            background-color: #fff;
-          }
-
           li {
-            > a {
+            >a {
               color: @text-color;
               white-space: normal;
               font-size: 13px;
               padding: 0.5em;
-
+              &:hover {
+                background-color: #fff;
+              }
               .submenu_title {
                 padding-left: 0;
               }
-
               .opener {
                 display: none;
               }
@@ -335,7 +298,6 @@
 
       li:hover > a {
         color: @blue-color;
-
         .opener {
           border: 1px solid @blue-color;
         }
@@ -345,16 +307,6 @@
         &:before {
           height: 0;
         }
-      }
-
-      .selected > a,
-      .selected > a:hover,
-      .selected > a:focus {
-        box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.2);
-        -webkit-box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.2);
-        color: @blue-color;
-        font-weight: 600;
-        background-color: #f8f8f8;
       }
     }
   }
@@ -408,7 +360,6 @@
             right: 8px;
           }
         }
-
         input {
           font-size: 13px;
           height: 23px;
@@ -550,6 +501,7 @@
         padding: 1em 0;
         float: none;
         color: #fff;
+        font-weight: bold;
         margin: 0 -5px 0;
       }
       .logo-text:hover {
