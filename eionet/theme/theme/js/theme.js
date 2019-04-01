@@ -40,13 +40,22 @@ $(document).ready(function() {
     resizeTimer = setTimeout(doneResizing, 500);
   });
 
+  // move Eionet logo text in the collapsed menu
+  // when it's running out of space on the header
+  var $logoText = $('.logo-text');
   function doneResizing() {
     var windowsize = $win.width();
     if (windowsize <= 480) {
-      $('.logo-text').prependTo('.plone-navbar-collapse');
+      $logoText.prependTo('.plone-navbar-collapse');
     } else {
-      $('.logo-text').appendTo('.header-logo a');
+      $logoText.appendTo('.header-logo a');
     }
+  }
+
+  if ($win.width() <= 480) {
+    $logoText.prependTo('.plone-navbar-collapse');
+  } else {
+    $logoText.appendTo('.header-logo a');
   }
 
   // sticky header on mobile devices

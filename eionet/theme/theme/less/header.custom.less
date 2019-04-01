@@ -322,10 +322,6 @@
           }
         }
 
-        .opener.menu-open {
-          border: 1px solid @blue-color;
-        }
-
         .menu-open {
           display: block!important;
         }
@@ -339,6 +335,10 @@
 
       li:hover > a {
         color: @blue-color;
+
+        .opener {
+          border: 1px solid @blue-color;
+        }
       }
 
       >.selected > a {
@@ -478,7 +478,7 @@
 @media (max-width: 850px) {
   .plone-navbar {
     .plone-navbar-collapse.in {
-      top: 61px;
+      top: 58px;
       .opener {
         background: transparent;
         border: 1px solid #fff;
