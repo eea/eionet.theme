@@ -73,8 +73,10 @@ a {
 
 .pat-autotoc.autotabs .autotoc-nav a.active,
 .autotabs .autotoc-nav a.active,
-.autotabs .autotoc-nav a.active:hover {
+.autotabs .autotoc-nav a.active:hover,
+.autotabs .autotoc-nav a.active:focus {
   color: @orange-color;
+  text-decoration: none;
 }
 
 
@@ -90,15 +92,21 @@ a {
   li.active {
     > span,
     > a {
-      background-color: @orange-color;
+      background-color: @orange-color !important;
       border: 1px solid @dark-orange-color !important;
     }
   }
 }
-.itemRow,
-.itemRow.folder {
-  .title a {
-    color: @blue-color;
+
+.pat-structure {
+  .itemRow,
+  .itemRow.folder {
+    .title a {
+      color: @blue-color;
+      &:hover {
+        color: @orange-color;
+      }
+    }
   }
 }
 
@@ -321,6 +329,10 @@ i.link-external:after {
       }
     }
   }
+}
+
+.portlet-group {
+  margin-bottom: 1em;
 }
 
 // EVENTS
