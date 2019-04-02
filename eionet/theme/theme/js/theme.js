@@ -20,11 +20,11 @@ $(document).ready(function() {
   });
 
   // insert icon for external links inside the <a> tag
-  var submenuItem = $('#portal-globalnav').find('.submenu li a');
-  submenuItem.each(function() {
-    var $ext = $('<i class="glyphicon external-icon link-https"/>');
-    if (!(location.hostname === this.hostname || !this.hostname.length)) {
-      $ext.appendTo($(this));
+  $('.submenu a').each(function() {
+    var $this = $(this);
+    var a = new RegExp('/' + window.location.host + '/');
+    if (!a.test(this.href)) {
+      $this.append('<i class="glyphicon external-icon link-https"/>');
     }
   });
 
