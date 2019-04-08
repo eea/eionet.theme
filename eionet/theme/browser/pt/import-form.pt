@@ -1,0 +1,13 @@
+<html>
+  <form method="POST" action="./@@eionet-importer">
+    <div>
+      <label>Source path:</label>
+      <input type="text" name="sourcepath" />
+    </div>
+    <div>
+      <label>Import portal type:</label>
+      <input type="text" name="portal_type" />
+    </div>
+    <input type="submit" name='submit' value="Submit" />
+  </form>
+</html>
