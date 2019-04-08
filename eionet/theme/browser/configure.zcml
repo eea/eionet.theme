@@ -26,4 +26,12 @@
     template="pt/import-form.pt"
     />
 
+  <browser:page
+    for="*"
+    name="eionet-structure-importer"
+    class=".admin.EionetStructureImporter"
+    permission="cmf.ManagePortal"
+    template="pt/import-structure-form.pt"
+    />
+
 </configure>

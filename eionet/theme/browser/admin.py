@@ -1,6 +1,6 @@
 import logging
-import re
 from HTMLParser import HTMLParser
+from StringIO import StringIO
 
 from lxml.etree import fromstring  # XML, XMLParer,
 from lxml.html import fragment_fromstring
@@ -9,16 +9,24 @@ from lxml.html.clean import clean_html
 from DateTime import DateTime
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer as create
+from plone.namedfile.file import NamedBlobFile
 from Products.Five.browser import BrowserView
 
 logger = logging.getLogger('eionet.theme.importer')
 
-control_chars = '\x00-\x1f\x7f-\x9f'
-control_char_re = re.compile('[%s]' % re.escape(control_chars))
 
+def read_data(obj_file):
+    ranges = []
+    data = obj_file.data
 
-def remove_control_chars(s):
-    return control_char_re.sub('', s).replace('\f', '')
+    if isinstance(data, str):
+        ranges.append(data)
+    else:
+        while data is not None:
+            ranges.append(data.data)
+            data = data.next
+
+    return ''.join(ranges)
 
 
 class EionetContentImporter(BrowserView):
@@ -34,19 +42,10 @@ class EionetContentImporter(BrowserView):
         portal_type = self.request.form.get('portal_type')
 
         obj = self.context.restrictedTraverse(path)
-        ranges = []
-        data = obj.data
 
-        if isinstance(data, str):
-            ranges.append(data)
-        else:
-            while data is not None:
-                ranges.append(data.data)
-                data = data.next
-
-        text = ''.join(ranges).replace('\f', '')
+        text = read_data(obj)
+        text = text.replace('\f', '')        # line feed, weird
         text = text.decode('utf-8')
-        # text = remove_control_chars(text)
 
         tree = fromstring(text)
         importer = getattr(self, 'import_' + portal_type)
@@ -79,12 +78,6 @@ class EionetContentImporter(BrowserView):
                 text = ep.text or ''
                 props[pname] = convert(text.strip())
 
-            # if 'Ex post evaluation and policy implementat' in props['title']:
-            #     import pdb
-            #     pdb.set_trace()
-            # else:
-            #     continue
-
             try:
                 obj = create(context, portal_type, id=id, **props)
             except ValueError:      # this is due to id error
@@ -115,3 +108,52 @@ class EionetContentImporter(BrowserView):
 
     def as_date(self, value):
         return DateTime(value).asdatetime()
+
+
+class EionetStructureImporter(BrowserView):
+    """ A helper class to import old Zope content and recreate as Plone content
+    """
+
+    def __call__(self):
+        if self.request.method == 'GET':
+            return self.index()
+
+        path = self.request.form.get('sourcepath')
+        source = self.context.restrictedTraverse(path)
+
+        return self.import_generic(source, self.context)
+
+    def import_generic(self, source, destination):
+        destination = self.context
+
+        for obj in source.objectValues():
+            handler = getattr(self, 'import_' + obj.meta_type)
+            handler(obj, destination)
+
+        return
+
+    def import_File(self, obj, destination):
+        data = read_data(obj)
+        fobj = NamedBlobFile(data=data, contentType=obj.content_type,
+                             filename=obj.getId())
+
+        props = {
+            'file': fobj,
+            'title': obj.title,
+            'id': obj.getId(),
+        }
+
+        imported = create(destination, 'File', props)
+
+        return imported
+
+    def import_Folder(self, obj, destination):
+        title = obj.title
+        id = obj.getId()
+        folder = create(destination, 'Folder', id=id, title=title)
+
+        for child in obj.objectValues():
+            handler = getattr(self, 'import_' + obj.meta_type)
+            handler(obj, folder)
+
+        return folder
