@@ -102,7 +102,7 @@ class EionetContentImporter(BrowserView):
         el = fragment_fromstring(value)
         texts = el.xpath('text()')
 
-        return texts[0]        # only returns the first line
+        return u' '.join(texts)
 
     def as_richtext(self, value):
         if value:
