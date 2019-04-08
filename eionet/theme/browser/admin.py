@@ -1,7 +1,9 @@
 import logging
 import re
+from HTMLParser import HTMLParser
 
 from lxml.etree import fromstring  # XML, XMLParer,
+from lxml.html import fragment_fromstring
 from lxml.html.clean import clean_html
 
 from DateTime import DateTime
@@ -57,6 +59,7 @@ class EionetContentImporter(BrowserView):
         _map = {
             'teaser': ('abstract', self.as_richtext),
             'releasedate': ('publication_date', self.as_date),
+            'title': ('title', self.as_plain_text),
         }
         count = 0
 
@@ -76,11 +79,11 @@ class EionetContentImporter(BrowserView):
                 text = ep.text or ''
                 props[pname] = convert(text.strip())
 
-            # if 'Ex post evaluation and policy implementat' in props['title']:
-            #     import pdb
-            #     pdb.set_trace()
-            # else:
-            #     continue
+            if 'Ex post evaluation and policy implementat' in props['title']:
+                import pdb
+                pdb.set_trace()
+            else:
+                continue
 
             try:
                 obj = create(context, portal_type, id=id, **props)
@@ -92,6 +95,14 @@ class EionetContentImporter(BrowserView):
             count += 1
 
         return count
+
+    def as_plain_text(self, value):
+        value = HTMLParser().unescape(value)
+        value = u"<div>%s</div>" % value
+        el = fragment_fromstring(value)
+        texts = el.xpath('text()')
+
+        return texts[0]        # only returns the first line
 
     def as_richtext(self, value):
         if value:
