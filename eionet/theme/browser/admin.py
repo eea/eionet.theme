@@ -2,6 +2,7 @@ import logging
 import re
 
 from lxml.etree import fromstring  # XML, XMLParer,
+from lxml.html.clean import clean_html
 
 from DateTime import DateTime
 from plone.app.textfield.value import RichTextValue
@@ -41,9 +42,9 @@ class EionetContentImporter(BrowserView):
                 ranges.append(data.data)
                 data = data.next
 
-        text = ''.join(ranges)
+        text = ''.join(ranges).replace('\f', '')
         text = text.decode('utf-8')
-        text = remove_control_chars(text)
+        # text = remove_control_chars(text)
 
         tree = fromstring(text)
         importer = getattr(self, 'import_' + portal_type)
@@ -75,6 +76,12 @@ class EionetContentImporter(BrowserView):
                 text = ep.text or ''
                 props[pname] = convert(text.strip())
 
+            # if 'Ex post evaluation and policy implementat' in props['title']:
+            #     import pdb
+            #     pdb.set_trace()
+            # else:
+            #     continue
+
             try:
                 obj = create(context, portal_type, id=id, **props)
             except ValueError:      # this is due to id error
@@ -87,6 +94,9 @@ class EionetContentImporter(BrowserView):
         return count
 
     def as_richtext(self, value):
+        if value:
+            value = clean_html(value)
+
         return RichTextValue(value, 'text/html', 'text/html')
 
     def noop(self, value):
