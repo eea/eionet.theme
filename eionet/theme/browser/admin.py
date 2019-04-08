@@ -79,11 +79,11 @@ class EionetContentImporter(BrowserView):
                 text = ep.text or ''
                 props[pname] = convert(text.strip())
 
-            if 'Ex post evaluation and policy implementat' in props['title']:
-                import pdb
-                pdb.set_trace()
-            else:
-                continue
+            # if 'Ex post evaluation and policy implementat' in props['title']:
+            #     import pdb
+            #     pdb.set_trace()
+            # else:
+            #     continue
 
             try:
                 obj = create(context, portal_type, id=id, **props)
