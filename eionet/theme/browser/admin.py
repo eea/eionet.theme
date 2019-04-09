@@ -1,11 +1,11 @@
 import logging
 from HTMLParser import HTMLParser
-from StringIO import StringIO
 
-from lxml.etree import fromstring  # XML, XMLParer,
-from lxml.html import fragment_fromstring
+from lxml.etree import fromstring as etree_fromstring
+from lxml.html import fragment_fromstring, fromstring, tostring
 from lxml.html.clean import clean_html
 
+import transaction
 from DateTime import DateTime
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer as create
@@ -13,6 +13,8 @@ from plone.namedfile.file import NamedBlobFile
 from Products.Five.browser import BrowserView
 
 logger = logging.getLogger('eionet.theme.importer')
+
+DEBUG = False
 
 
 def read_data(obj_file):
@@ -27,6 +29,38 @@ def read_data(obj_file):
             data = data.next
 
     return ''.join(ranges)
+
+
+class DummyDict:
+    """ A "request" substitute that renders all DTML vars as empty strings
+    """
+
+    def __getitem__(self, key):
+        return ''
+
+
+def as_plain_text(value):
+    value = HTMLParser().unescape(value)
+    value = u"<div>%s</div>" % value
+    el = fragment_fromstring(value)
+    texts = el.xpath('text()')
+
+    return u' '.join(texts)
+
+
+def as_richtext(value):
+    if value:
+        value = clean_html(value)
+
+    return RichTextValue(value, 'text/html', 'text/html')
+
+
+def noop(value):
+    return value
+
+
+def as_date(value):
+    return DateTime(value).asdatetime()
 
 
 class EionetContentImporter(BrowserView):
@@ -47,7 +81,7 @@ class EionetContentImporter(BrowserView):
         text = text.replace('\f', '')        # line feed, weird
         text = text.decode('utf-8')
 
-        tree = fromstring(text)
+        tree = etree_fromstring(text)
         importer = getattr(self, 'import_' + portal_type)
 
         count = importer(self.context, portal_type, tree)
@@ -89,26 +123,6 @@ class EionetContentImporter(BrowserView):
 
         return count
 
-    def as_plain_text(self, value):
-        value = HTMLParser().unescape(value)
-        value = u"<div>%s</div>" % value
-        el = fragment_fromstring(value)
-        texts = el.xpath('text()')
-
-        return u' '.join(texts)
-
-    def as_richtext(self, value):
-        if value:
-            value = clean_html(value)
-
-        return RichTextValue(value, 'text/html', 'text/html')
-
-    def noop(self, value):
-        return value
-
-    def as_date(self, value):
-        return DateTime(value).asdatetime()
-
 
 class EionetStructureImporter(BrowserView):
     """ A helper class to import old Zope content and recreate as Plone content
@@ -121,37 +135,96 @@ class EionetStructureImporter(BrowserView):
         path = self.request.form.get('sourcepath')
         source = self.context.restrictedTraverse(path)
 
-        return self.import_location(source, self.context)
+        dest = self.import_location(source, self.context)
+        logger.info("Finished import")
+
+        return "Finished import: %s" % dest.absolute_url()
 
     def import_location(self, source, destination):
         for obj in source.objectValues():
-            handler = getattr(self, 'import_' + obj.meta_type, None)
+            metatype = obj.meta_type.replace(' ', '')
+            handler = getattr(self, 'import_' + metatype, None)
 
             if handler is None:
                 raise ValueError('Not supported: %s (%s)' % (obj.getId(),
-                                                             obj.meta_type))
+                                                             metatype))
             handler(obj, destination)
+
+        if not DEBUG:
+            transaction.commit()
 
         return destination
 
     def import_File(self, obj, destination):
+        if not DEBUG:
+            return
         data = read_data(obj)
         fobj = NamedBlobFile(data=data, contentType=obj.content_type,
                              filename=unicode(obj.getId()))
 
         props = {
             'file': fobj,
-            'title': obj.title,
+            'title': as_plain_text(obj.title),
             'id': obj.getId(),
         }
 
         obj = create(destination, 'File', **props)
         logger.info("Created file: %s", obj.absolute_url())
 
+        if not DEBUG:
+            transaction.commit()
+
         return obj
 
+    def import_Image(self, obj, destination):
+        return self.import_File(obj, destination)
+
     def import_Folder(self, obj, destination):
-        folder = create(destination, 'Folder', obj.getId(), title=obj.title)
+        folder = create(destination, 'Folder', id=obj.getId(),
+                        title=as_plain_text(obj.title))
         logger.info("Created folder: %s", obj.absolute_url())
 
         return self.import_location(obj, folder)
+
+    def import_DTMLDocument(self, obj, destination):
+        text = obj(REQUEST=DummyDict())
+
+        title = obj.title
+        title = unicode(title).strip()
+        title = as_plain_text(title)
+
+        page = self._create_page(destination, obj.getId(), title, text)
+
+        if page is not None:
+            logger.info("Created page: %s", page.absolute_url())
+
+        return page
+
+    def import_DTMLMethod(self, obj, destination):
+        return self.import_DTMLDocument(obj, destination)
+
+    def _create_page(self, destination, id, title, html):
+        if not id == 'airview.html':
+            return
+
+        if html:
+            html = clean_html(html).decode('utf-8')
+            tree = fromstring(html)
+            h1s = tree.xpath('h1')
+
+            if h1s:
+                h1 = h1s[0]
+                h1.drop_tree()
+                new_title = h1.text_content().strip()
+                logger.info("Replacing title: %s -:- %s", title, new_title)
+                # TODO: handle multiple spaces in text
+                title = new_title
+
+            html = tostring(tree)
+
+        rt = RichTextValue(html, 'text/html', 'text/html')
+
+        return create(destination, 'Document', id=id, title=title, text=rt)
+
+    def import_SiteErrorLog(self, obj, destination):
+        return destination
