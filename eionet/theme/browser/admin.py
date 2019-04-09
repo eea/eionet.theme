@@ -121,21 +121,23 @@ class EionetStructureImporter(BrowserView):
         path = self.request.form.get('sourcepath')
         source = self.context.restrictedTraverse(path)
 
-        return self.import_generic(source, self.context)
+        return self.import_location(source, self.context)
 
-    def import_generic(self, source, destination):
-        destination = self.context
-
+    def import_location(self, source, destination):
         for obj in source.objectValues():
-            handler = getattr(self, 'import_' + obj.meta_type)
+            handler = getattr(self, 'import_' + obj.meta_type, None)
+
+            if handler is None:
+                raise ValueError('Not supported: %s (%s)' % (obj.getId(),
+                                                             obj.meta_type))
             handler(obj, destination)
 
-        return
+        return destination
 
     def import_File(self, obj, destination):
         data = read_data(obj)
         fobj = NamedBlobFile(data=data, contentType=obj.content_type,
-                             filename=obj.getId())
+                             filename=unicode(obj.getId()))
 
         props = {
             'file': fobj,
@@ -143,17 +145,13 @@ class EionetStructureImporter(BrowserView):
             'id': obj.getId(),
         }
 
-        imported = create(destination, 'File', props)
+        obj = create(destination, 'File', **props)
+        logger.info("Created file: %s", obj.absolute_url())
 
-        return imported
+        return obj
 
     def import_Folder(self, obj, destination):
-        title = obj.title
-        id = obj.getId()
-        folder = create(destination, 'Folder', id=id, title=title)
+        folder = create(destination, 'Folder', obj.getId(), title=obj.title)
+        logger.info("Created folder: %s", obj.absolute_url())
 
-        for child in obj.objectValues():
-            handler = getattr(self, 'import_' + obj.meta_type)
-            handler(obj, folder)
-
-        return folder
+        return self.import_location(obj, folder)
