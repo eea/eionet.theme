@@ -1,16 +1,19 @@
 import logging
 from HTMLParser import HTMLParser
-from StringIO import StringIO
 
 from lxml.etree import fromstring  # XML, XMLParer,
 from lxml.html import fragment_fromstring
 from lxml.html.clean import clean_html
 
+import transaction
 from DateTime import DateTime
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer as create
 from plone.namedfile.file import NamedBlobFile
 from Products.Five.browser import BrowserView
+
+# from StringIO import StringIO
+
 
 logger = logging.getLogger('eionet.theme.importer')
 
@@ -27,6 +30,19 @@ def read_data(obj_file):
             data = data.next
 
     return ''.join(ranges)
+
+
+COMMON_TEMPLATES = {
+    'standard_html_header': '',
+    'standard_html_footer': '',
+    'w3c_ok_stamp_html': '',
+    'quickjumps_airviewhelp_html': '',
+}
+
+
+class DummyDict:
+    def __getitem__(self, key):
+        return ''
 
 
 class EionetContentImporter(BrowserView):
@@ -121,16 +137,22 @@ class EionetStructureImporter(BrowserView):
         path = self.request.form.get('sourcepath')
         source = self.context.restrictedTraverse(path)
 
-        return self.import_location(source, self.context)
+        dest = self.import_location(source, self.context)
+        logger.info("Finished import")
+
+        return "Finished import: %s" % dest.absolute_url()
 
     def import_location(self, source, destination):
         for obj in source.objectValues():
-            handler = getattr(self, 'import_' + obj.meta_type, None)
+            metatype = obj.meta_type.replace(' ', '')
+            handler = getattr(self, 'import_' + metatype, None)
 
             if handler is None:
                 raise ValueError('Not supported: %s (%s)' % (obj.getId(),
-                                                             obj.meta_type))
+                                                             metatype))
             handler(obj, destination)
+
+        transaction.commit()
 
         return destination
 
@@ -147,11 +169,39 @@ class EionetStructureImporter(BrowserView):
 
         obj = create(destination, 'File', **props)
         logger.info("Created file: %s", obj.absolute_url())
+        transaction.commit()
 
         return obj
 
+    def import_Image(self, obj, destination):
+        return self.import_File(obj, destination)
+
     def import_Folder(self, obj, destination):
-        folder = create(destination, 'Folder', obj.getId(), title=obj.title)
+        folder = create(destination, 'Folder', id=obj.getId(), title=obj.title)
         logger.info("Created folder: %s", obj.absolute_url())
 
         return self.import_location(obj, folder)
+
+    def import_DTMLDocument(self, obj, destination):
+        text = obj(REQUEST=DummyDict())
+        # , **COMMON_TEMPLATES
+
+        page = self._create_page(destination, obj.getId(), obj.title, text)
+        logger.info("Created page: %s", page.absolute_url())
+
+        return page
+
+    def import_DTMLMethod(self, obj, destination):
+        return self.import_DTMLDocument(obj, destination)
+
+    def _create_page(self, destination, id, title, html):
+        if html:
+            html = clean_html(html)
+
+        rt = RichTextValue(html, 'text/html', 'text/html')
+        title = unicode(title).strip()
+
+        return create(destination, 'Document', id=id, title=title, text=rt)
+
+    def import_SiteErrorLog(self, obj, destination):
+        return destination
