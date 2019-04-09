@@ -14,22 +14,25 @@
 
 #form-buttons-add:hover,
 .context:hover,
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus {
   background-color: @orange-color;
   border: 1px solid @dark-orange-color;
   color: #fff;
   box-shadow: none;
   text-shadow: none;
+  text-decoration: none;
 }
 
 #form-buttons-cancel_add,
 .standalone,
 .link-parent,
+.btn-secondary,
 button {
   background-color: #fff;
   border: 1px solid #ddd !important;
   border-radius: 0;
-  color: @text-color;
+  color: @text-color !important;
   font-weight: 600;
   text-shadow: none;
   box-shadow: none;
@@ -38,11 +41,14 @@ button {
 #form-buttons-cancel_add:hover,
 .standalone:hover,
 .link-parent:hover,
-button:hover {
+.btn-secondary:hover,
+button:hover,
+.btn-secondary:focus {
   background-color: #ddd;
   border: 1px solid #bdbcbc !important;
-  color: @text-color;
+  color: @text-color !important;
   box-shadow: none;
+  text-decoration: none;
 }
 
 [type="submit"] {
