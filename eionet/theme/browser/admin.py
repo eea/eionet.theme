@@ -14,7 +14,7 @@ from Products.Five.browser import BrowserView
 
 logger = logging.getLogger('eionet.theme.importer')
 
-DEBUG = True
+DEBUG = False
 
 
 def read_data(obj_file):
@@ -156,7 +156,8 @@ class EionetStructureImporter(BrowserView):
         return destination
 
     def import_File(self, obj, destination):
-        return
+        if not DEBUG:
+            return
         data = read_data(obj)
         fobj = NamedBlobFile(data=data, contentType=obj.content_type,
                              filename=unicode(obj.getId()))
