@@ -34,8 +34,8 @@
                         use_email_as_login python:context.portal_registry['plone.use_email_as_login'];
                         external_login_url python:context.portal_registry['plone.external_login_url'];
                         external_login_iframe python:context.portal_registry['plone.external_login_iframe'];
-                        mail_password python:test(checkPermission('Mail forgotten password', context), portal_url + '/password_reset', '');
-                        mail_password_url request/password_reset|nothing;
+                        mail_password python:test(checkPermission('Mail forgotten password', context), portal_url + '/password-reset', '');
+                        mail_password_url request/password-reset|nothing;
                         mail_password_url python:test(mail_password_url and isURLInPortal(mail_password_url), mail_password_url, mail_password);
                         join_actions python:context.portal_actions.listActionInfos('user/join', object=context) or [{}];
                         join python:join_actions[0].get('url');
@@ -99,7 +99,7 @@
                     <input type="hidden"
                         name="mail_password_url"
                         value=""
-                    tal:attributes="value request/password_reset|nothing" />
+                    tal:attributes="value request/password-reset|nothing" />
 
                     <input type="hidden"
                         name="join_url"
