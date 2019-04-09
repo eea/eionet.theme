@@ -32,17 +32,36 @@ def read_data(obj_file):
     return ''.join(ranges)
 
 
-COMMON_TEMPLATES = {
-    'standard_html_header': '',
-    'standard_html_footer': '',
-    'w3c_ok_stamp_html': '',
-    'quickjumps_airviewhelp_html': '',
-}
-
-
 class DummyDict:
+    """ A "request" substitute that renders all DTML vars as empty strings
+    """
+
     def __getitem__(self, key):
         return ''
+
+
+def as_plain_text(value):
+    value = HTMLParser().unescape(value)
+    value = u"<div>%s</div>" % value
+    el = fragment_fromstring(value)
+    texts = el.xpath('text()')
+
+    return u' '.join(texts)
+
+
+def as_richtext(value):
+    if value:
+        value = clean_html(value)
+
+    return RichTextValue(value, 'text/html', 'text/html')
+
+
+def noop(value):
+    return value
+
+
+def as_date(value):
+    return DateTime(value).asdatetime()
 
 
 class EionetContentImporter(BrowserView):
@@ -105,26 +124,6 @@ class EionetContentImporter(BrowserView):
 
         return count
 
-    def as_plain_text(self, value):
-        value = HTMLParser().unescape(value)
-        value = u"<div>%s</div>" % value
-        el = fragment_fromstring(value)
-        texts = el.xpath('text()')
-
-        return u' '.join(texts)
-
-    def as_richtext(self, value):
-        if value:
-            value = clean_html(value)
-
-        return RichTextValue(value, 'text/html', 'text/html')
-
-    def noop(self, value):
-        return value
-
-    def as_date(self, value):
-        return DateTime(value).asdatetime()
-
 
 class EionetStructureImporter(BrowserView):
     """ A helper class to import old Zope content and recreate as Plone content
@@ -163,7 +162,7 @@ class EionetStructureImporter(BrowserView):
 
         props = {
             'file': fobj,
-            'title': obj.title,
+            'title': as_plain_text(obj.title),
             'id': obj.getId(),
         }
 
@@ -177,16 +176,20 @@ class EionetStructureImporter(BrowserView):
         return self.import_File(obj, destination)
 
     def import_Folder(self, obj, destination):
-        folder = create(destination, 'Folder', id=obj.getId(), title=obj.title)
+        folder = create(destination, 'Folder', id=obj.getId(),
+                        title=as_plain_text(obj.title))
         logger.info("Created folder: %s", obj.absolute_url())
 
         return self.import_location(obj, folder)
 
     def import_DTMLDocument(self, obj, destination):
         text = obj(REQUEST=DummyDict())
-        # , **COMMON_TEMPLATES
 
-        page = self._create_page(destination, obj.getId(), obj.title, text)
+        title = obj.title
+        title = unicode(title).strip()
+        title = as_plain_text(title)
+
+        page = self._create_page(destination, obj.getId(), title, text)
         logger.info("Created page: %s", page.absolute_url())
 
         return page
@@ -199,7 +202,6 @@ class EionetStructureImporter(BrowserView):
             html = clean_html(html)
 
         rt = RichTextValue(html, 'text/html', 'text/html')
-        title = unicode(title).strip()
 
         return create(destination, 'Document', id=id, title=title, text=rt)
 
