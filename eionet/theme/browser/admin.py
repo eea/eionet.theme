@@ -146,8 +146,12 @@ class EionetStructureImporter(BrowserView):
             handler = getattr(self, 'import_' + metatype, None)
 
             if handler is None:
-                raise ValueError('Not supported: %s (%s)' % (obj.getId(),
-                                                             metatype))
+                logger.warning("Not importing: %s (%s)",
+                               (obj.getId(), metatype))
+                # raise ValueError('Not supported: %s (%s)' % (obj.getId(),
+                #                                              metatype))
+
+                continue
             handler(obj, destination)
 
         if not DEBUG:
