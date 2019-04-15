@@ -59,11 +59,18 @@
     layer="eionet.theme.interfaces.IEionetThemeLayer"
     />
 
-<!--  <browser:page
-    name="gopdb"
+  <!-- <browser:page -->
+  <!--   name="gopdb" -->
+  <!--   for="*" -->
+  <!--   class=".views.GoPDB" -->
+  <!--   permission="cmf.ManagePortal" -->
+  <!--   /> -->
+
+  <browser:page
+    name="country-list"
     for="*"
-    class=".views.GoPDB"
-    permission="cmf.ManagePortal"
-    /> -->
+    template="pt/country-list.pt"
+    permission="zope2.View"
+    />
 
 </configure>

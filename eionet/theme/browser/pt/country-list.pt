@@ -1,0 +1,142 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  lang="en"
+  metal:use-macro="context/main_template/macros/master"
+  i18n:domain="plone">
+
+  <body>
+
+    <metal:main fill-slot="main">
+
+      <h1 class="documentFirstHeading" tal:content='context/Title'>Hello</h1>
+
+      <style>
+#countries-map svg {
+  border: 1px solid #bbb;
+}
+
+.sphere {
+  fill: #DCEBF3;
+}
+
+.graticule {
+  fill: none;
+  stroke: black;
+  stroke-dasharray:10,10;
+  stroke-width: 1;
+}
+
+.semi-graticule {
+  fill: none;
+  stroke: gray;
+  stroke-dasharray: 1,1;
+  stroke-width: 0.6;
+}
+
+.maplet-outline {
+  stroke: black;
+  stroke-width: 2;
+}
+
+.country-label {
+  font-size: 7px;
+  font-weight: normal;
+  fill: black;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.country-label rect {
+  fill: #CCC;
+  stroke: black;
+  stroke-width: 0.6;
+  cursor: pointer;
+}
+
+.country-label text {
+  fill: black;
+  font-size: 7px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.country-outline path {
+  fill: #EFE7D4;
+  stroke: black;
+  stroke-width: 1;
+}
+
+.country-available path {
+  fill: #72DFFE;
+  cursor: pointer;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 10;
+  color: white;
+  background-color: #2a2a2a;
+  padding: 3px;
+  border-radius: 3px;
+  display: none;
+  font-size: 10px;
+}
+
+.country-flag {
+  cursor: pointer;
+}
+
+.country-green path {
+  fill: #95c594;
+  cursor: pointer;
+}
+
+.maplet-container .country-outline path {
+  fill: gray;
+}
+
+.maplet-container .country-available path {
+  // fill: #EFE7D4;
+  fill: #72DFFE;
+}
+
+.maplet-container .country-selected path {
+  fill: green;
+}
+
+.maplet-container .country-green path {
+  fill: #95c594;
+}
+
+      </style>
+
+
+
+      <div class="svg-map-container"><svg height="350" width="100%"></svg></div>
+
+      <script>
+        window._old_define = window.define;
+        window.define = undefined;
+      </script>
+
+      <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+      <script src="https://d3js.org/d3-array.v1.min.js"></script>
+      <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+      <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.js"></script>
+      <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+
+      <script src="++plone++eionet.theme/countries/countries-map.js"></script>
+
+
+      <script>
+        // window.define = window._old_define;
+      </script>
+
+
+    </metal:main>
+
+  </body>
+</html>
