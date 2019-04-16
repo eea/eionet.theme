@@ -107,7 +107,7 @@ class EionetContentImporter(BrowserView):
                 if pname in _map:
                     pname, convert = _map[pname]
                 else:
-                    convert = self.noop
+                    convert = noop
 
                 text = ep.text or ''
                 props[pname] = convert(text.strip())
