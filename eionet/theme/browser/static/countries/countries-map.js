@@ -229,7 +229,8 @@ function showCountryPopup(country) {
     title: country.properties.SHRT_ENGL,
     backdropOptions: {
       closeOnEsc: false,
-      closeOnClick: false
+      closeOnClick: false,
+      opacity: '0.01',
     }
   });
   var modal = $modal.data('pattern-plone-modal');
@@ -242,7 +243,9 @@ function showCountryPopup(country) {
     .replace(/CountryName/g, cName)
     .replace(/ctype/g, cooptype)
   ;
-  modal.$modal.find('.plone-modal-body').append(ctext);
+
+  modal.$modal.find('.plone-modal-title').empty().append(cName);
+  modal.$modal.find('.plone-modal-body').empty().append(ctext);
   return false;
 }
 
