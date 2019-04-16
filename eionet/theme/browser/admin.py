@@ -14,7 +14,7 @@ from Products.Five.browser import BrowserView
 
 logger = logging.getLogger('eionet.theme.importer')
 
-DEBUG = True
+DEBUG = False
 
 
 def read_data(obj_file):
