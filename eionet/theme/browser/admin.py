@@ -90,9 +90,9 @@ class EionetContentImporter(BrowserView):
 
     def import_etc_report(self, context, portal_type, tree):
         _map = {
-            'teaser': ('abstract', self.as_richtext),
-            'releasedate': ('publication_date', self.as_date),
-            'title': ('title', self.as_plain_text),
+            'teaser': ('abstract', as_richtext),
+            'releasedate': ('publication_date', as_date),
+            'title': ('title', as_plain_text),
         }
         count = 0
 
