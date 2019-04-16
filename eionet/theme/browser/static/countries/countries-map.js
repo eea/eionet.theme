@@ -4,7 +4,7 @@ var countrySettings = [];   // country list extracted from ajax json
 var _world = {};
 
 var focusCountryNames = [   // Member countries
-  "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic",
+  "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia",
   "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary",
   "Iceland", "Ireland", "Italy", "Latvia", "Liechtenstein", "Lithuania",
   "Luxembourg", "Malta", "Netherlands", "Norway", "Poland", "Portugal",
@@ -12,7 +12,7 @@ var focusCountryNames = [   // Member countries
   "Turkey", "United Kingdom",
 ];
 var coopCountries = [
-  "Albania", "Bosnia and Herzegovina", "Kosovo", "North Macedonia",
+  "Albania", "Bosnia and Herzegovina", "Kosovo*", "North Macedonia",
   "Montenegro", "Serbia",
 ];
 
@@ -230,7 +230,7 @@ function showCountryPopup(country) {
     backdropOptions: {
       closeOnEsc: false,
       closeOnClick: false,
-      opacity: '0.01',
+      opacity: '0',
     }
   });
   var modal = $modal.data('pattern-plone-modal');
@@ -460,6 +460,7 @@ function setCountryFlags(countries, flags) {
       // console.log('No flag for', c.properties);
       return;
     }
+    if (name == 'Czechia') name = 'Czech';
     var cname = name.replace(' ', '_');
     flags.forEach(function (f) {
       if (f.url.indexOf(cname) > -1) {

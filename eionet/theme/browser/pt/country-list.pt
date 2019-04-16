@@ -69,7 +69,7 @@
 }
 
 .country-available path {
-  fill: #72DFFE;
+  fill: #069;
   cursor: pointer;
 }
 
@@ -89,7 +89,7 @@
 }
 
 .country-green path {
-  fill: #95c594;
+  fill: #008a8b;
   cursor: pointer;
 }
 
@@ -98,8 +98,7 @@
 }
 
 .maplet-container .country-available path {
-  // fill: #EFE7D4;
-  fill: #72DFFE;
+  fill: #069;
 }
 
 .maplet-container .country-selected path {
@@ -110,9 +109,39 @@
   fill: #95c594;
 }
 
+.map-legend {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.map-legend legend {
+  display: inline-block;
+}
+.map-legend > div {
+  margin-left: 3rem;
+  width: 21rem;
+  text-align: right;
+}
+.map-legend .color {
+  width: 6rem;
+  height: 2rem;
+  float: right;
+}
+
       </style>
 
       <div class="svg-map-container"><svg height="600" width="100%"></svg></div>
+
+      <div class="map-legend" style="display: flex">
+        <div>
+          <label>Member countries:</label><div class="color" style="background-color: #069">
+          </div>
+      </div>
+      <div>
+        <label>Coooperating countries:</label><div class="color" style="background-color: #008a8b"></div>
+      </div>
+      </div>
+
+      <div tal:content="structure context/text/output | nothing" tal:on-error="nothing"></div>
 
       <script>
         window._old_define = window.define;
