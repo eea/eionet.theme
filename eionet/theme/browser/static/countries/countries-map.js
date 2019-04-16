@@ -461,7 +461,9 @@ function setCountryFlags(countries, flags) {
       return;
     }
     if (name == 'Czechia') name = 'Czech';
+    if (name == 'Kosovo*') name = 'Kosovo';
     var cname = name.replace(' ', '_');
+    if (cname == 'Bosnia_and Herzegovina') cname = 'Bosnia_and_Herzegovina';
     flags.forEach(function (f) {
       if (f.url.indexOf(cname) > -1) {
         c.url = f.url;

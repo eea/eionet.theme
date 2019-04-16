@@ -20,7 +20,6 @@ id	url
 60	https://upload.wikimedia.org/wikipedia/commons/b/bf/Flag_of_Bermuda.svg
 64	https://upload.wikimedia.org/wikipedia/commons/9/91/Flag_of_Bhutan.svg
 68	https://upload.wikimedia.org/wikipedia/commons/4/48/Flag_of_Bolivia.svg
-70	https://upload.wikimedia.org/wikipedia/commons/b/bf/Flag_of_Bosnia_and_Herzegovina.svg
 72	https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_Botswana.svg
 74	https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Norway.svg
 76	https://upload.wikimedia.org/wikipedia/commons/0/05/Flag_of_Brazil.svg
@@ -107,8 +106,11 @@ id	url
 372	https://upload.wikimedia.org/wikipedia/commons/4/45/Flag_of_Ireland.svg
 376	https://upload.wikimedia.org/wikipedia/commons/d/d4/Flag_of_Israel.svg
 380	https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Italy.svg
-384	"https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_C%C3%B4te_d%27Ivoire.svg"
+383	https://upload.wikimedia.org/wikipedia/commons/1/1f/Flag_of_Kosovo.svg
+384	https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_C%C3%B4te_d%27Ivoire.svg
+387	https://upload.wikimedia.org/wikipedia/commons/b/bf/Flag_of_Bosnia_and_Herzegovina.svg
 388	https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg
+389	https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_North_Macedonia.svg
 392	https://upload.wikimedia.org/wikipedia/commons/9/9e/Flag_of_Japan.svg
 398	https://upload.wikimedia.org/wikipedia/commons/d/d3/Flag_of_Kazakhstan.svg
 400	https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg
