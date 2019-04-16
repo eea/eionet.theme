@@ -112,9 +112,7 @@
 
       </style>
 
-
-
-      <div class="svg-map-container"><svg height="350" width="100%"></svg></div>
+      <div class="svg-map-container"><svg height="600" width="100%"></svg></div>
 
       <script>
         window._old_define = window.define;
@@ -130,11 +128,9 @@
 
       <script src="++plone++eionet.theme/countries/countries-map.js"></script>
 
-
       <script>
-        // window.define = window._old_define;
+        window.define = window._old_define;
       </script>
-
 
     </metal:main>
 

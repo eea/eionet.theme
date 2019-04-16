@@ -3,6 +3,21 @@ var _mapTooltip = null;
 var countrySettings = [];   // country list extracted from ajax json
 var _world = {};
 
+var focusCountryNames = [   // Member countries
+  "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic",
+  "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary",
+  "Iceland", "Ireland", "Italy", "Latvia", "Liechtenstein", "Lithuania",
+  "Luxembourg", "Malta", "Netherlands", "Norway", "Poland", "Portugal",
+  "Romania", "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland",
+  "Turkey", "United Kingdom",
+];
+var coopCountries = [
+  "Albania", "Bosnia and Herzegovina", "Kosovo", "North Macedonia",
+  "Montenegro", "Serbia",
+];
+
+var allCountries = coopCountries + focusCountryNames;
+
 $(document).ready(function() {
   // initialize the countries map
   var cpath = '++plone++eionet.theme/countries/euro-countries-simplified.geojson';
@@ -18,32 +33,10 @@ $(document).ready(function() {
     d3.tsv(fpath, function (flags) {
       window._world = world;
       window._flags = flags;
-      // drawCountries(window._world.features);
-
-
-        $('.map-loader').fadeOut(600);
-
-        function drawMap(width) {
-          drawCountries(window._world.features);
-        }
-
-        // fire resize event after the browser window resizing it's completed
-        var resizeTimer;
-        $(window).resize(function() {
-          clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(doneResizing, 500);
-        });
-
-        var width = $('.svg-map-container svg').width();
-        function doneResizing() {
-          drawMap(width);
-        }
-        drawMap(width);
-
+      drawCountries(window._world.features);
     });
   });
 });
-
 
 function renderGraticule(container, klass, steps, pathTransformer) {
   container     // draw primary graticule lines
@@ -63,10 +56,6 @@ function getCountryClass(country, countries) {
   if (available) k += ' country-available';
 
   var name = country.properties.SHRT_ENGL;
-  var coopCountries = [
-    "Albania", "Bosnia and Herzegovina", "Kosovo*", "North Macedonia",
-    "Montenegro", "Serbia",
-  ];
   if (coopCountries.indexOf(name) > -1) {
     k += ' country-green';
   }
@@ -165,6 +154,7 @@ function renderCountryFlag(parent, country, bbox, cpId) {
     .attr('class', 'country-flag')
     .attr('href', function() {
       if (getIEVersion() > 0) {
+        // TODO: get the fallback svg?
         return '++theme++climateadaptv2/static/images/fallback.svg';
       } else {
         return country.url;
@@ -178,8 +168,7 @@ function renderCountryFlag(parent, country, bbox, cpId) {
     .attr('height', bbox.height)
     .attr('width', bbox.width)
     .on('click', function (e) {
-      var link = country.properties.SHRT_ENGL.toLowerCase();
-      location.href = '/countries-regions/countries/' + link;
+      showCountryPopup(country);
     })
     .on('mouseover', function() {
       var countryName = country.properties.SHRT_ENGL.toUpperCase();
@@ -205,8 +194,60 @@ function renderCountryFlag(parent, country, bbox, cpId) {
   return flag;
 }
 
-function renderCountriesBox(opts) {
+var countryTpl = '' +
+'<ul class="urllist">' +
+'  <li>' +
+'    <a class="link-webpage" href="http://cdr.eionet.europa.eu/ccode">' +
+'      CDR Data Deliveries</a>' +
+'    List of files uploaded to the Central Data Repository (CDR)</li>' +
+'' +
+'  <li>' +
+'    <a class="link-webpage" href="http://www.eionet.europa.eu/ldap-organisations?country=ccode">' +
+'      Eionet Organisations</a>' +
+'    List of organisations registered in the Eionet Directory</li>' +
+'' +
+'  <li>' +
+'    <a class="link-webpage" href="http://www.eionet.europa.eu/ldap-roles/?role_id=eionet-nfp-ctype-ccode">NFP CountryName address</a></li>' +
+'' +
+'  <li>' +
+'    <a class="link-webpage" href="http://www.eionet.europa.eu/ldap-roles/filter?pattern=eionet-nrc-*-ctype-ccode">PCPs and NRCs</a>' +
+'    List of all Primary Contact Points and National Reference Centres</li>' +
+'' +
+'<li>' +
+'    <a class="link-webpage" href="https://www.eionet.europa.eu/ldap-roles/filter?pattern=reportnet-*-*-ccode">List of Reportnet users</a></li>' +
+'' +
+' <li>' +
+'    <a class="link-webpage" href="https://www.eionet.europa.eu/ldap-roles/filter?pattern=extranet-*-*-ccode">List of Extranet users</a></li>' +
+'</ul>';
 
+
+function showCountryPopup(country) {
+  var $container = $('.svg-map-container').append($("<div>"));
+  var $modal = $container.patPloneModal({
+    position: 'middle top',
+    width: '95%',
+    title: country.properties.SHRT_ENGL,
+    backdropOptions: {
+      closeOnEsc: false,
+      closeOnClick: false
+    }
+  });
+  var modal = $modal.data('pattern-plone-modal');
+  modal.show();
+  var cId = country.properties.CNTR_ID;
+  var cName = country.properties.SHRT_ENGL;
+  var cooptype = coopCountries.indexOf(cName) > -1 ? 'cc' : 'mc';
+  var ctext = countryTpl
+    .replace(/ccode/g, cId.toLowerCase())
+    .replace(/CountryName/g, cName)
+    .replace(/ctype/g, cooptype)
+  ;
+  modal.$modal.find('.plone-modal-body').append(ctext);
+  return false;
+}
+
+
+function renderCountriesBox(opts) {
   var coords = opts.coordinates;
   var countries = opts.focusCountries;
 
@@ -222,20 +263,6 @@ function renderCountriesBox(opts) {
     .translate([0, 0])
     ;
 
-    // var windowWidth = $(window).width();
-    //
-    // if (windowWidth <= 991) {
-    //     globalMapProjection
-    //     .scale(1)
-    //     .translate([0, 0])
-    //     ;
-    // } else {
-    //   globalMapProjection
-    //   .scale(1)
-    //   .translate([-0.25, 0])
-    //   ;
-    // }
-
   // the path transformer
   var path = d3.geoPath().projection(globalMapProjection);
 
@@ -244,7 +271,6 @@ function renderCountriesBox(opts) {
   var width = coords.width;
   var height = coords.height;
   // var extent = [[x + 20, y + 20], [x + coords.width - 20 , y + coords.height - 20]];
-  // console.log('fitting extent', extent);
   // globalMapProjection.fitExtent(extent, countries.feature);
 
   var b = path.bounds(countries.feature);
@@ -276,11 +302,7 @@ function renderCountriesBox(opts) {
 
   map     // the world sphere, acts as ocean
     .append("path")
-    .datum(
-    {
-      type: "Sphere"
-    }
-    )
+    .datum({type: "Sphere"})
     .attr("class", "sphere")
     .attr("d", path)
     ;
@@ -370,53 +392,7 @@ function drawCountries(world) {
     ;
   svg.selectAll("*").remove();
 
-  // var focusCountryNames = countrySettings; // Object.keys(countrySettings);
-
-  var focusCountryNames = [
-    // Member countries
-    "Austria",
-    "Belgium",
-    "Bulgaria",
-    "Croatia",
-    "Cyprus",
-    "Czechia",
-    "Denmark",
-    "Estonia",
-    "Finland",
-    "France",
-    "Germany",
-    "Greece",
-    "Hungary",
-    "Iceland",
-    "Ireland",
-    "Italy",
-    "Latvia",
-    "Liechtenstein",
-    "Lithuania",
-    "Luxembourg",
-    "Malta",
-    "Netherlands",
-    "Norway",
-    "Poland",
-    "Portugal",
-    "Romania",
-    "Slovakia",
-    "Slovenia",
-    "Spain",
-    "Sweden",
-    "Switzerland",
-    "Turkey",
-    "United Kingdom",
-
-    // Cooperating countries
-    "Albania", "Bosnia and Herzegovina", "Kosovo*", "North Macedonia",
-    "Montenegro", "Serbia"
-
-  ];
-
-  var focusCountriesFeature = filterCountriesByNames(
-    world, focusCountryNames
-  );
+  var focusCountriesFeature = filterCountriesByNames(world, allCountries);
 
   var width = Math.round($(svg.node()).width());
   var height = Math.round($(svg.node()).height());
@@ -431,7 +407,7 @@ function drawCountries(world) {
       'height': height
     },
     'focusCountries': {
-      'names': focusCountryNames,
+      'names': allCountries,
       'feature': focusCountriesFeature
     },
     'zoom': 0.95
@@ -521,83 +497,6 @@ function createTooltip(opts) {
     .append(content_div)
     ;
   $('body').append(tooltip);
-}
-
-function createSectionsSelector(sections, countries, callback) {
-  // var container = $("#countries-map-selector");
-  var widget = $("#sections-selector");
-
-  sections.forEach(function (key, index) {
-    var label = $("<label>");
-    var span = $("<span class='radiobtn'>");
-    var inp = $("<input type='radio'>")
-      .attr('style', 'margin-right: 0.3em')
-      .attr('name', 'country-map-section')
-      .attr('value', key)
-      ;
-    if (index === 0) {
-      window._selectedMapSection = key;
-      inp.attr('checked', 'checked');
-    }
-
-    label
-      .append(inp)
-      .append(key)
-      .append(span)
-      ;
-    widget.append($(label));
-  });
-
-  $('input', widget).on('change', function () {
-    var selectedSection = $(this).attr('value');
-    var $this = $(this);
-    var $mapType = $('.map-type');
-    if ($this.val().indexOf("NAS") != -1) {
-      $mapType.text('NAS');
-    } else if ($this.val().indexOf("NAP") != -1) {
-      $mapType.text('NAP');
-    }
-    window._selectedMapSection = selectedSection;
-    callback();
-  });
-
-  // country selector
-  var countryNames = Object.keys(countries);
-  countryNames.sort();
-  var select = $("#country-selector select");
-
-  countryNames.forEach(function (name) {
-    select
-      .append(
-      $("<option>").append(name)
-      );
-  });
-
-  select.on('change', function () {
-    var name = $(this).val();
-    if (!name) return;
-    window.location = countries[name][1];
-  })
-
-  // container.append(widget);
-
-  function drawMap(width) {
-    callback();
-  }
-
-  // fire resize event after the browser window resizing it's completed
-  var resizeTimer;
-  $(window).resize(function() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(doneResizing, 500);
-  });
-
-  var width = $('#countries-map svg').width();
-  function doneResizing() {
-    drawMap(width);
-  }
-
-  drawMap(width);
 }
 
 function makeid() {
@@ -765,3 +664,89 @@ function passThruEvents(g) {
   //   }
   // });
 
+// function createSectionsSelector(sections, countries, callback) {
+//   // var container = $("#countries-map-selector");
+//   var widget = $("#sections-selector");
+//
+//   sections.forEach(function (key, index) {
+//     var label = $("<label>");
+//     var span = $("<span class='radiobtn'>");
+//     var inp = $("<input type='radio'>")
+//       .attr('style', 'margin-right: 0.3em')
+//       .attr('name', 'country-map-section')
+//       .attr('value', key)
+//       ;
+//     if (index === 0) {
+//       window._selectedMapSection = key;
+//       inp.attr('checked', 'checked');
+//     }
+//
+//     label
+//       .append(inp)
+//       .append(key)
+//       .append(span)
+//       ;
+//     widget.append($(label));
+//   });
+//
+//   $('input', widget).on('change', function () {
+//     var selectedSection = $(this).attr('value');
+//     var $this = $(this);
+//     var $mapType = $('.map-type');
+//     if ($this.val().indexOf("NAS") != -1) {
+//       $mapType.text('NAS');
+//     } else if ($this.val().indexOf("NAP") != -1) {
+//       $mapType.text('NAP');
+//     }
+//     window._selectedMapSection = selectedSection;
+//     callback();
+//   });
+//
+//   // country selector
+//   var countryNames = Object.keys(countries);
+//   countryNames.sort();
+//   var select = $("#country-selector select");
+//
+//   countryNames.forEach(function (name) {
+//     select
+//       .append(
+//       $("<option>").append(name)
+//       );
+//   });
+//
+//   select.on('change', function () {
+//     var name = $(this).val();
+//     if (!name) return;
+//     window.location = countries[name][1];
+//   })
+//
+//   // fire resize event after the browser window resizing it's completed
+//   var resizeTimer;
+//   $(window).resize(function() {
+//     clearTimeout(resizeTimer);
+//     resizeTimer = setTimeout(callback, 500);
+//   });
+//
+//   // var width = $('#countries-map svg').width();
+//
+//   callback();
+// }
+//
+      // $('.map-loader').fadeOut(600);
+      //
+      // // function drawMap() {
+      // //   drawCountries(window._world.features);
+      // // }
+      //
+      // // fire resize event after the browser window resizing it's completed
+      // // var resizeTimer;
+      // // $(window).resize(function() {
+      // //   clearTimeout(resizeTimer);
+      // //   resizeTimer = setTimeout(callback, 500);
+      // // });
+      // //
+      // // // var width = $('.svg-map-container svg').width();
+      // // function doneResizing() {
+      // //   drawMap(width);
+      // // }
+      // // drawMap(width);

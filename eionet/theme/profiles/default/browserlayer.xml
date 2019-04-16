@@ -4,4 +4,10 @@
       name="eionet.theme"
       interface="eionet.theme.interfaces.IEionetThemeLayer"
       />
+
+  <layer
+      name="eionet.theme"
+      interface="eionet.theme.interfaces.IEionetGenericThemeLayer"
+      />
+
 </layers>

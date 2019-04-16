@@ -6,3 +6,7 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 class IEionetThemeLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
+
+
+class IEionetGenericThemeLayer(IEionetThemeLayer):
+    """Marker interface that defines a browser layer."""
