@@ -194,7 +194,10 @@ class EionetStructureImporter(BrowserView):
         text = obj(REQUEST=DummyDict())
 
         title = obj.title
-        title = unicode(title).strip()
+
+        if isinstance(title, str):
+            title = title.decode('utf-8')
+        title = title.strip()
         title = as_plain_text(title)
 
         page = self._create_page(destination, obj.getId(), title, text)
