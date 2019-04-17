@@ -7,6 +7,7 @@ from lxml.html.clean import clean_html
 
 import transaction
 from DateTime import DateTime
+from plone.api.portal import get_tool
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer as create
 from plone.namedfile.file import NamedBlobFile
@@ -41,6 +42,10 @@ class DummyDict:
 
 def as_plain_text(value):
     value = HTMLParser().unescape(value)
+
+    if isinstance(value, str):
+        value = value.decode('utf-8')
+
     value = u"<div>%s</div>" % value
     el = fragment_fromstring(value)
     texts = el.xpath('text()')
@@ -160,23 +165,30 @@ class EionetStructureImporter(BrowserView):
         return destination
 
     def import_File(self, obj, destination):
-        # if not DEBUG:
-        #     return
+        if DEBUG:
+            return
+
         data = read_data(obj)
-        fobj = NamedBlobFile(data=data, contentType=obj.content_type,
-                             filename=unicode(obj.getId()))
+
+        ctype = obj.content_type
+        tool = get_tool('mimetypes_registry')
+
+        if ctype and (not tool.lookup(ctype)):
+            ctype = 'application/pdf'      # should be a safe fallback
+        oid = obj.getId().decode('utf-8')
+
+        fobj = NamedBlobFile(data=data, contentType=ctype, filename=oid)
 
         props = {
             'file': fobj,
             'title': as_plain_text(obj.title),
-            'id': obj.getId(),
+            'id': oid,
         }
 
         obj = create(destination, 'File', **props)
         logger.info("Created file: %s", obj.absolute_url())
 
-        if not DEBUG:
-            transaction.commit()
+        transaction.commit()
 
         return obj
 
@@ -197,6 +209,7 @@ class EionetStructureImporter(BrowserView):
 
         if isinstance(title, str):
             title = title.decode('utf-8')
+
         title = title.strip()
         title = as_plain_text(title)
 
@@ -211,11 +224,9 @@ class EionetStructureImporter(BrowserView):
         return self.import_DTMLDocument(obj, destination)
 
     def _create_page(self, destination, id, title, html):
-        if not id == 'airview.html':
-            return
-
         if html:
-            html = clean_html(html).decode('utf-8')
+            html = html.decode('utf-8')
+            html = clean_html(html)
             tree = fromstring(html)
             h1s = tree.xpath('h1')
 
@@ -223,8 +234,8 @@ class EionetStructureImporter(BrowserView):
                 h1 = h1s[0]
                 h1.drop_tree()
                 new_title = h1.text_content().strip()
+                new_title = new_title.replace(u'\n', u' - ')
                 logger.info("Replacing title: %s -:- %s", title, new_title)
-                # TODO: handle multiple spaces in text
                 title = new_title
 
             html = tostring(tree)
