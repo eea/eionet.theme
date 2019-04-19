@@ -18,7 +18,7 @@ from Products.Five.browser import BrowserView
 
 logger = logging.getLogger('eionet.theme.importer')
 
-DEBUG = True
+DEBUG = False
 
 
 def read_data(obj_file):
@@ -132,6 +132,21 @@ class EionetContentImporter(BrowserView):
         return count
 
 
+def blob_from_ofs_file(obj):
+    data = read_data(obj)
+
+    ctype = obj.content_type
+    tool = get_tool('mimetypes_registry')
+
+    if ctype and (not tool.lookup(ctype)):
+        ctype = 'application/pdf'      # should be a safe fallback
+    oid = obj.getId().decode('utf-8')
+
+    fobj = NamedBlobFile(data=data, contentType=ctype, filename=oid)
+
+    return oid, fobj
+
+
 class EionetStructureImporter(BrowserView):
     """ A helper class to import old Zope content and recreate as Plone content
     """
@@ -169,20 +184,10 @@ class EionetStructureImporter(BrowserView):
         return destination
 
     def import_File(self, obj, destination):
-        if DEBUG:
-            return
+        # if DEBUG:
+        #     return
 
-        data = read_data(obj)
-
-        ctype = obj.content_type
-        tool = get_tool('mimetypes_registry')
-
-        if ctype and (not tool.lookup(ctype)):
-            ctype = 'application/pdf'      # should be a safe fallback
-        oid = obj.getId().decode('utf-8')
-
-        fobj = NamedBlobFile(data=data, contentType=ctype, filename=oid)
-
+        oid, fobj = blob_from_ofs_file(obj)
         props = {
             'file': fobj,
             'title': as_plain_text(obj.title),
@@ -336,16 +341,26 @@ class EionetDTMLReportImporter(EionetStructureImporter):
 
         html = tostring(e, pretty_print=True)
         rt = RichTextValue(html, 'text/html', 'text/html')
+        f_field = None
+
+        if len(file_links) == 1:
+            fobj = self._find_original_file(file_links[0])
+            _, f_field = blob_from_ofs_file(fobj)
 
         report = create(destination, 'etc_report',
                         id=id, title=title, abstract=rt,
-                        publication_date=publication_date)
+                        publication_date=publication_date, file=f_field)
 
         logger.info("Created report: %s", report)
 
-        for link in file_links:
-            fobj = self._find_original_file(link)
-            # logger.info("Got file: %s for link %s", fobj, link)
-            self.import_File(fobj, report)
+        if len(file_links) != 1:
+            for link in file_links:
+                fobj = self._find_original_file(link)
+                # logger.info("Got file: %s for link %s", fobj, link)
+                self.import_File(fobj, report, force=True)
 
         return report
+
+    def import_File(self, obj, destination, force=False):
+        if force:
+            return EionetStructureImporter.import_File(self, obj, destination)
