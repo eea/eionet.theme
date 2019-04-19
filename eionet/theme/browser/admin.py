@@ -1,5 +1,8 @@
 import logging
+from datetime import date
 from HTMLParser import HTMLParser
+from time import mktime, strptime
+from urlparse import urlparse
 
 from lxml.etree import fromstring as etree_fromstring
 from lxml.html import fragment_fromstring, fromstring, tostring
@@ -15,7 +18,7 @@ from Products.Five.browser import BrowserView
 
 logger = logging.getLogger('eionet.theme.importer')
 
-DEBUG = False
+DEBUG = True
 
 
 def read_data(obj_file):
@@ -139,6 +142,7 @@ class EionetStructureImporter(BrowserView):
 
         path = self.request.form.get('sourcepath')
         source = self.context.restrictedTraverse(path)
+        self._source = source
 
         dest = self.import_location(source, self.context)
         logger.info("Finished import")
@@ -223,22 +227,29 @@ class EionetStructureImporter(BrowserView):
     def import_DTMLMethod(self, obj, destination):
         return self.import_DTMLDocument(obj, destination)
 
+    def _parse_page(self, title, html):
+        if not html:
+            return title, html
+
+        html = html.decode('utf-8')
+        html = clean_html(html)
+        tree = fromstring(html)
+        h1s = tree.xpath('h1')
+
+        if h1s:
+            h1 = h1s[0]
+            h1.drop_tree()
+            new_title = h1.text_content().strip()
+            new_title = new_title.replace(u'\n', u' - ')
+            logger.info("Replacing title: %s -:- %s", title, new_title)
+            title = new_title
+
+        html = tostring(tree)
+
+        return title, html
+
     def _create_page(self, destination, id, title, html):
-        if html:
-            html = html.decode('utf-8')
-            html = clean_html(html)
-            tree = fromstring(html)
-            h1s = tree.xpath('h1')
-
-            if h1s:
-                h1 = h1s[0]
-                h1.drop_tree()
-                new_title = h1.text_content().strip()
-                new_title = new_title.replace(u'\n', u' - ')
-                logger.info("Replacing title: %s -:- %s", title, new_title)
-                title = new_title
-
-            html = tostring(tree)
+        title, html = self._parse_page(title, html)
 
         rt = RichTextValue(html, 'text/html', 'text/html')
 
@@ -246,3 +257,95 @@ class EionetStructureImporter(BrowserView):
 
     def import_SiteErrorLog(self, obj, destination):
         return destination
+
+
+class EionetDTMLReportImporter(EionetStructureImporter):
+    """ A variant of EionetStructureImporter that parses DTMLDocuments
+    """
+
+    def import_DTMLDocument(self, obj, destination):
+        text = obj(REQUEST=DummyDict())
+
+        title = obj.title
+
+        if isinstance(title, str):
+            title = title.decode('utf-8')
+
+        title = title.strip()
+        title = as_plain_text(title)
+
+        page = self._create_report(destination, obj.getId(), title, text)
+
+        if page is not None:
+            logger.info("Created page: %s", page.absolute_url())
+
+        return page
+
+    def _find_original_file(self, link):
+        """ Returns a reference to the original file
+        """
+        path = urlparse(link).path
+        bits = filter(None, path.split('/'))[::-1]
+        acc = []
+        context_ids = self._source.objectIds()
+        context = self._source
+
+        for bit in bits:
+            acc.append(bit)
+
+            if bit in context_ids:
+                for a in acc[::-1]:
+                    context = context.restrictedTraverse(a)
+
+        return context.aq_inner
+
+    def _create_report(self, destination, id, title, html):
+        # has 2 files:
+        # https://bd.eionet.europa.eu/Reports/ETCBDTechnicalWorkingpapers/Factsheets_Mediterranean_marine_hab_spec
+        title, html = self._parse_page(title, html)
+
+        e = fromstring(html)
+        fp = e.xpath('//p[contains(text(), "See the")]')
+
+        if fp:      # treat the linked report file(s)
+            p = fp[0]
+            p.drop_tree()
+            file_links = p.xpath('a/@href')
+
+        bs = e.xpath('//b[contains(text(), "Abstract")]')
+
+        if bs:
+            bs[0].drop_tree()
+
+        publication_date = None
+        brs = e.xpath('//b[contains(text(), "Released in")]')
+
+        if brs:
+            br = brs[0]
+            human_date = br.tail.strip()
+            br.tail = ''
+            br.drop_tree()
+
+            try:
+                tstruct = strptime(human_date, '%B %Y')
+            except ValueError:
+                logger.warning("Could not parse date: %s", human_date)
+            else:
+                d = date.fromtimestamp(mktime(tstruct))
+                publication_date = d    # DateTime(d.year, d.month, d.day)
+
+        html = tostring(e, pretty_print=True)
+        rt = RichTextValue(html, 'text/html', 'text/html')
+
+        report = create(destination, 'etc_report',
+                        id=id, title=title, abstract=rt,
+                        publication_date=publication_date)
+
+        logger.info("Created report: %s", report)
+
+        for link in file_links:
+            fobj = self._find_original_file(link)
+            # logger.info("Got file: %s for link %s", fobj, link)
+            self.import_File(fobj, report)
+
+        return report

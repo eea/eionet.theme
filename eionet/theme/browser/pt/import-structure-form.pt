@@ -1,5 +1,5 @@
 <html>
-  <form method="POST" action="./@@eionet-structure-importer">
+  <form method="POST" >
     <div>
       <label>Source path:</label>
       <input type="text" name="sourcepath" />
