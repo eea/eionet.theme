@@ -200,17 +200,12 @@ a {
     }
 
     .navTree {
-      a:before {
+      a.navTreeFolderish:before {
         font-family: 'Glyphicons Halflings';
         font-size: 80%;
         margin-right: 0;
         top: 1px;
-      }
-      a.navTreeFolderish:before {
         content:"\e258";
-      }
-      a.contenttype-link:before {
-        content:"\e164";
       }
     }
 
@@ -227,11 +222,25 @@ a {
     }
 
     > ul {
-      > li a {
+      > li {
         padding: 0.6em 0;
-        background: none;
+        border-bottom: 1px solid #e5e5e5;
+        a {
+          padding: 0;
+          background: none;
+          border: none;
+          display: inline-block;
+        }
+        .contenttype-link:before {
+          content: '';
+        }
+        .state-private.contenttype-link:before {
+          content: "\e033";
+          font-family: 'Glyphicons Halflings';
+        }
       }
       >li:last-child {
+        border: none;
         a {
           padding-bottom: 0;
         }
