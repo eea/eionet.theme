@@ -127,18 +127,67 @@
   float: right;
 }
 
+.countries-list-wrapper {
+  margin: 1.5em 0;
+}
+
+.member-countries {
+  -moz-column-count: 3;
+  -moz-column-gap: 20px;
+  -webkit-column-count: 3;
+  -webkit-column-gap: 20px;
+  column-count: 3;
+  column-gap: 20px;
+}
+
+.countries-list {
+  margin-top: 1.5em;
+  padding-left: 0;
+}
+
+.countries-list li {
+  font-weight: 600;
+  list-style-type: none;
+}
+
+.countries-list li a {
+  cursor: pointer;
+}
+
+.countries-list li .c-green {
+  color: #008a8b;
+}
+
+.countries-list li .c-blue {
+  color: #069;
+}
+
       </style>
 
       <div class="svg-map-container"><svg height="600" width="100%"></svg></div>
 
       <div class="map-legend" style="display: flex">
         <div>
+          <label>Cooperating countries:</label><div class="color" style="background-color: #008a8b"></div>
+        </div>
+        <div>
           <label>Member countries:</label><div class="color" style="background-color: #069">
           </div>
+        </div>
       </div>
-      <div>
-        <label>Coooperating countries:</label><div class="color" style="background-color: #008a8b"></div>
-      </div>
+
+      <div class="countries-list-wrapper">
+        <div class="row">
+          <div class="col-sm-9 col-xs-12">
+            <h5>EEA member countries:</h5>
+            <ul class="countries-list member-countries"></ul>
+          </div>
+
+          <div class="col-sm-3 col-xs-12">
+            <h5>Cooperating countries:</h5>
+            <ul class="countries-list cooperating-countries"></ul>
+          </div>
+        </div>
       </div>
 
       <div tal:content="structure context/text/output | nothing" tal:on-error="nothing"></div>

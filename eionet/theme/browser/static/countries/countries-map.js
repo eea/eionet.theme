@@ -98,6 +98,7 @@ function renderCountry(map, country, path, countries, x, y) {
   if (available) {
     var bbox = outline.node().getBBox();
     renderCountryFlag(parent, country, bbox, cpId);
+    listCountryNames(country);
     // renderCountryLabel(country, path);
   }
 }
@@ -146,6 +147,36 @@ function renderCountryLabel(country, path, force) {
 
   label.raise();
   passThruEvents(g);
+}
+
+function listCountryNames(country) {
+  var mc = d3.select('.member-countries');
+  var cc = d3.select('.cooperating-countries');
+  var name = country.properties.SHRT_ENGL;
+
+  if (focusCountryNames.indexOf(name) > -1) {
+    var list = mc
+    .append('li')
+    .insert('a')
+    .text(name)
+    .attr('class', 'c-blue')
+    .on('click', function() {
+      showCountryPopup(country);
+    })
+    ;
+  }
+
+  if (coopCountries.indexOf(name) > -1) {
+    var list = cc
+    .append('li')
+    .insert('a')
+    .text(name)
+    .attr('class', 'c-green')
+    .on('click', function() {
+      showCountryPopup(country);
+    })
+    ;
+  }
 }
 
 function renderCountryFlag(parent, country, bbox, cpId) {
