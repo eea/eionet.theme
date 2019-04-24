@@ -67,18 +67,28 @@
     layer="eionet.theme.interfaces.IEionetThemeLayer"
     />
 
-  <!-- <browser:page -->
-  <!--   name="gopdb" -->
-  <!--   for="*" -->
-  <!--   class=".views.GoPDB" -->
-  <!--   permission="cmf.ManagePortal" -->
-  <!--   /> -->
-
   <browser:page
-    name="country-list"
-    for="*"
-    template="pt/country-list.pt"
+    name="reports_view"
+    for="plone.app.contenttypes.interfaces.ICollection"
+    class=".views.ReportView"
+    template="pt/reports-view.pt"
     permission="zope2.View"
+    menu="plone_displayviews"
+    title="Report view (tabular)"
     />
+
+<!--    <browser:page
+      name="gopdb"
+      for="*"
+      class=".views.GoPDB"
+      permission="cmf.ManagePortal"
+      /> -->
+
+    <browser:page
+      name="country-list"
+      for="*"
+      template="pt/country-list.pt"
+      permission="zope2.View"
+      />
 
 </configure>
