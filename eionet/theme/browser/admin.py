@@ -280,6 +280,7 @@ class EionetDTMLReportImporter(EionetStructureImporter):
         title = as_plain_text(title)
 
         page = self._create_report(destination, obj.getId(), title, text)
+        transaction.commit()
 
         if page is not None:
             logger.info("Created page: %s", page.absolute_url())
