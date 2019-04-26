@@ -36,6 +36,22 @@ $(document).ready(function() {
       drawCountries(window._world.features);
     });
   });
+
+
+  // sort countries list alphabetically
+  var $cl = $('.countries-list');
+  $cl.hide();
+  $(window).load(function() {
+    $cl.each(function() {
+      var $ul = $(this);
+      $ul.append($ul.children('li').get().sort(function(a, b) {
+        var aText = $(a).text(), bText = $(b).text();
+        return aText < bText ? -1 : aText > bText ? 1 : 0;
+      }));
+    });
+    $cl.fadeIn('slow');
+  });
+
 });
 
 function renderGraticule(container, klass, steps, pathTransformer) {
