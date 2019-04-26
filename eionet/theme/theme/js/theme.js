@@ -43,25 +43,6 @@ $(document).ready(function() {
     resizeTimer = setTimeout(doneResizing, 500);
   });
 
-  function alignHeaderContent() {
-    var ww = $win.width();
-    var cw = $('#main-container').width();
-    var $toolbar = $('.plone-toolbar-container');
-    // var $cn = $('.plone-navbar-collapse');
-    var tw = $toolbar.width();
-    var cwRight;
-    if ($toolbar.length > 0) {
-      cwRight = (ww - cw - tw + 30) / 2;
-    } else {
-      cwRight = (ww - cw + 30) / 2;
-    }
-
-    $header.css('padding', '0 ' + cwRight + 'px');
-    // $cn.find('a').css('padding', '1em ' + cwRight + 'px');
-    // $cn.find('.submenu a').css('padding', '0.5em ' + cwRight + 'px');
-    $('.right-actions').css('right', cwRight);
-  }
-
   // Collapse navigation and move search section
   // when it's running out of space in the header
 
@@ -104,7 +85,7 @@ $(document).ready(function() {
   // when it's running out of space in the header
   function moveLogoText() {
     var $logoText = $('.logo-text');
-    if ($win.width() <= 480) {
+    if ($win.width() <= 430) {
       $logoText.prependTo('.plone-navbar-collapse');
     } else {
       $logoText.appendTo('.header-logo a');
@@ -134,14 +115,12 @@ $(document).ready(function() {
   $bh.prepend('<i class="glyphicon glyphicon-home"/>');
 
   $(window).load(function() {
-    alignHeaderContent();
     getNavItemsTotalWidth();
     collapseHeader();
     moveLogoText();
   });
 
   function doneResizing() {
-    alignHeaderContent();
     collapseHeader();
     moveLogoText();
   }
