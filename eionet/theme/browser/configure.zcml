@@ -70,14 +70,21 @@
   <browser:page
     name="reports_view"
     for="plone.app.contenttypes.interfaces.ICollection"
-    class=".views.ReportView"
+    class=".views.CollectionReportView"
     template="pt/reports-view.pt"
     permission="zope2.View"
     menu="plone_displayviews"
     title="Report view (tabular)"
     />
 
-<!--    <browser:page
+  <browser:page
+    name="report_helper"
+    class=".views.ReportView"
+    for="*"
+    permission="zope2.View"
+    />
+
+<!--   <browser:page
       name="gopdb"
       for="*"
       class=".views.GoPDB"
