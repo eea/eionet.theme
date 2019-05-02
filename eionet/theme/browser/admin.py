@@ -63,6 +63,21 @@ def as_richtext(value):
     return RichTextValue(value, 'text/html', 'text/html')
 
 
+def as_acm_richtext(value):
+    if value:
+        value = clean_html(value)
+
+    el = fromstring(value)
+    p = el.xpath('//b[contains(text(), "Abstract")]/..')
+
+    if p:
+        p[0].drop_tree()
+
+    value = tostring(el, pretty_print=True)
+
+    return RichTextValue(value, 'text/html', 'text/html')
+
+
 def noop(value):
     return value
 
@@ -73,7 +88,22 @@ def as_date(value):
 
 class EionetContentImporter(BrowserView):
     """ A helper class to import old content exported as XML
+
+    TODO: look for the report_url value; Try to resolve to an absolute url;
+    download the file; attach it as file field to the created report; If the
+    URL doesn't exist, don't create the report.
+
+    Strip <b>abstract</b>; everything related to <img> (including parent div)
+
+    We use the zope field for the publication date; Don't touch the "published
+    by" line in the html.
     """
+
+    _map = {
+        'teaser': ('abstract', as_richtext),
+        'releasedate': ('publication_date', as_date),
+        'title': ('title', as_plain_text),
+    }
 
     def __call__(self):
 
@@ -84,6 +114,7 @@ class EionetContentImporter(BrowserView):
         portal_type = self.request.form.get('portal_type')
 
         obj = self.context.restrictedTraverse(path)
+        self.import_xml = obj
 
         text = read_data(obj)
         text = text.replace('\f', '')        # line feed, weird
@@ -97,11 +128,6 @@ class EionetContentImporter(BrowserView):
         return "Imported %s objects" % count
 
     def import_etc_report(self, context, portal_type, tree):
-        _map = {
-            'teaser': ('abstract', as_richtext),
-            'releasedate': ('publication_date', as_date),
-            'title': ('title', as_plain_text),
-        }
         count = 0
 
         for node in tree.xpath('object'):
@@ -112,13 +138,85 @@ class EionetContentImporter(BrowserView):
             for ep in node.findall('prop'):
                 pname = ep.get('name')
 
-                if pname in _map:
-                    pname, convert = _map[pname]
+                if pname in self._map:
+                    pname, convert = self._map[pname]
                 else:
                     convert = noop
 
                 text = ep.text or ''
                 props[pname] = convert(text.strip())
+
+            try:
+                obj = create(context, portal_type, id=id, **props)
+            except ValueError:      # this is due to id error
+                obj = create(context, portal_type, **props)
+                logger.warning("Changed id for object: %s", id)
+
+            logger.info("Imported %s", obj.absolute_url())
+            count += 1
+
+        return count
+
+
+class EionetACMImporter(EionetContentImporter):
+    """
+    """
+    _map = {
+        'teaser': ('abstract', as_acm_richtext),
+        'releasedate': ('publication_date', as_date),
+        'title': ('title', as_plain_text),
+    }
+
+    def handle_report_file(self, props):
+        url = props['report_url']
+
+        if url.startswith('http'):
+            _left, right = url.split('/docs/', 1)
+            path = '../docs/' + right
+        else:
+            path = props['report_url']
+
+        if '.' in path:
+            main, extension = path.rsplit('.', 1)
+
+            while main.endswith('-'):
+                main = main[:-1]
+
+            path = '.'.join([main, extension])
+
+        if path.startswith('/'):
+            path = '..' + path
+
+        path = path.replace('//', '/')
+        path = path.replace('/reports/', '/')
+
+        logger.info("Using path: %s for report url: %s", path, url)
+        ofs_file_obj = self.import_xml.restrictedTraverse(path)
+        _, f_field = blob_from_ofs_file(ofs_file_obj)
+
+        props['file'] = f_field
+        props['report_url'] = ''
+
+    def import_etc_report(self, context, portal_type, tree):
+        count = 0
+
+        for node in tree.xpath('object'):
+            url = node.get('url')
+            id = url.rsplit('/', 1)[-1]
+            props = {}
+
+            for ep in node.findall('prop'):
+                pname = ep.get('name')
+
+                if pname in self._map:
+                    pname, convert = self._map[pname]
+                else:
+                    convert = noop
+
+                text = ep.text or ''
+                props[pname] = convert(text.strip())
+
+            self.handle_report_file(props)
 
             try:
                 obj = create(context, portal_type, id=id, **props)
