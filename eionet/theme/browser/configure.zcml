@@ -28,6 +28,14 @@
 
   <browser:page
     for="*"
+    name="eionet-acm-importer"
+    class=".admin.EionetACMImporter"
+    permission="cmf.ManagePortal"
+    template="pt/import-acm-form.pt"
+    />
+
+  <browser:page
+    for="*"
     name="eionet-structure-importer"
     class=".admin.EionetStructureImporter"
     permission="cmf.ManagePortal"
@@ -70,14 +78,21 @@
   <browser:page
     name="reports_view"
     for="plone.app.contenttypes.interfaces.ICollection"
-    class=".views.ReportView"
+    class=".views.CollectionReportView"
     template="pt/reports-view.pt"
     permission="zope2.View"
     menu="plone_displayviews"
     title="Report view (tabular)"
     />
 
-<!--    <browser:page
+  <browser:page
+    name="report_helper"
+    class=".views.ReportView"
+    for="*"
+    permission="zope2.View"
+    />
+
+<!--   <browser:page
       name="gopdb"
       for="*"
       class=".views.GoPDB"
