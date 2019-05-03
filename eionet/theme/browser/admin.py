@@ -193,6 +193,7 @@ class EionetACMImporter(EionetContentImporter):
         logger.info("Using path: %s for report url: %s", path, url)
         ofs_file_obj = self.import_xml.restrictedTraverse(path)
         _, f_field = blob_from_ofs_file(ofs_file_obj)
+        transaction.commit()
 
         props['file'] = f_field
         props['report_url'] = ''
@@ -223,6 +224,7 @@ class EionetACMImporter(EionetContentImporter):
             except ValueError:      # this is due to id error
                 obj = create(context, portal_type, **props)
                 logger.warning("Changed id for object: %s", id)
+            transaction.commit()
 
             logger.info("Imported %s", obj.absolute_url())
             count += 1
