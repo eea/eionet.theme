@@ -7,7 +7,7 @@
   border: 1px solid @dark-blue-color;
   border-radius: 0;
   font-weight: 600;
-  color: #fff;
+  color: #fff !important;
   box-shadow: none;
   text-shadow: none;
 }
@@ -18,7 +18,7 @@
 .btn-primary:focus {
   background-color: @orange-color;
   border: 1px solid @dark-orange-color;
-  color: #fff;
+  color: #fff !important;
   box-shadow: none;
   text-shadow: none;
   text-decoration: none;
@@ -42,8 +42,8 @@ button {
 .standalone:hover,
 .link-parent:hover,
 .btn-secondary:hover,
-button:hover,
-.btn-secondary:focus {
+.btn-secondary:focus,
+button:hover, {
   background-color: #ddd;
   border: 1px solid #bdbcbc !important;
   color: @text-color !important;

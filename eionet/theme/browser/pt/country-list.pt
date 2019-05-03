@@ -178,12 +178,12 @@
 
       <div class="countries-list-wrapper">
         <div class="row">
-          <div class="col-sm-9 col-xs-12">
+          <div class="col-sm-7 col-xs-12">
             <h5>EEA member countries:</h5>
             <ul class="countries-list member-countries"></ul>
           </div>
 
-          <div class="col-sm-3 col-xs-12">
+          <div class="col-sm-5 col-xs-12">
             <h5>Cooperating countries:</h5>
             <ul class="countries-list cooperating-countries"></ul>
           </div>
