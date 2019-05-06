@@ -176,7 +176,9 @@
 }
 
 .plone-navbar {
-  position: inherit;
+  position: absolute;
+  visibility: hidden;
+  left: 0;
   .clearfix();
 
   // Prevent floats from breaking the navbar
@@ -220,7 +222,7 @@
       left: 0;
       right: 0;
       z-index: 99;
-      top: 74px;
+      top: 79px;
 
       .plone-navbar-nav {
         display: block;
@@ -478,6 +480,10 @@
             top: 0;
             right: -20px;
             font-size: 12px;
+          }
+          .link-https,
+          .link-external {
+            display: none;
           }
         }
 

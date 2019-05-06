@@ -6,6 +6,7 @@
   .header-container {
     display: flex;
     justify-content: space-between;
+    visibility: hidden;
     // width: 100% !important;
 
     .header-logo {
@@ -122,6 +123,7 @@
     background-color: #fff;
     z-index: 8;
     margin-top: 0;
+    border-top: none;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 
     .search-wrapper {
@@ -205,10 +207,10 @@
   .plone-toolbar-expanded #edit-zone .plone-toolbar-logo {
     background-color: #92979a;
     border-radius: 4px;
-    left: -102px;
+    left: -111px;
     width: 38px;
     height: 38px;
-    top: 48px;
+    top: 47px;
     z-index: 9999;
 
     img {
@@ -229,22 +231,30 @@
       }
     }
   }
+
+  #edit-zone .plone-toolbar-logo,
+  .plone-toolbar-expanded #edit-zone .plone-toolbar-logo {
+    left: -95px;
+  }
 }
 
 @media (max-width: 430px) {
-  #content-header {
-    .header-container {
-      .logo-text {
-        padding: 1em 0;
-        float: none;
+  .logo-text {
+    display: none;
+  }
+
+  .plone-navbar-collapse {
+    .logo-text {
+      padding: 1em 0;
+      float: none;
+      color: #fff;
+      font-weight: bold;
+      margin: 0 -15px 0;
+      padding: 8px;
+      background-color: @blue-color;
+      display: block;
+      &:hover {
         color: #fff;
-        font-weight: bold;
-        margin: 0 -15px 0;
-        padding: 8px;
-        background-color: @blue-color;
-        &:hover {
-          color: #fff;
-        }
       }
     }
   }
