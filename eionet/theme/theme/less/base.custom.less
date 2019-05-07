@@ -49,6 +49,33 @@ a {
   flex: 1 0 auto;
 }
 
+
+@media (min-width: 1600px) {
+  .plone-toolbar-left-default .container,
+  .container {
+    width: 1670px;
+  }
+}
+
+@media (max-width: 1600px) {
+  .container {
+    width: 100% !important;
+    padding: 0 2em;
+  }
+}
+
+@media (max-width: 1200px) {
+  .container {
+    padding: 0 1.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.5em;
+  }
+}
+
 #main-container {
   margin-top: 1.5em;
 }
@@ -189,29 +216,90 @@ a {
   }
 }
 
+// Portlet navigation tree
+
 .portletNavigationTree {
   nav.portletContent {
+    >.navTree {
+      padding-left: 0;
+
+      >li {
+        padding: 0.6em 0;
+        border-bottom: 1px solid #f2f2f2;
+
+        >a:before {
+          font-family: 'Glyphicons Halflings';
+          font-size: 80%;
+          margin-right: 0;
+          top: 1px;
+          content:"\e258";
+        }
+
+        ul {
+          li {
+            padding-top: 0.6em;
+          }
+        }
+      }
+
+      li.navTreeItemInPath {
+        >a {
+          font-weight: 600;
+        }
+      }
+
+      li,
+      .has-subitem {
+        >a:before {
+          font-family: 'Glyphicons Halflings';
+          font-size: 80%;
+          margin-right: 0;
+          top: 1px;
+          content:"\e258";
+        }
+      }
+
+      li {
+        .glyphicon.link-https {
+          display: none;
+        }
+        .contenttype-link:before,
+        .state-private.contenttype-link:before {
+          font-family: 'Glyphicons Halflings';
+          font-size: 90%;
+        }
+        .contenttype-link:before {
+          content:"\e164";
+        }
+        .state-private.contenttype-link:before {
+          content: "\e033";
+        }
+
+        ul {
+          li {
+            a:before {
+             content: none;
+            }
+          }
+        }
+      }
+
+      >li:last-child {
+        border: none;
+        a {
+          padding-bottom: 0;
+        }
+      }
+    }
+
     .navTreeLevel1 > li {
       a {
         padding-left: 15px;
       }
     }
-
-    >.navTree {
-      >li.navTreeItemInPath {
-        >a {
-          font-weight: 600;
-        }
-      }
-    }
-
-    .navTree {
-      a.navTreeFolderish:before {
-        font-family: 'Glyphicons Halflings';
-        font-size: 80%;
-        margin-right: 0;
-        top: 1px;
-        content:"\e258";
+    .navTreeLevel2 > li {
+      a {
+        padding-left: 30px;
       }
     }
 
@@ -228,50 +316,12 @@ a {
     }
 
     > ul {
-      > li {
-        padding: 0.6em 0;
-        border-bottom: 1px solid #f2f2f2;
-        ul {
-          li {
-            padding-top: 0.6em;
-          }
-        }
-      }
       li {
         a {
           padding: 0;
           background: none;
           border: none;
           display: inline-block;
-        }
-
-        .glyphicon.link-https {
-          display: none;
-        }
-
-        .contenttype-link:before,
-        .state-private.contenttype-link:before {
-          font-family: 'Glyphicons Halflings';
-          font-size: 90%;
-        }
-        .contenttype-link:before {
-          content:"\e164";
-        }
-        .state-private.contenttype-link:before {
-          content: "\e033";
-        }
-
-        .state-private {
-          color: @blue-color !important;
-          &:hover {
-            color: @orange-color !important;
-          }
-        }
-      }
-      >li:last-child {
-        border: none;
-        a {
-          padding-bottom: 0;
         }
       }
     }
@@ -308,7 +358,7 @@ table {
         border: 1px solid #ddd;
       }
       td {
-        word-break: break-word;
+        // word-break: break-word;
         padding: 0.6em;
         border: 1px solid #ddd;
       }
@@ -337,9 +387,19 @@ table {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 800px) {
   table {
     table-layout: fixed;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-wrapper {
+    overflow-x: auto;
+
+    table {
+      table-layout: auto;
+    }
   }
 }
 
@@ -387,6 +447,10 @@ i.link-external:after {
 
 .cal_month {
   background-color: @green-color;
+}
+
+.pat-structure .navbar {
+  z-index: 4;
 }
 
 @media (min-width: 992px) {
