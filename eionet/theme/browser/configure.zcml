@@ -76,23 +76,21 @@
     />
 
   <browser:page
-    name="reports_view"
-    for="plone.app.contenttypes.interfaces.ICollection"
-    class=".views.CollectionReportView"
-    template="pt/reports-view.pt"
-    permission="zope2.View"
-    menu="plone_displayviews"
-    title="Report view (tabular)"
-    />
-
-  <browser:page
     name="report_helper"
     class=".views.ReportView"
     for="*"
     permission="zope2.View"
     />
 
-<!--   <browser:page
+  <browser:page
+    name="collection_helper"
+    for="*"
+    class=".views.CollectionHelperView"
+    permission="zope2.View"
+    allowed_attributes="tabular_fielddata get_download_link batch results pas_member _pas_member"
+  />
+
+<!--  <browser:page
       name="gopdb"
       for="*"
       class=".views.GoPDB"

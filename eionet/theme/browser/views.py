@@ -1,17 +1,24 @@
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import safe_callable
 from Products.Five.browser import BrowserView
 from Products.MimetypesRegistry.interfaces import MimeTypeException
 from plone.app.contenttypes.behaviors.collection import ICollection
 from plone.app.contenttypes.browser.collection import CollectionView
 from plone.namedfile.interfaces import INamed
+from plone.registry.interfaces import IRegistry
 from zope.size import byteDisplay
 from zope.component.hooks import getSite
+from zope.component import getUtility, getMultiAdapter
 
 
-class CollectionReportView(CollectionView):
-    """ Custom class for collection report view
+class CollectionHelperView(BrowserView):
+    """ Custom class for collection helper view
     """
+    text_class = None
+    _plone_view = None
+    _portal_state = None
+    _pas_member = None
 
     def tabular_fields(self):
         """ Returns a list of all metadata fields from the catalog that were
@@ -38,19 +45,84 @@ class CollectionReportView(CollectionView):
             'value': download_url
         }
 
-    def normalize_fields(self, field):
-        names = {
-            'report_url': 'Download',
-            'publication_date': 'Publication date'
-        }
-        return names.get(field, field)
+    @property
+    def collection_behavior(self):
+        return ICollection(aq_inner(self.context))
 
-    # sort_on='sortable_title', sort_order='ascending'
+    @property
+    def b_size(self):
+        return getattr(self, '_b_size', self.collection_behavior.item_count)
+
+    @property
+    def b_start(self):
+        b_start = getattr(self.request, 'b_start', None) or 0
+        return int(b_start)
+
+    def results(self, **kwargs):
+        """Return a content listing based result set with results from the
+        collection query.
+        :param **kwargs: Any keyword argument, which can be used for catalog
+                         queries.
+        :type  **kwargs: keyword argument
+        :returns: plone.app.contentlisting based result set.
+        :rtype: ``plone.app.contentlisting.interfaces.IContentListing`` based
+                sequence.
+        """
+        # Extra filter
+        contentFilter = dict(self.request.get('contentFilter', {}))
+        contentFilter.update(kwargs.get('contentFilter', {}))
+        contentFilter.update({'sort_on': 'publication_date', 'sort_order': 'descending'})
+        kwargs.setdefault('custom_query', contentFilter)
+        kwargs.setdefault('batch', True)
+        kwargs.setdefault('b_size', self.b_size)
+        kwargs.setdefault('b_start', self.b_start)
+
+        results = self.collection_behavior.results(**kwargs)
+        return results
 
     def batch(self):
         # collection is already batched.
-        kwargs = {'sort_on': 'publication_date'}
-        return self.results(**kwargs)
+        return self.results()
+
+
+    def tabular_fielddata(self, item, fieldname):
+        value = getattr(item, fieldname, '')
+        if safe_callable(value):
+            value = value()
+        if fieldname in [
+                'CreationDate',
+                'ModificationDate',
+                'Date',
+                'EffectiveDate',
+                'ExpirationDate',
+                'effective',
+                'expires',
+                'start',
+                'end',
+                'created',
+                'modified',
+                'last_comment_date']:
+            value = self.context.toLocalizedTime(value, long_format=1)
+
+        return {
+            # 'title': _(fieldname, default=fieldname),
+            'value': value
+        }
+
+    @property
+    def pas_member(self):
+        if not self._pas_member:
+            self._pas_member = getMultiAdapter(
+                (self.context, self.request),
+                name=u'pas_member'
+            )
+        return self._pas_member
+
+    @property
+    def use_view_action(self):
+        registry = getUtility(IRegistry)
+        types_used = registry.get('plone.types_use_view_action_in_listings', [])
+        return types_used
 
 
 class ReportView(BrowserView):
