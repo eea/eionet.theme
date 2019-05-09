@@ -15,6 +15,9 @@ from zope.component import getUtility, getMultiAdapter
 class CollectionHelperView(BrowserView):
     """ Custom class for collection helper view
     """
+    text_class = None
+    _plone_view = None
+    _portal_state = None
     _pas_member = None
 
     def tabular_fields(self):
@@ -42,10 +45,45 @@ class CollectionHelperView(BrowserView):
             'value': download_url
         }
 
+    @property
+    def collection_behavior(self):
+        return ICollection(aq_inner(self.context))
+
+    @property
+    def b_size(self):
+        return getattr(self, '_b_size', self.collection_behavior.item_count)
+
+    @property
+    def b_start(self):
+        b_start = getattr(self.request, 'b_start', None) or 0
+        return int(b_start)
+
+    def results(self, **kwargs):
+        """Return a content listing based result set with results from the
+        collection query.
+        :param **kwargs: Any keyword argument, which can be used for catalog
+                         queries.
+        :type  **kwargs: keyword argument
+        :returns: plone.app.contentlisting based result set.
+        :rtype: ``plone.app.contentlisting.interfaces.IContentListing`` based
+                sequence.
+        """
+        # Extra filter
+        contentFilter = dict(self.request.get('contentFilter', {}))
+        contentFilter.update(kwargs.get('contentFilter', {}))
+        contentFilter.update({'sort_on': 'publication_date', 'sort_order': 'descending'})
+        kwargs.setdefault('custom_query', contentFilter)
+        kwargs.setdefault('batch', True)
+        kwargs.setdefault('b_size', self.b_size)
+        kwargs.setdefault('b_start', self.b_start)
+
+        results = self.collection_behavior.results(**kwargs)
+        return results
+
     def batch(self):
         # collection is already batched.
-        kwargs = {'sort_on': 'publication_date'}
-        return self.context.results(**kwargs)
+        return self.results()
+
 
     def tabular_fielddata(self, item, fieldname):
         value = getattr(item, fieldname, '')
@@ -64,7 +102,7 @@ class CollectionHelperView(BrowserView):
                 'created',
                 'modified',
                 'last_comment_date']:
-            value = self.toLocalizedTime(value, long_format=1)
+            value = self.context.toLocalizedTime(value, long_format=1)
 
         return {
             # 'title': _(fieldname, default=fieldname),
