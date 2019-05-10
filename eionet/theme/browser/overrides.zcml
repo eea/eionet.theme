@@ -1,0 +1,16 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:plone="http://namespaces.plone.org/plone"
+  i18n_domain="eionet.theme">
+
+  <!-- The breadcrumbs -->
+  <browser:viewlet
+      name="plone.path_bar"
+      manager="plone.app.layout.viewlets.interfaces.IAboveContent"
+      class=".overrides.PathBarViewlet"
+      permission="zope2.View"
+      layer="eionet.theme.interfaces.IEionetThemeLayer"
+      />
+
+</configure>
