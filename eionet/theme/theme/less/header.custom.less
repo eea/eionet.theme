@@ -193,10 +193,6 @@
     }
 
     .header-container {
-      .header-logo > a .logo-text {
-        font-size: 14px;
-      }
-
       .header-logo,
       .header-right-section {
         width: auto;
@@ -258,7 +254,7 @@
     .logo-text {
       padding: 1em 0;
       float: none;
-      color: #fff;
+      color: #fff !important;
       font-weight: bold;
       margin: 0 -15px 0;
       padding: 8px;
@@ -267,6 +263,10 @@
       &:hover {
         color: #fff;
       }
+       span {
+        color: #fff !important;
+        font-size: 15px !important;
+       }
     }
   }
 }
