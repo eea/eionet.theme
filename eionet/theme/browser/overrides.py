@@ -18,3 +18,7 @@ class PathBarViewlet(ViewletBase):
         breadcrumbs_view = getMultiAdapter((self.context, self.request),
                                            name='breadcrumbs_view')
         self.breadcrumbs = breadcrumbs_view.breadcrumbs()
+
+    def get_home(self):
+        tab_action = self.context.portal_actions.get('portal_tabs')
+        return tab_action.index_html.title
