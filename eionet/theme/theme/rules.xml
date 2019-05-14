@@ -24,7 +24,7 @@
     <after css:theme-children="head" css:content="head link" />
     <after css:theme-children="head" css:content="head style" />
     <!-- Script -->
-    <after css:theme-children="head" css:content="head script" />
+    <after css:theme-children="body" css:content="head script" />
   </rules>
 
   <!-- Copy over the id/class attributes on the body tag. This is important for per-section styling -->
@@ -203,4 +203,5 @@
     <drop css:content="#viewlet-above-content"/>
   </rules>
 
+  <after css:theme-children="html body" css:content="head script" />
 </rules>
