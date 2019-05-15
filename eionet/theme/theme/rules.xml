@@ -203,5 +203,10 @@
     <drop css:content="#viewlet-above-content"/>
   </rules>
 
+  <!-- Copy script tags from head to end of body -->
   <after css:theme-children="html body" css:content="head script" />
+
+  <!-- Move inline scripts in content to end of body -->
+  <drop css:content="body script" />
+  <after css:theme-children="body" css:content="body script" method="raw" />
 </rules>
