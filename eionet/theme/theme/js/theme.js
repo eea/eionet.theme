@@ -126,7 +126,7 @@ $(document).ready(function() {
   // Breadcrumb home section
   var $bh = $('#breadcrumbs-home a');
   // $bh.text('Eionet');
-  $bh.prepend('<i class="glyphicon glyphicon-home"/>');
+  // $bh.prepend('<i class="glyphicon glyphicon-home"/>');
 
   $('table').wrap('<div class="table-wrapper"></div>');
 
