@@ -204,7 +204,7 @@
   </rules>
 
   <!-- Copy script tags from head to end of body -->
-  <after css:theme-children="html body" css:content="head script" />
+  <!-- <after css:theme-children="html body" css:content="head script" /> -->
 
   <!-- Move inline scripts in content to end of body -->
   <drop css:content="body script" />
