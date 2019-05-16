@@ -38,4 +38,13 @@
     layer="eionet.theme.interfaces.IEionetThemeLayer"
     />
 
+  <browser:viewlet
+    name="plone.resourceregistries.styles"
+    manager="plone.app.layout.viewlets.interfaces.IHtmlHeadLinks"
+    class="Products.CMFPlone.resources.browser.styles.StylesView"
+    template="overrides/styles_viewlet_override.pt"
+    layer="eionet.theme.interfaces.IEionetThemeLayer"
+    permission="zope2.View"
+    />
+
 </configure>
