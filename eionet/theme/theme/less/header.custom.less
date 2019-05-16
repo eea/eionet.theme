@@ -9,13 +9,11 @@
     visibility: hidden;
 
     .header-logo {
-      height: 78px;
       padding-right: 15px;
-      // width: 30%;
       >a {
         height: 100%;
-        display: flex;
-        align-items: center;
+        vertical-align: middle;
+        white-space: nowrap;
         color: #000;
         &:hover,
         &:focus {
@@ -23,21 +21,25 @@
         }
 
         #portal-logo {
-          height: 100%;
-          padding: 7px 0;
+          float: none;
+          display: inline-block;
+          vertical-align: middle;
         }
 
         .logo-text {
           font-size: 18px;
           font-weight: bold;
           line-height: 1;
+          display: inline-block;
+          vertical-align: middle;
+          margin-left: 0.3em;
         }
       }
 
       img {
-        height: 100%;
+        height: 78px;
+        padding: 7px 0;
         width: auto;
-        margin-right: 0.6em;
       }
     }
 
@@ -45,12 +47,11 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      // width: 70%;
 
       .right-actions {
         display: flex;
         align-items: center;
-        padding-left: 15px;
+        margin-left: 20px;
       }
 
       .login {
@@ -90,6 +91,8 @@
     input {
       border-radius: 15px;
       height: 27px;
+      line-height: inherit;
+      padding: 0 10px !important;
     }
 
     button {
@@ -163,39 +166,13 @@
 @media (max-width: 1280px) {
   #content-header {
     .header-container {
-      .header-logo > a .logo-text {
-        font-size: 16px;
-      }
-    }
-  }
-}
-
-
-@media (max-width: 1200px) {
-  #content-header {
-    .header-container {
       .header-logo {
-        width: 35%;
-      }
-      .header-right-section {
-        width: 65%;
-      }
-    }
-  }
-}
-
-@media (max-width: 980px) {
-  #content-header {
-    .collapse-nav {
-      .header-logo {
-        height: 60px;
-      }
-    }
-
-    .header-container {
-      .header-logo,
-      .header-right-section {
-        width: auto;
+        >a .logo-text {
+          font-size: 16px;
+        }
+        img {
+          height: 58px;
+        }
       }
     }
   }
@@ -241,11 +218,12 @@
 
   #edit-zone .plone-toolbar-logo,
   .plone-toolbar-expanded #edit-zone .plone-toolbar-logo {
-    left: -95px;
+    left: -100px;
+    top: 46px;
   }
 }
 
-@media (max-width: 430px) {
+@media (max-width: 450px) {
   .logo-text {
     display: none;
   }

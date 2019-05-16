@@ -46,7 +46,7 @@ $(document).ready(function() {
   var resizeTimer;
   $win.on('resize',function() {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(doneResizing, 500);
+    resizeTimer = setTimeout(doneResizing, 100);
   });
 
   // Collapse navigation and move search section
@@ -60,7 +60,7 @@ $(document).ready(function() {
     var $clonedNavItems = $('.cloned-menu').children('li');
     $clonedNavItems.each(function() {
       var $li = $(this);
-      totalNavItemsWidth += $li.outerWidth(true) + 6;
+      totalNavItemsWidth += $li.outerWidth(true);
     });
     $('.navbar-nav').attr('data-width', totalNavItemsWidth);
     clone.remove();
@@ -90,7 +90,7 @@ $(document).ready(function() {
   // when it's running out of space in the header
   function moveLogoText() {
     var $logoText = $('.logo-text');
-    if ($win.width() <= 430) {
+    if (window.innerWidth <= 450) {
       $logoText.prependTo('.plone-navbar-collapse');
     } else {
       $logoText.appendTo('.header-logo a');
@@ -107,10 +107,10 @@ $(document).ready(function() {
       var currentScroll = $win.scrollTop();
       if (currentScroll >= headerPos) {
         $header.addClass('sticky-header');
-        $toolbar.css('top', '12px');
+        $toolbar.css('top', '10px');
       } else {
         $header.removeClass('sticky-header');
-        $toolbar.css('top', '47px');
+        $toolbar.css('top', '46px');
       }
     });
   }
@@ -126,7 +126,7 @@ $(document).ready(function() {
   // Breadcrumb home section
   var $bh = $('#breadcrumbs-home a');
   // $bh.text('Eionet');
-  // $bh.prepend('<i class="glyphicon glyphicon-home"/>');
+  $bh.prepend('<i class="glyphicon glyphicon-home"/>');
 
   $('table').wrap('<div class="table-wrapper"></div>');
 
@@ -135,6 +135,7 @@ $(document).ready(function() {
   moveLogoText();
 
   function doneResizing() {
+    getNavItemsTotalWidth();
     collapseHeader();
     moveLogoText();
   }
