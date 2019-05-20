@@ -23,7 +23,7 @@ $(document).ready(function() {
   var cpath = '++plone++eionet.theme/countries/euro-countries-simplified.geojson';
   var fpath = '++plone++eionet.theme/countries/countries.tsv';
 
-  var $sw = $('.svg-fp-container');
+  var $sw = $('.svg-map-container');
   var $load = $('<div class="map-loader">' +
     '<div class="loading-spinner"></div>' +
     '<span class="loading-text">Loading map ...</span></div>');
@@ -36,22 +36,6 @@ $(document).ready(function() {
       drawCountries(window._world.features);
     });
   });
-
-
-  // sort countries list alphabetically
-  var $cl = $('.countries-list');
-  $cl.hide();
-  $(window).load(function() {
-    $cl.each(function() {
-      var $ul = $(this);
-      $ul.append($ul.children('li').get().sort(function(a, b) {
-        var aText = $(a).text(), bText = $(b).text();
-        return aText < bText ? -1 : aText > bText ? 1 : 0;
-      }));
-    });
-    $cl.fadeIn('slow');
-  });
-
 });
 
 function renderGraticule(container, klass, steps, pathTransformer) {
@@ -114,7 +98,6 @@ function renderCountry(map, country, path, countries, x, y) {
   if (available) {
     var bbox = outline.node().getBBox();
     renderCountryFlag(parent, country, bbox, cpId);
-    listCountryNames(country);
     // renderCountryLabel(country, path);
   }
 }
@@ -369,6 +352,29 @@ function renderCountriesBox(opts) {
   return path;
 }
 
+function renderCountryList(opts) {
+  var countries = opts.focusCountries;
+  var world = opts.world;
+
+  world.forEach(function (country) {
+    var available = countries.names.indexOf(country.properties.SHRT_ENGL) !== -1;
+    if (available) {
+      listCountryNames(country);
+    }
+  });
+
+  // sort countries list alphabetically
+  var $cl = $('.countries-list');
+  $cl.hide();
+  $cl.each(function() {
+    var $ul = $(this);
+    $ul.append($ul.children('li').get().sort(function(a, b) {
+      var aText = $(a).text(), bText = $(b).text();
+      return aText < bText ? -1 : aText > bText ? 1 : 0;
+    }));
+  });
+  $cl.fadeIn('slow');
+}
 
 function drawMaplets(opts) {
   var svg = opts.svg;
@@ -439,6 +445,8 @@ function drawCountries(world) {
   var svg = d3
     .select("body")
     .select(".svg-map-container svg")
+    // .attr("viewBox", "0 0 " + width + " " + height )
+    // .attr("preserveAspectRatio", "xMinYMin");
     ;
   svg.selectAll("*").remove();
 
@@ -462,7 +470,9 @@ function drawCountries(world) {
     },
     'zoom': 0.95
   }
+
   renderCountriesBox(opts);
+  renderCountryList(opts);
 
   var mo = {
     'svg': svg,
@@ -475,6 +485,8 @@ function drawCountries(world) {
     // 'space': 6,
   }
   drawMaplets(mo);
+
+  $('.map-loader').fadeOut(600);
 }
 
 // tooltip with country names on hover

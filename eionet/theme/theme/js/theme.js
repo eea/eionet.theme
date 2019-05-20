@@ -1,7 +1,50 @@
-$(document).ready(function() {
+// Collapse navigation and move search section
+// when it's running out of space in the header
+function getNavItemsTotalWidth() {
+  var clone = $("#portal-globalnav").clone();
+  clone.addClass('cloned-menu');
+  $('#portal-globalnav-wrapper').append(clone);
+  var totalNavItemsWidth = 0;
+  var $clonedNavItems = $('.cloned-menu').children('li');
+  $clonedNavItems.each(function() {
+    var $li = $(this);
+    totalNavItemsWidth += $li.outerWidth(true);
+  });
+  $('.navbar-nav').attr('data-width', totalNavItemsWidth + 10);
+  clone.remove();
+}
 
+function collapseHeader() {
+  var $header = $('.header-container');
+  var headerWidth = $header.width();
+  var logoWidth = $('.header-logo').outerWidth(true);
+  var rightActionsWidth = $('.right-actions').outerWidth(true) + 35;
+  var menuWidth = $('.navbar-nav').data('width');
+
+  var availableSpace = headerWidth - (logoWidth + menuWidth);
+  var collapseHeader = availableSpace <= rightActionsWidth;
+  $header.toggleClass('collapse-header', collapseHeader);
+
+  if ($header.hasClass('collapse-header')) {
+    var navAvailableSpace = headerWidth - logoWidth;
+    var collapseNav = menuWidth >= navAvailableSpace;
+    $header.toggleClass('collapse-nav', collapseNav);
+  }
+}
+
+// move Eionet logo text in the collapsed menu
+// when it's running out of space in the header
+function moveLogoText() {
+  var $logoText = $('.logo-text');
+  if (window.innerWidth <= 450) {
+    $logoText.prependTo('.plone-navbar-collapse');
+  } else {
+    $logoText.appendTo('.header-logo a');
+  }
+}
+
+$(document).ready(function() {
   // HEADER
-  var $win = $(window);
   var $header = $('.header-container');
   var $nav = $('#portal-globalnav');
   var $navItems = $nav.children('li');
@@ -42,67 +85,12 @@ $(document).ready(function() {
   });
 
 
-  // Fire resize event after the browser window resizing it's completed
-  var resizeTimer;
-  $win.on('resize',function() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(doneResizing, 100);
-  });
-
-  // Collapse navigation and move search section
-  // when it's running out of space in the header
-
-  function getNavItemsTotalWidth() {
-    var clone = $("#portal-globalnav").clone();
-    clone.addClass('cloned-menu');
-    $('#portal-globalnav-wrapper').append(clone);
-    var totalNavItemsWidth = 0;
-    var $clonedNavItems = $('.cloned-menu').children('li');
-    $clonedNavItems.each(function() {
-      var $li = $(this);
-      totalNavItemsWidth += $li.outerWidth(true);
-    });
-    $('.navbar-nav').attr('data-width', totalNavItemsWidth);
-    clone.remove();
-  }
-
-  function collapseHeader() {
-    var headerWidth = $header.width();
-    var logoWidth = $('.header-logo').outerWidth(true);
-    var rightActionsWidth = $('.right-actions').outerWidth(true);
-    var menuWidth = $('.navbar-nav').data('width');
-
-    var availableSpace = headerWidth - (logoWidth + menuWidth);
-
-    var isMobile = $win.width() <= 767;
-    $header.toggleClass('collapse-header collapse-nav', isMobile);
-    var collapseHeader = availableSpace <= rightActionsWidth;
-    $header.toggleClass('collapse-header', collapseHeader);
-
-    if ($header.hasClass('collapse-header')) {
-      var navAvailableSpace = headerWidth - logoWidth;
-      var collapseNav = menuWidth >= navAvailableSpace;
-      $header.toggleClass('collapse-nav', collapseNav);
-    }
-  }
-
-  // move Eionet logo text in the collapsed menu
-  // when it's running out of space in the header
-  function moveLogoText() {
-    var $logoText = $('.logo-text');
-    if (window.innerWidth <= 450) {
-      $logoText.prependTo('.plone-navbar-collapse');
-    } else {
-      $logoText.appendTo('.header-logo a');
-    }
-  }
-
   // sticky header on mobile devices
   var headerPos = $header.offset().top + 35;
   var lastScrollTop = 0;
   var $toolbar = $('.plone-toolbar-logo');
 
-  if ($win.width() <= 767) {
+  if ($(window).width() <= 767) {
     $win.scroll(function() {
       var currentScroll = $win.scrollTop();
       if (currentScroll >= headerPos) {
@@ -123,6 +111,7 @@ $(document).ready(function() {
      }
   });
 
+
   // Breadcrumb home section
   var $bh = $('#breadcrumbs-home a');
   // $bh.text('Eionet');
@@ -130,9 +119,22 @@ $(document).ready(function() {
 
   $('table').wrap('<div class="table-wrapper"></div>');
 
+  // collapse header
+  var isMobile = $(window).width() <= 767;
+  var isSmallScreen = $(window).width() <= 1280;
+  $header.toggleClass('collapse-header', isSmallScreen);
+  $header.toggleClass('collapse-header collapse-nav', isMobile);
+
   getNavItemsTotalWidth();
   collapseHeader();
   moveLogoText();
+
+  // Fire resize event after the browser window resizing it's completed
+  var resizeTimer;
+  $(window).on('resize',function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(doneResizing, 100);
+  });
 
   function doneResizing() {
     getNavItemsTotalWidth();
