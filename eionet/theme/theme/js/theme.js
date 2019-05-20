@@ -91,8 +91,8 @@ $(document).ready(function() {
   var $toolbar = $('.plone-toolbar-logo');
 
   if ($(window).width() <= 767) {
-    $win.scroll(function() {
-      var currentScroll = $win.scrollTop();
+    $(window).scroll(function() {
+      var currentScroll = $(window).scrollTop();
       if (currentScroll >= headerPos) {
         $header.addClass('sticky-header');
         $toolbar.css('top', '10px');
