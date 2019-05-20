@@ -7,7 +7,6 @@
   &:extend(.clearfix all);
   li {
     position: relative;
-    float: left;
     &.has_subtree a {
       padding-right: 2.5em;
     }
@@ -106,6 +105,9 @@
         position: absolute;
       }
     }
+  }
+  >li {
+    display: table-cell;
   }
 
   @media (min-width: @plone-grid-float-breakpoint) {
@@ -597,7 +599,9 @@
 
     @media (max-width: 980px) {
       .plone-navbar-collapse.in {
-        height: 100vh !important;
+        // height: 100vh !important;
+        height: 90vh !important;
+        max-height: 100vh!important;
         overflow-y: auto;
       }
     }
@@ -615,11 +619,17 @@
 }
 
 @media (max-width: 1280px) {
-  .plone-navbar-nav > li .submenu {
-    top: 57px;
-  }
-  .plone-nav li a {
-    font-size: 15px !important;
-    padding: 1.3em 1em;
+  .plone-navbar-nav > li {
+    > a {
+      font-size: 15px !important;
+      padding: 1.3em 1em;
+    }
+    .submenu {
+      top: 57px;
+
+      > li a {
+        font-size: 14px ;
+      }
+    }
   }
 }
