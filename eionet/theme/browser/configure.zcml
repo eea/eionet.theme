@@ -64,8 +64,17 @@
     for="*"
     class=".views.CollectionHelperView"
     permission="zope2.View"
-    allowed_attributes="tabular_fielddata get_download_link batch results pas_member _pas_member"
+    allowed_attributes="tabular_fielddata get_download_link batch results pas_member _pas_member tabular_fields normalizeString"
   />
+
+  <browser:page
+    name="frontpage_news_helper"
+    for="*"
+    class=".views.FrontpageNewsHelperView"
+    permission="zope2.View"
+    allowed_attributes="tabular_fielddata batch results pas_member _pas_member tabular_fields normalizeString"
+  />
+
 
 <!--  <browser:page
       name="gopdb"
