@@ -232,22 +232,22 @@ var countryTpl = '' +
 '    List of files uploaded to the Central Data Repository (CDR)</li>' +
 '' +
 '  <li>' +
-'    <a class="link-webpage" href="http://www.eionet.europa.eu/ldap-organisations?country=ccode">' +
+'    <a class="link-webpage" href="/ldap-organisations?country=ccode">' +
 '      Eionet Organisations</a>' +
 '    List of organisations registered in the Eionet Directory</li>' +
 '' +
 '  <li>' +
-'    <a class="link-webpage" href="http://www.eionet.europa.eu/ldap-roles/?role_id=eionet-nfp-ctype-ccode">NFP CountryName address</a></li>' +
+'    <a class="link-webpage" href="/ldap-roles/?role_id=eionet-nfp-ctype-ccode">NFP CountryName address</a></li>' +
 '' +
 '  <li>' +
-'    <a class="link-webpage" href="http://www.eionet.europa.eu/ldap-roles/filter?pattern=eionet-nrc-*-ctype-ccode">PCPs and NRCs</a>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=eionet-nrc-*-ctype-ccode">PCPs and NRCs</a>' +
 '    List of all Primary Contact Points and National Reference Centres</li>' +
 '' +
 '<li>' +
-'    <a class="link-webpage" href="https://www.eionet.europa.eu/ldap-roles/filter?pattern=reportnet-*-*-ccode">List of Reportnet users</a></li>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=reportnet-*-*-ccode">List of Reportnet users</a></li>' +
 '' +
 ' <li>' +
-'    <a class="link-webpage" href="https://www.eionet.europa.eu/ldap-roles/filter?pattern=extranet-*-*-ccode">List of Extranet users</a></li>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=extranet-*-*-ccode">List of Extranet users</a></li>' +
 '</ul>';
 
 
@@ -276,6 +276,13 @@ function showCountryPopup(country) {
 
   modal.$modal.find('.plone-modal-title').empty().append(cName);
   modal.$modal.find('.plone-modal-body').empty().append(ctext);
+  modal.$modal.find('a.link-webpage').each(function() {
+    var $a = $(this);
+    $a.click(function() {
+      window.location = $a.attr('href');
+    });
+  });
+
   return false;
 }
 
