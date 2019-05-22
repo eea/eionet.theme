@@ -1,0 +1,19 @@
+<title>Plone Theme</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="shortcut icon" type="image/x-icon" href="images/favicon/favicon.ico" />
+<link rel="apple-touch-icon-precomposed" sizes="57x57" href="images/favicon/apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="images/favicon/apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="images/favicon/apple-touch-icon-152x152.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png" />
+<meta name="application-name" content="Eionet"/>
+<meta name="msapplication-TileColor" content="#FFFFFF" />
+<meta name="msapplication-TileImage" content="images/favicon/mstile-144x144.png" />
+<meta name="theme-color" content="#006699"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+<link rel="stylesheet" onload="this.onload=null;this.rel='stylesheet'" href="http://localhost:3080/Eionet/++plone++dropdown/++unique++None/dropdownmenu-compiled.css" as="style">
+<link rel="stylesheet" onload="this.onload=null;this.rel='stylesheet'" href="http://localhost:3080/Eionet/++theme++eionet/less/theme-compiled.css" as="style">
