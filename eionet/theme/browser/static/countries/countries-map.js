@@ -33,10 +33,32 @@ $(document).ready(function() {
     d3.tsv(fpath, function (flags) {
       window._world = world;
       window._flags = flags;
-      drawCountries(window._world.features);
+      initmap(window._world.features);
+      listCountryLinks(window._world.features)
     });
   });
 });
+
+function initmap(world) {
+  function drawMap(width) {
+    drawCountries(world);
+  }
+
+  // fire resize event after the browser window resizing it's completed
+  var resizeTimer;
+  $(window).resize(function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(doneResizing, 500);
+  });
+
+  var width = $('.svg-map-container svg').width();
+  function doneResizing() {
+    drawMap(width);
+  }
+  drawMap(width);
+
+  $('.map-loader').fadeOut(600);
+}
 
 function renderGraticule(container, klass, steps, pathTransformer) {
   container     // draw primary graticule lines
@@ -148,7 +170,7 @@ function renderCountryLabel(country, path, force) {
   passThruEvents(g);
 }
 
-function listCountryNames(country) {
+function renderCountryList(country) {
   var mc = d3.select('.member-countries');
   var cc = d3.select('.cooperating-countries');
   var name = country.properties.SHRT_ENGL;
@@ -227,6 +249,7 @@ function renderCountryFlag(parent, country, bbox, cpId) {
 var countryTpl = '' +
 '<ul class="urllist">' +
 '  <li>' +
+'    <i class="glyphicon link-external"></i>' +
 '    <a class="link-webpage" href="http://cdr.eionet.europa.eu/ccode">' +
 '      CDR Data Deliveries</a>' +
 '    List of files uploaded to the Central Data Repository (CDR)</li>' +
@@ -254,8 +277,8 @@ var countryTpl = '' +
 function showCountryPopup(country) {
   var $container = $('.svg-map-container').append($("<div>"));
   var $modal = $container.patPloneModal({
-    position: 'middle top',
-    width: '95%',
+    position: 'center middle',
+    width: '60%',
     title: country.properties.SHRT_ENGL,
     backdropOptions: {
       closeOnEsc: false,
@@ -278,8 +301,13 @@ function showCountryPopup(country) {
   modal.$modal.find('.plone-modal-body').empty().append(ctext);
   modal.$modal.find('a.link-webpage').each(function() {
     var $a = $(this);
+    var url = new RegExp('/' + window.location.host + '/');
     $a.click(function() {
-      window.location = $a.attr('href');
+      if (!url.test(this.href)) {
+        window.open($a.attr('href'));
+      } else {
+        window.location = $a.attr('href');
+      }
     });
   });
 
@@ -359,21 +387,31 @@ function renderCountriesBox(opts) {
   return path;
 }
 
-function renderCountryList(opts) {
+function listCountryLinks(world) {
+  var focusCountriesFeature = filterCountriesByNames(world, allCountries);
+
+  var opts = {
+    'world': world,
+    'focusCountries': {
+      'names': allCountries,
+      'feature': focusCountriesFeature
+    }
+  }
+
   var countries = opts.focusCountries;
   var world = opts.world;
 
   world.forEach(function (country) {
     var available = countries.names.indexOf(country.properties.SHRT_ENGL) !== -1;
     if (available) {
-      listCountryNames(country);
+      renderCountryList(country);
     }
   });
 
   // sort countries list alphabetically
-  var $cl = $('.countries-list');
+  var $cl = $('.map-right-section');
   $cl.hide();
-  $cl.each(function() {
+  $('.countries-list').each(function() {
     var $ul = $(this);
     $ul.append($ul.children('li').get().sort(function(a, b) {
       var aText = $(a).text(), bText = $(b).text();
@@ -452,8 +490,6 @@ function drawCountries(world) {
   var svg = d3
     .select("body")
     .select(".svg-map-container svg")
-    // .attr("viewBox", "0 0 " + width + " " + height )
-    // .attr("preserveAspectRatio", "xMinYMin");
     ;
   svg.selectAll("*").remove();
 
@@ -479,7 +515,6 @@ function drawCountries(world) {
   }
 
   renderCountriesBox(opts);
-  renderCountryList(opts);
 
   var mo = {
     'svg': svg,
@@ -493,8 +528,8 @@ function drawCountries(world) {
   }
   drawMaplets(mo);
 
-  $('.map-loader').fadeOut(600);
 }
+
 
 // tooltip with country names on hover
 var countryNameTooltip = d3.select("body")
