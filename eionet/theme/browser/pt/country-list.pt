@@ -128,8 +128,12 @@
 }
 
 .countries-list-wrapper {
-  margin: 1.5em 0;
+  margin-bottom: 1;
   word-wrap: initial;
+}
+
+.countries-list-wrapper h5 {
+  margin-top: 0;
 }
 
 .member-countries {
@@ -139,7 +143,7 @@
 }
 
 .countries-list {
-  margin-top: 1.5em;
+  margin: 1.5em 0;
   padding-left: 0;
 }
 
@@ -166,6 +170,10 @@
 
 .svg-map-container svg {
   border: 1px solid #bbb;
+}
+
+.map-right-section {
+  display: none;
 }
 
 /***** map loading spinner *****/
@@ -228,17 +236,24 @@
         </div>
         </div>
         <div class="col-sm-5 col-xs-12">
-          <div class="countries-list-wrapper">
-            <div class="row">
-              <div class="col-sm-7 col-xs-12">
-                <h5>EEA member countries:</h5>
-                <ul class="countries-list member-countries"></ul>
-              </div>
+          <div class="map-right-section">
+            <div class="countries-list-wrapper">
+              <div class="row">
+                <div class="col-sm-7 col-xs-12">
+                  <h5>EEA member countries:</h5>
+                  <ul class="countries-list member-countries"></ul>
+                </div>
 
-              <div class="col-sm-5 col-xs-12">
-                <h5>Cooperating countries:</h5>
-                <ul class="countries-list cooperating-countries"></ul>
+                <div class="col-sm-5 col-xs-12">
+                  <h5>Cooperating countries:</h5>
+                  <ul class="countries-list cooperating-countries"></ul>
+                </div>
               </div>
+            </div>
+            <div class="map-description">
+              <!-- <p>
+                Custom text
+              </p> -->
             </div>
           </div>
         </div>
