@@ -1,48 +1,3 @@
-// Collapse navigation and move search section
-// when it's running out of space in the header
-function getNavItemsTotalWidth() {
-  var clone = $("#portal-globalnav").clone();
-  clone.addClass('cloned-menu');
-  $('#portal-globalnav-wrapper').append(clone);
-  var totalNavItemsWidth = 0;
-  var $clonedNavItems = $('.cloned-menu').children('li');
-  $clonedNavItems.each(function() {
-    var $li = $(this);
-    totalNavItemsWidth += $li.outerWidth(true);
-  });
-  $('.navbar-nav').attr('data-width', totalNavItemsWidth + 10);
-  clone.remove();
-}
-
-function collapseHeader() {
-  var $header = $('.header-container');
-  var headerWidth = $header.width();
-  var logoWidth = $('.header-logo').outerWidth(true);
-  var rightActionsWidth = $('.right-actions').outerWidth(true) + 35;
-  var menuWidth = $('.navbar-nav').data('width');
-
-  var availableSpace = headerWidth - (logoWidth + menuWidth);
-  var collapseHeader = availableSpace <= rightActionsWidth;
-  $header.toggleClass('collapse-header', collapseHeader);
-
-  if ($header.hasClass('collapse-header')) {
-    var navAvailableSpace = headerWidth - logoWidth;
-    var collapseNav = menuWidth >= navAvailableSpace;
-    $header.toggleClass('collapse-nav', collapseNav);
-  }
-}
-
-// move Eionet logo text in the collapsed menu
-// when it's running out of space in the header
-function moveLogoText() {
-  var $logoText = $('.logo-text');
-  if (window.innerWidth <= 450) {
-    $logoText.prependTo('.plone-navbar-collapse');
-  } else {
-    $logoText.appendTo('.header-logo a');
-  }
-}
-
 $(document).ready(function() {
   // HEADER
   var $header = $('.header-container');
@@ -84,6 +39,57 @@ $(document).ready(function() {
     }
   });
 
+  // Collapse navigation and move search section
+  // when it's running out of space in the header
+  function getNavItemsTotalWidth() {
+    var clone = $("#portal-globalnav").clone();
+    clone.addClass('cloned-menu');
+    $('#portal-globalnav-wrapper').append(clone);
+    var totalNavItemsWidth = 0;
+    var $clonedNavItems = $('.cloned-menu').children('li');
+    $clonedNavItems.each(function() {
+      var $li = $(this);
+      totalNavItemsWidth += $li.outerWidth(true);
+    });
+    $('.navbar-nav').attr('data-width', totalNavItemsWidth + 10);
+    clone.remove();
+  }
+
+  function collapseHeader() {
+    var $header = $('.header-container');
+    var headerWidth = $header.width();
+    var logoWidth = $('.header-logo').outerWidth(true);
+    var rightActionsWidth = $('.right-actions').outerWidth(true) + 35;
+    var menuWidth = $('.navbar-nav').data('width');
+
+    var availableSpace = headerWidth - (logoWidth + menuWidth);
+    var collapseHeader = availableSpace <= rightActionsWidth;
+    $header.toggleClass('collapse-header', collapseHeader);
+
+    if ($header.hasClass('collapse-header')) {
+      var navAvailableSpace;
+      if ($(window).width() >= 480) {
+        navAvailableSpace = headerWidth - logoWidth;
+      } else {
+        navAvailableSpace = headerWidth;
+      }
+      var collapseNav = menuWidth >= navAvailableSpace;
+      $header.toggleClass('collapse-nav', collapseNav);
+    } else {
+      $header.removeClass('collapse-nav');
+    }
+  }
+
+  // move Eionet logo text in the collapsed menu
+  // when it's running out of space in the header
+  function moveLogoText() {
+    var $logoText = $('.logo-text');
+    if ($(window).width() <= 480) {
+      $logoText.prependTo('.plone-navbar-collapse');
+    } else {
+      $logoText.appendTo('.header-logo a');
+    }
+  }
 
   // sticky header on mobile devices
   var headerPos = $header.offset().top + 35;
@@ -126,10 +132,9 @@ $(document).ready(function() {
   $header.toggleClass('collapse-header collapse-nav', isMobile);
 
   getNavItemsTotalWidth();
-  collapseHeader();
   moveLogoText();
+  collapseHeader();
 
-  // Fire resize event after the browser window resizing it's completed
   var resizeTimer;
   $(window).on('resize',function() {
     clearTimeout(resizeTimer);
@@ -138,7 +143,7 @@ $(document).ready(function() {
 
   function doneResizing() {
     getNavItemsTotalWidth();
-    collapseHeader();
     moveLogoText();
+    collapseHeader();
   }
 });
