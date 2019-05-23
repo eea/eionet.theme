@@ -75,6 +75,27 @@
     allowed_attributes="tabular_fielddata batch results pas_member _pas_member tabular_fields normalizeString"
   />
 
+  <browser:page
+    name="external-template-head"
+    for="*"
+    template="pt/external-template-head.pt"
+    permission="zope2.View"
+    />
+  <browser:page
+    name="external-template-header"
+    for="*"
+    template="pt/external-template-header.pt"
+    permission="zope2.View"
+    class=".externaltemplates.ExternalTemplateHeader"
+    />
+
+  <browser:page
+    name="external-template-footer"
+    for="*"
+    template="pt/external-template-footer.pt"
+    permission="zope2.View"
+    />
+
 
 <!--  <browser:page
       name="gopdb"
