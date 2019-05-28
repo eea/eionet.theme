@@ -1,6 +1,7 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:monkey="http://namespaces.plone.org/monkey"
   xmlns:plone="http://namespaces.plone.org/plone"
   i18n_domain="eionet.theme">
 
@@ -45,6 +46,17 @@
     template="overrides/styles_viewlet_override.pt"
     layer="eionet.theme.interfaces.IEionetThemeLayer"
     permission="zope2.View"
+    />
+
+  <!-- Monkey patches -->
+
+  <include package="collective.monkeypatcher" />
+
+  <monkey:patch
+    description="Patched toLocalizedTime #105684"
+    class="Products.CMFPlone.browser.ploneview.Plone"
+    original="toLocalizedTime"
+    replacement=".overrides.patched_toLocalizedTime"
     />
 
 </configure>
