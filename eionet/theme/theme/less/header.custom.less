@@ -2,88 +2,90 @@
 
 #content-header {
   border-bottom: 1px solid #ddd;
+}
 
-  .header-container {
-    display: flex;
-    justify-content: space-between;
-    visibility: hidden;
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  visibility: hidden;
+}
 
-    .header-logo {
-      padding-right: 25px;
-      >a {
-        height: 100%;
-        vertical-align: middle;
-        white-space: nowrap;
-        color: #000;
-        &:hover,
-        &:focus {
-          text-decoration: none;
-        }
-
-        #portal-logo {
-          float: none;
-          display: inline-block;
-          vertical-align: middle;
-        }
-
-        .logo-text {
-          font-size: 18px;
-          font-weight: bold;
-          line-height: 1;
-          display: inline-block;
-          vertical-align: middle;
-          margin-left: 0.3em;
-        }
-      }
-
-      img {
-        height: 78px;
-        padding: 7px 0;
-        width: auto;
-      }
+.header-logo {
+  padding-right: 25px;
+  >a {
+    height: 100%;
+    vertical-align: middle;
+    white-space: nowrap;
+    color: #000;
+    &:hover,
+    &:focus {
+      text-decoration: none;
     }
 
-    .header-right-section {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
+    #portal-logo {
+      float: none;
+      display: inline-block;
+      vertical-align: middle;
+    }
 
-      .right-actions {
-        display: flex;
-        align-items: center;
-        margin-left: 30px;
-      }
+    .logo-text {
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 0.3em;
+    }
+  }
 
-      .login {
-        ul {
-          list-style-type: none;
-          padding-left: 1em;
-          margin-bottom: 5px;
-          >li {
-            a {
-              color: #666;
-              font-size: 13px;
-              white-space: nowrap;
-              &:hover {
-                color: @orange-color;
-                text-decoration: none;
-              }
-            }
-            a:before {
-              content: "\e161";
-              font-family: 'Glyphicons Halflings';
-              font-size: 11px;
-              display: inline-block;
-              margin-right: 0.5em;
-              position: relative;
-              top: 1px;
-            }
-          }
+  img {
+    height: 78px;
+    padding: 7px 0;
+    width: auto;
+  }
+}
+
+.header-right-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.right-actions {
+  display: flex;
+  align-items: center;
+  margin-left: 30px;
+}
+
+.login {
+  ul {
+    list-style-type: none;
+    padding-left: 1em;
+    margin-bottom: 5px;
+    >li {
+      a {
+        color: #666;
+        font-size: 13px;
+        white-space: nowrap;
+        &:hover {
+          color: @orange-color;
+          text-decoration: none;
+        }
+        &:before {
+          content: "\e161";
+          font-family: 'Glyphicons Halflings';
+          font-size: 11px;
+          display: inline-block;
+          margin-right: 0.5em;
+          position: relative;
+          top: 1px;
         }
       }
     }
   }
+}
 
+.right-actions {
   .search-box {
     position: relative;
     width: 170px;
@@ -97,11 +99,12 @@
 
     button {
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 4px;
+      right: 10px;
       background-color: transparent;
       border: none !important;
       color: @green-color !important;
+      padding: 0;
       &:hover {
         box-shadow: none;
         background: none;
@@ -116,64 +119,58 @@
       }
     }
   }
+}
 
-  .header-container.sticky-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #fff;
-    z-index: 8;
-    margin-top: 0;
-    border-top: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+.header-container.sticky-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  z-index: 8;
+  margin-top: 0;
+  border-top: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 
-    .search-wrapper {
-      display: none;
-    }
+  .search-wrapper {
+    display: none;
   }
+}
 
-  .collapse-header {
-    margin-top: 35px;
-    position: relative;
-    border-top: 1px solid #ddd;
+.collapse-header {
+  margin-top: 35px;
+  position: relative;
+  border-top: 1px solid #ddd;
 
-    .right-actions {
-      position: absolute;
-      top: -31px;
-      right: 30px;
+  .right-actions {
+    position: absolute;
+    top: -31px;
+    right: 30px;
 
-      button {
-        padding: 0;
-        i {
-          font-size: 14px;
-          top: 3px !important;
-          right: 10px;
-        }
-      }
-      input {
-        font-size: 13px;
-        height: 23px;
+    button {
+      top: -2px;
+      right: 2px;
+      i {
+        font-size: 14px;
+        top: 3px !important;
+        right: 10px;
       }
     }
-
-    .plone-navbar-nav {
-      margin-right: 0;
+    input {
+      font-size: 13px;
+      height: 23px;
     }
   }
 }
 
+
 @media (max-width: 1280px) {
-  #content-header {
-    .header-container {
-      .header-logo {
-        >a .logo-text {
-          font-size: 16px;
-        }
-        img {
-          height: 58px;
-        }
-      }
+  .header-logo {
+    >a .logo-text {
+      font-size: 16px;
+    }
+    img {
+      height: 58px;
     }
   }
 }
@@ -191,14 +188,14 @@
   .plone-toolbar-expanded #edit-zone .plone-toolbar-logo {
     background-color: #92979a;
     border-radius: 4px;
-    left: -111px;
-    width: 38px;
+    left: -111px !important;
+    width: 38px !important;
     height: 38px;
     top: 47px;
     z-index: 9999;
 
     img {
-      margin-top: 7px;
+      margin-top: 7px !important;
       right: 11px;
       position: relative;
     }
@@ -206,13 +203,9 @@
 }
 
 @media (max-width: 480px) {
-  #content-header {
-    .header-container {
-      .header-logo {
-        .logo-title {
-         font-size: 16px;
-        }
-      }
+  .header-logo {
+    .logo-title {
+     font-size: 16px;
     }
   }
 

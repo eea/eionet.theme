@@ -1,327 +1,98 @@
-//*// CUSTOM SITE NAV //*//
+// //*// CUSTOM SITE NAV //*//
 
-.plone-nav {
-  margin-bottom: 0;
-  padding-left: 0;
-  list-style: none;
-  &:extend(.clearfix all);
-  li {
-    position: relative;
-    &.has_subtree a {
-      padding-right: 2.5em;
+#content-header {
+  .plone-navbar {
+    position: absolute;
+    visibility: hidden;
+    left: 0;
+
+    .container {
+      width: auto !important;
+      padding: 0;
     }
-    label {
-      margin: 0;
-    }
-    a {
-      color: @text-color;
-      padding: 1.8em 1em;
-      font-size: 16px;
+  }
+
+  .plone-navbar-collapse {
+    overflow-x: visible;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+    height: auto !important;
+    overflow: visible;
+  }
+
+  .plone-navbar-nav {
+    margin: 0;
+    white-space: nowrap;
+    padding-left: 0;
+    list-style: none;
+
+    li {
       position: relative;
-      display: block;
-      hyphens: auto;
-      &:hover,
-      &:focus {
-        text-decoration: none;
-        // background-color: @plone-sitenav-link-hover-bg;
-      }
-    }
-    // Navigation sublevels
-    ul {
-      padding-left: 0.5em;
-      visibility: hidden;
-      opacity: 0;
-      height: 0;
-      li {
-        a {
-          font-size: ceil((@plone-font-size-base * 1.1));;
-          background-color: @plone-sitenav-bg;
-        }
-      }
-    }
-    .opener {
-      .caret {
-        margin-bottom: 0;
-        display: inline-block;
+      a {
+        color: @text-color;
+        padding: 1.8em 1em;
+        font-size: 16px;
         position: relative;
-        vertical-align: unset;
-        border-top: none;
-        border-right: none;
-        border-left: none;
-        width: auto;
-        height: auto;
-      }
-      .caret:after {
-          content:"\e259";
-          font-family: 'Glyphicons Halflings';
-          display: inline-block;
-          font-size: 0.7em;
-          margin-left: 5px;
-      }
-      & + label:after {
-        transform: rotate(0deg);
-        transition: ease-in 0.35s;
-      }
-      @media (max-width: @plone-grid-float-breakpoint) {
-        &:checked + label:after {
-          transform: rotate(-180deg);
-          transition: ease-in 0.35s;
+        display: block;
+        hyphens: auto;
+        &:hover,
+        &:focus {
+          text-decoration: none;
         }
       }
-      & ~ ul {
-        transition: ease-out 0.35s;
+
+      .opener {
+        .caret {
+          margin-bottom: 0;
+          display: inline-block;
+          position: relative;
+          vertical-align: unset;
+          border-top: none;
+          border-right: none;
+          border-left: none;
+          width: auto;
+          height: auto;
+
+          &:after {
+            content: "\e259";
+            font-family: 'Glyphicons Halflings';
+            display: inline-block;
+            font-size: 0.7em;
+            margin-left: 5px;
+          }
+        }
       }
-      &:checked ~ ul {
-        height: auto;
-        transition: ease-in 0.35s;
-      }
-      @media (max-width: @plone-grid-float-breakpoint) {
-        &:checked ~ ul {
+    }
+
+    >li {
+      display: table-cell;
+      &:hover {
+        a {
+          background-color: #f8f8f8;
+        }
+        >.submenu {
+          display: block;
           visibility: visible;
           opacity: 1;
         }
       }
-    }
-    label {
-      position: absolute;
-      right: 0em;
-      top: 0em;
-      height: 100%;
-      width: 4em;
-      text-align: center;
-      &:after {
-        background: darken(@plone-link-color, 7%);
-        border-radius: @plone-input-border-radius;
-        content: "▼";
-        cursor: pointer;
-        display: inline-block;
-        line-height: 1;
-        width: 1.5em;
-        height: 1.5em;
-        font-size: 1.25em;
-        padding: 0.25em;
-        right: 0.5em;
-        top: 0.45em;
-        position: absolute;
+
+      .state-private {
+        color: @text-color !important;
       }
     }
-  }
-  >li {
-    display: table-cell;
-  }
-
-  @media (min-width: @plone-grid-float-breakpoint) {
-    li {
-      label {
-        top: 0em;
-        width: 2em;
-        &:after {
-          top: 1.25em;
-        }
-      }
-      &.has_subtree {
-        .has_subtree li {
-          label {
-            right: 0.25em;
-            &:after {
-              top: 0.5em;
-            }
-          }
-        }
-      }
-      label {
-        &:after {
-            width: 2.0em;
-            height: 2.0em;
-            font-size: 0.75em;
-            padding: 0.5em 1em 0.5em 0;
-            background: transparent;
-        }
-      }
-      ul {
-        position: absolute;
-        z-index: 100;
-        padding: 0;
-        opacity: 0;
-        visibility: hidden;
-        transition: ease-out 0.75s;
-        li {
-          a {
-            min-width: 14em;
-            display: inline-block;
-          }
-        }
-      }
-    }
-    .has_subtree:hover > ul,
-    .has_subtree .has_subtree:hover > ul {
-      opacity: 1;
-      visibility: visible;
-      transition: ease-in .35s;
-    }
-    .has_subtree .has_subtree ul {
-      position: absolute;
-      z-index: -1;
-      left: 0em;
-      top: 0px;
-    }
-    .has_subtree .has_subtree:hover > ul {
-      // we only shift the submenus to the right if visible
-      // to prevent horizontal scrollers if not needed
-      left: 16em;
-    }
-  }
-}
-
-.plone-navbar {
-  position: absolute;
-  visibility: hidden;
-  left: 0;
-  .clearfix();
-
-  // Prevent floats from breaking the navbar
-  &:extend(.clearfix all);
-
-  .container {
-    width: auto;
-    padding: 0;
-  }
-}
-
-.plone-navbar-header {
-  .clearfix(); //without extend
-  @media (min-width: @plone-grid-float-breakpoint) {
-    float: right;
-  }
-}
-
-.plone-navbar {
-  .plone-navbar-collapse {
-    overflow-x: visible;
-    border-top: 1px solid transparent;
-    &:extend(.clearfix all);
-    -webkit-overflow-scrolling: touch;
-
-    display: block;
-    height: auto !important;
-    padding-bottom: 0;
-    overflow: visible;
 
     .submenu {
       display: none;
       visibility: visible;
       opacity: 1;
-    }
-
-    @media (min-width: @plone-grid-float-breakpoint) {
-      width: auto;
-      border-top: 0;
-      // box-shadow: none;
-      &.plone-collapse {
-        display: block;
-        height: auto !important;
-        padding-bottom: 0; // Override default setting
-        overflow: visible;
-      }
-      &.in {
-        overflow-y: visible;
-      }
-      // Undo the collapse side padding for navbars with containers to ensure
-      // alignment of right-aligned contents.
-      .navbar-fixed-top &,
-      .navbar-static-top &,
-      .navbar-fixed-bottom & {
-        padding-left: 0;
-        padding-right: 0;
-      }
-    }
-  }
-}
-
-.plone-navbar-toggle {
-  z-index: 1; //just in case
-  position: relative;
-  float: right;
-  padding: 6px 10px;
-
-  background-color: @blue-color;
-  background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
-  border-radius: @plone-border-radius-base;
-  display: none;
-
-
-  // We remove the `outline` here, but later compensate by attaching `:hover`
-  // styles to `:focus`.
-  &:focus {
-    outline: 0;
-  }
-  &:hover {
-  	background-color: darken(@plone-sitenav-link-hover-bg, 15%);
-  	border-color: darken(@plone-sitenav-link-hover-bg, 25%);
-  }
-
-  // Burgerbar (uncomment for a ≡ menu and comment menu just below)
-  /*
-  .icon-bar {
-    display: block;
-    width: 22px;
-    height: 2px;
-    border-radius: 1px;
-    background: white;
-    margin-top: 2px;
-  }
-  .icon-bar + .icon-bar {
-    margin-top: 5px;
-  }
-  .icon-bar + .icon-bar + .icon-bar {
-    margin-bottom: 3px;
-  }
-  //end burgerbar icon-bar
-  */
-
-  // Menu (That option with a word, witch is language-dependant, is to ensure a higher tap ratio on the menu)
-  .icon-bar::after {
-    content:"\e236";
-    font-family: 'Glyphicons Halflings';
-    font-size: 18px;
-    color: white;
-  }
-  .icon-bar + .icon-bar::after {content: "";}
-  //end menu icon-bar
-
-  @media (min-width: @plone-grid-float-breakpoint) {
-    display: none;
-  }
-}
-
-.plone-navbar-nav {
-  margin: 0;
-  white-space: nowrap;
-
-  > li {
-    &:hover {
-      a {
-        background-color: #f8f8f8;
-      }
-      >.submenu {
-        display: block;
-        visibility: visible;
-        opacity: 1;
-      }
-    }
-
-    .state-private {
-      color: @text-color !important;
-    }
-
-    .submenu {
-      background-color: #f8f8f8 !important;
-      top: 78px;
+      padding: 0;
+      margin: 0;
+      background-color: #f8f8f8;
+      top: 79px;
       left: 0;
       border: none;
       border-radius: 0;
-      height: auto;
-      box-shadow: none;
       float: none;
       min-width: 300px;
       box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.2);
@@ -352,17 +123,17 @@
             position: relative;
           }
           >.submenu_title:after {
-            content:"\e033";
+            content: "\e033";
             font-family: 'Glyphicons Halflings';
             position: absolute;
             top: 0;
             right: -20px;
             font-size: 12px;
           }
-          .link-https,
-          .link-external {
-            display: none;
-          }
+          // .link-https,
+          // .link-external {
+          //   display: none;
+          // }
         }
 
         >.link-https,
@@ -371,84 +142,69 @@
         }
       }
     }
-  }
 
-  // use selected for the last item in the structure
-
-  >.current > a,
-  >.selected > a {
-    &,
-    &:hover,
-    &:focus {
-      color: #BF5900 !important;
-      font-weight: 600;
-      position: relative;
-      line-height: normal;
-    }
-    &:before {
-      content: '';
-      position: absolute;
-      top: -1px;
-      left: 0;
-      right: 0;
-      width: 100%;
-      height: 3px;
-      background-color: @orange-color;
-    }
-  }
-
-  // Uncollapse the nav
-  @media (min-width: @plone-grid-float-breakpoint) {
-
-    > li {
-      &.has_subtree a {
-        padding-right: 2em;
-      }
-
-      label {
-        font-size: 1em;
-        background: transparent;
-        &:after {
-        }
-      }
-      li.has_subtree label:after {
-        transform: rotate(-90deg);
-
-      }
-    }
-
-    &.navbar-right:last-child {
-      margin-right: -@plone-sitenav-padding-horizontal;
-    }
-
-    .has_subtree.inPath > a {
+    >.current > a,
+    >.selected > a {
       &,
       &:hover,
       &:focus {
-        color: white;
-        background-color: @plone-sitenav-link-hover-bg;
+        color: #BF5900 !important;
+        font-weight: 600;
+        position: relative;
+        line-height: normal;
+      }
+      &:before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 3px;
+        background-color: @orange-color;
       }
     }
-
   }
-}
 
-.collapse-nav {
-  .header-logo,
-  .header-right-section {
-    width: auto !important;
+
+  // Collapsed navigation
+
+  .plone-navbar-toggle {
+    z-index: 1;
+    position: relative;
+    float: right;
+    padding: 6px 10px;
+
+    background-color: @blue-color;
+    background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
+    border-radius: 4px;
+    display: none;
+
+    // We remove the `outline` here, but later compensate by attaching `:hover`
+    // styles to `:focus`.
+    &:focus {
+      outline: 0;
+    }
+
+    .icon-bar::after {
+      content: "\e236";
+      font-family: 'Glyphicons Halflings';
+      font-size: 18px;
+      color: white;
+    }
+    .icon-bar + .icon-bar::after {content: "";}
   }
-  .plone-navbar {
+
+  .collapse-nav {
     .plone-navbar-toggle {
       display: block;
     }
 
     .plone-navbar-collapse.in {
       display: block;
-      padding-right: @plone-sitenav-padding-horizontal;
-      padding-left:  @plone-sitenav-padding-horizontal;
+      padding-right: 15px;
+      padding-left:  15px;
       width: 100%;
-      display: block;
       position: absolute;
       left: 0;
       right: 0;
@@ -459,11 +215,37 @@
         display: block;
         box-shadow: 0 4px 2px -2px rgba(0,0,0,0.4);
         background-color: @blue-color;
+        margin: 0 -15px 0 !important;
+
+        >li:not(:first-child) {
+          >a {
+            border-top: 1px solid #fff;
+          }
+        }
+
+        >li {
+          >.state-private {
+            color: white !important;
+          }
+        }
 
         li {
           >a {
             color: #fff;
             padding: 1em 0.5em;
+          }
+
+          &:hover {
+            >a,
+            >.state-private {
+              color: @blue-color !important;
+            }
+            .opener {
+              border: 1px solid @blue-color;
+            }
+            .caret {
+              border-top: 8px solid @blue-color !important;
+            }
           }
 
           .submenu {
@@ -483,12 +265,12 @@
                 &:hover {
                   background-color: #fff;
                 }
-                .submenu_title {
-                  padding-left: 0;
-                }
-                .opener {
-                  display: none;
-                }
+              }
+              .submenu_title {
+                padding-left: 0;
+              }
+              .opener {
+                display: none;
               }
             }
           }
@@ -522,43 +304,10 @@
               }
             }
           }
-
-          .menu-open {
-            display: block;
-          }
         }
 
-        >li:not(:first-child) {
-          >a {
-            border-top: 1px solid #fff;
-          }
-        }
-
-        > li {
-          >.state-private {
-            color: white !important;
-          }
-        }
-
-        li.hasDropDown {
-          >a:after {
-            content:"";
-          }
-        }
-
-        li:hover {
-          > a {
-            color: @blue-color !important;
-            .opener {
-              border: 1px solid @blue-color;
-            }
-            .caret {
-              border-top: 8px solid @blue-color;
-            }
-          }
-          >.state-private {
-            color: @blue-color;
-          }
+        .menu-open {
+          display: block !important;
         }
 
         >.selected > a {
@@ -577,18 +326,12 @@
     .plone-navbar-nav,
     .plone-navbar-nav > li {
       display: block;
-      margin-right: 0;
-      float: none;
     }
 
-    .plone-navbar-nav .current > a:before,
-    .plone-navbar-nav .selected > a:before {
+    .current > a:before,
+    .selected > a:before {
       height: 0;
       width: 0;
-    }
-
-    .plone-navbar-collapse.in .plone-navbar-nav {
-      margin: 0 -15px 0 !important;
     }
 
     @media (max-width: 1280px) {
@@ -599,36 +342,36 @@
 
     @media (max-width: 980px) {
       .plone-navbar-collapse.in {
-        // height: 100vh !important;
         height: 90vh !important;
         max-height: 100vh!important;
         overflow-y: auto;
       }
     }
   }
-}
 
-.cloned-menu {
-  position: absolute;
-  left: 0;
-  visibility: hidden;
+  .cloned-menu {
+    position: absolute;
+    left: 0;
+    visibility: hidden;
 
-  >li {
-    float: left !important;
+    >li {
+      float: left !important;
+    }
   }
+
 }
 
 @media (max-width: 1280px) {
-  .plone-navbar-nav > li {
-    > a {
-      font-size: 15px !important;
-      padding: 1.3em 1em;
-    }
-    .submenu {
-      top: 57px;
-
-      > li a {
-        font-size: 14px ;
+  #content-header {
+    .plone-navbar {
+      .plone-navbar-nav > li {
+        >a {
+          font-size: 15px !important;
+          padding: 1.3em 1em;
+        }
+        .submenu {
+          top: 60px;
+        }
       }
     }
   }

@@ -5,7 +5,7 @@
 @barceloneta_path: "barceloneta/less";
 
 //*// Font families
-// @import "@{barceloneta_path}/fonts.plone.less"; // we use our custom fonts
+// @import "@{barceloneta_path}/fonts.plone.less";  // DISABLED - we use our custom fonts
 @import "fonts.custom.less";
 
 //*// Core variables and mixins
@@ -27,8 +27,9 @@
 @import "@{barceloneta_path}/print.plone.less";
 
 //*// Core CSS
-@import "@{barceloneta_path}/scaffolding.plone.less";
-@import "@{barceloneta_path}/type.plone.less";
+// @import "@{barceloneta_path}/scaffolding.plone.less";  // DISABLED - we use our custom style
+// @import "@{barceloneta_path}/type.plone.less";  // DISABLED - we use our custom style
+
 @import "@{barceloneta_path}/code.plone.less";
 //@import "@{barceloneta_path}/deco.plone.less"; //uncomment for deco variant
 @import "@{barceloneta_path}/grid.plone.less"; //grid Bootstrap
@@ -63,7 +64,7 @@
 
 //*// Structure
 @import "@{barceloneta_path}/header.plone.less";
-// @import "@{barceloneta_path}/sitenav.plone.less";
+// @import "@{barceloneta_path}/sitenav.plone.less";  // DISABLED - we use our custom style
 @import "@{barceloneta_path}/main.plone.less";
 @import "@{barceloneta_path}/footer.plone.less";
 @import "@{barceloneta_path}/loginform.plone.less";
@@ -73,7 +74,7 @@
 @import "@{barceloneta_path}/event.plone.less";
 @import "@{barceloneta_path}/image.plone.less";
 @import "@{barceloneta_path}/behaviors.plone.less";
-@import "@{barceloneta_path}/discussion.plone.less";
+// @import "@{barceloneta_path}/discussion.plone.less";  // DISABLED - we use our custom style
 @import "@{barceloneta_path}/search.plone.less";
 
 // ### END OF PLONE IMPORTS ###
@@ -96,11 +97,11 @@
 // ### END OF UTILS ###
 
 // ### EIONET custom style ###
-@import "base.custom.less";
-@import "buttons.custom.less";
-@import "header.custom.less";
-@import "nav.custom.less";
+@import "variables.custom.less";
+@import "fixes.less";
 @import "breadcrumbs.custom.less";
-@import "search.custom.less";
+@import "buttons.custom.less";
 @import "footer.custom.less";
+@import "discussion.custom.less";
+
 // @import "fontello/fontello.css";

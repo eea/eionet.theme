@@ -23,6 +23,7 @@ module.exports = function (grunt) {
         },
         files: {
           'less/theme-compiled.css': 'less/theme.local.less',
+          'less/critical-compiled.css': 'less/critical.less',
         }
       }
     },
@@ -47,6 +48,7 @@ module.exports = function (grunt) {
       target: {
         files: {
           'less/theme-compiled.css': ['less/theme-compiled.css'],
+          'less/critical-compiled.css': ['less/critical-compiled.css'],
         }
       }
     },
