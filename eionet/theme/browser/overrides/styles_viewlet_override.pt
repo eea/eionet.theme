@@ -1,6 +1,9 @@
 <tal:defines tal:define="
         sprops context/portal_properties/site_properties;
         preload_css sprops/preload_css|False;">
+        <!-- inline critical.css if eionet theme namespace exists -->
+        <style tal:content="structure python:context.restrictedTraverse('++theme++eionet/less').readFile('critical-compiled.css')" tal:condition="exists:context/++theme++eionet"></style>
+
     <tal:styles repeat="style view/styles">
         <tal:block define="condcomment style/conditionalcomment">
             <tal:wcondcomment tal:condition="condcomment">
