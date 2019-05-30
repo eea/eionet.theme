@@ -115,7 +115,7 @@ If you do not have an account here, head over to the
                     Case sensitive, make sure caps lock is not enabled.
                 </div>
                 <div tal:condition="python:checkPermission('Mail forgotten password', context)"
-                     tal:define="mail_password_url python: context.absolute_url() + '/password-reset'"
+                     tal:define="mail_password_url python: 'https://www.eionet.europa.eu/password-reset'"
                      i18n:translate="help_password_retrieval">
                     If you have forgotten your password,
                     <span i18n:name="click_here">
