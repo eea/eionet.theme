@@ -581,13 +581,6 @@ i.link-external:after {
   background: #fff;
 }
 
-@media (min-width: 1600px) {
-  .plone-toolbar-left-default .container,
-  .container {
-    width: 1670px;
-  }
-}
-
 
 // Search page
 
@@ -683,15 +676,26 @@ i.link-external:after {
   }
 }
 
+@media (min-width: 1600px) {
+  .container,
+  .plone-toolbar-left-default .container,
+  .plone-toolbar-left-expanded .container, {
+    width: 1670px;
+  }
+}
+
 @media (max-width: 1600px) {
-  .container {
+  .container,
+  .plone-toolbar-left-default .container,
+  .plone-toolbar-left-expanded .container {
     width: 100% !important;
     padding: 0 2em;
   }
 }
 
 @media (max-width: 1200px) {
-  .container {
+  .container,
+  .plone-toolbar-left-expanded .container {
     padding: 0 1.5em;
   }
 }
