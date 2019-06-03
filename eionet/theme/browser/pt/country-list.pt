@@ -112,6 +112,7 @@
 .map-legend {
   display: flex;
   flex-direction: row-reverse;
+  margin-bottom: 1.5em;
 }
 .map-legend legend {
   display: inline-block;
@@ -122,9 +123,10 @@
   text-align: right;
 }
 .map-legend .color {
-  width: 6rem;
-  height: 2rem;
+  width: 4rem;
+  height: 1.5rem;
   float: right;
+  margin-left: 0.5rem;
 }
 
 .countries-list-wrapper {
@@ -162,10 +164,6 @@
 
 .countries-list li .c-blue {
   color: #069;
-}
-
-.map-wrapper {
-  margin-bottom: 1.5em;
 }
 
 .svg-map-container svg {
