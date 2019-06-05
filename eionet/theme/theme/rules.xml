@@ -92,9 +92,7 @@
       </xsl:variable>
       <div class="{$columntwo} sidebar-offcanvas" role="complementary">
         <aside id="portal-column-two">
-          <rules css:if-content="#operations">
-              <xsl:copy-of css:select="#operations" />
-          </rules>
+          <xsl:copy-of css:if-content="#operations" css:select="#operations" />
           <xsl:copy-of css:select="#portal-column-two > *" />
         </aside>
       </div>
