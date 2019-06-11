@@ -13,7 +13,7 @@ setup(
     name=NAME,
     version=VERSION,
     description="Installable theme: eionet.theme",
-    long_description=open("README.txt").read() + "\n" +
+    long_description=open("README.md").read() + "\n" +
     open(os.path.join("docs", "HISTORY.txt")).read(),
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
