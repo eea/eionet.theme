@@ -1,18 +1,42 @@
-Introduction
+============
+eionet.plone.theme
 ============
 
 Theme package for eionet.europa.eu
 
-For development, run:
 
-```
-  npm install
-  grunt
-```
+Installation
+------------
+
+* Install ``eionet.plone.theme`` by adding it to your buildout:
+
+    [buildout]
+    ...
+    eggs =
+        ...
+        eionet.theme
+
+* And then running:
+
+    ``bin/buildout``
+
+
+Development
+------------
+
+`` npm install ``
+
+For development mode, run:
+
+`` grunt watch ``
+
+For production mode, run:
+
+`` grunt ``
 
 
 Overrides
-============
+------------
 
 Currently implemented overrides:
 
@@ -25,7 +49,20 @@ eionet password reset tool
 
 
 Favicons
-============
+------------
 
 The favicons are retrieved from the Plone site root, if you want to override them
 add a favicons folder to your Plone site and replace the images
+
+
+Contribute
+----------
+
+- Issue Tracker: https://github.com/eea/eionet.plone.theme/issues
+- Source Code: https://github.com/eea/eionet.plone.theme
+
+
+Support
+-------
+
+If you are having issues, please let us know.
