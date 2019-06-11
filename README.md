@@ -9,12 +9,13 @@ Installation
 
 * Install ``eionet.plone.theme`` by adding it to your buildout:
 
-    ``[buildout]
+    ```
+    [buildout]
     ...
     eggs =
         ...
         eionet.theme
-    ``
+    ```
 
 * And then running:
 
