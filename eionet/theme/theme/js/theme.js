@@ -31,13 +31,22 @@ $(document).ready(function() {
 
 
   // Insert icon for external links inside the <a> tag
-  $('.submenu a').each(function() {
+  // in the navigation menu
+  $('#portal-globalnav a').each(function() {
     var $this = $(this);
+    var $icon = $('<i class="glyphicon external-icon link-https"/>');
     var a = new RegExp('/' + window.location.host + '/');
-    if (!a.test(this.href)) {
-      $this.append('<i class="glyphicon external-icon link-https"/>');
+    if ($this.parents('.submenu').length) {
+      if (!a.test(this.href)) {
+        $this.append($icon);
+      }
+    } else {
+      if (!a.test(this.href)) {
+        $this.prepend($icon);
+      }
     }
   });
+
 
   // Collapse navigation and move search section
   // when it's running out of space in the header
