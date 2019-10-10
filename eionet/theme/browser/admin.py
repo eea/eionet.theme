@@ -1,8 +1,8 @@
 import logging
 from datetime import date
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 from time import mktime, strptime
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from lxml.etree import fromstring as etree_fromstring
 from lxml.html import fragment_fromstring, fromstring, tostring
@@ -30,7 +30,7 @@ def read_data(obj_file):
     else:
         while data is not None:
             ranges.append(data.data)
-            data = data.next
+            data = data.__next__
 
     return ''.join(ranges)
 
@@ -49,11 +49,11 @@ def as_plain_text(value):
     if isinstance(value, str):
         value = value.decode('utf-8')
 
-    value = u"<div>%s</div>" % value
+    value = "<div>%s</div>" % value
     el = fragment_fromstring(value)
     texts = el.xpath('text()')
 
-    return u' '.join(texts)
+    return ' '.join(texts)
 
 
 def as_richtext(value):
@@ -345,7 +345,7 @@ class EionetStructureImporter(BrowserView):
             h1 = h1s[0]
             h1.drop_tree()
             new_title = h1.text_content().strip()
-            new_title = new_title.replace(u'\n', u' - ')
+            new_title = new_title.replace('\n', ' - ')
             logger.info("Replacing title: %s -:- %s", title, new_title)
             title = new_title
 
@@ -391,7 +391,7 @@ class EionetDTMLReportImporter(EionetStructureImporter):
         """ Returns a reference to the original file
         """
         path = urlparse(link).path
-        bits = filter(None, path.split('/'))[::-1]
+        bits = [_f for _f in path.split('/') if _f][::-1]
         acc = []
         context_ids = self._source.objectIds()
         context = self._source

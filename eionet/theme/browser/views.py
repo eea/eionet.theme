@@ -114,7 +114,7 @@ class CollectionHelperView(BrowserView):
         if not self._pas_member:
             self._pas_member = getMultiAdapter(
                 (self.context, self.request),
-                name=u'pas_member'
+                name='pas_member'
             )
         return self._pas_member
 
@@ -129,7 +129,7 @@ class CollectionHelperView(BrowserView):
         if not self._plone_view:
             self._plone_view = getMultiAdapter(
                 (self.context, self.request),
-                name=u'plone'
+                name='plone'
             )
         return self._plone_view
 
@@ -161,7 +161,7 @@ class FrontpageNewsHelperView(BrowserView):
         if not self._plone_view:
             self._plone_view = getMultiAdapter(
                 (self.context, self.request),
-                name=u'plone'
+                name='plone'
             )
         return self._plone_view
 
@@ -232,7 +232,7 @@ class FrontpageNewsHelperView(BrowserView):
         if not self._pas_member:
             self._pas_member = getMultiAdapter(
                 (self.context, self.request),
-                name=u'pas_member'
+                name='pas_member'
             )
         return self._pas_member
 

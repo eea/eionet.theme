@@ -17,7 +17,7 @@
   <browser:page
     name="mail_password_template"
     for="*"
-    class="Products.CMFPlone.browser.password_reset.PasswordResetToolView"
+    class="Products.CMFPlone.browser.login.password_reset.PasswordResetToolView"
     permission="cmf.ManagePortal"
     template="overrides/mail_password_template.pt"
     layer="eionet.theme.interfaces.IEionetThemeLayer"
