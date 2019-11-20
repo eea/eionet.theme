@@ -3,12 +3,11 @@ from datetime import date
 from html.parser import HTMLParser
 from time import mktime, strptime
 from urllib.parse import urlparse
-
 from lxml.etree import fromstring as etree_fromstring
 from lxml.html import fragment_fromstring, fromstring, tostring
 from lxml.html.clean import clean_html
-
 import transaction
+import six
 from DateTime import DateTime
 from plone.api.portal import get_tool
 from plone.app.textfield.value import RichTextValue
@@ -25,7 +24,7 @@ def read_data(obj_file):
     ranges = []
     data = obj_file.data
 
-    if isinstance(data, str):
+    if isinstance(data, six.binary_type):
         ranges.append(data)
     else:
         while data is not None:
@@ -46,7 +45,7 @@ class DummyDict:
 def as_plain_text(value):
     value = HTMLParser().unescape(value)
 
-    if isinstance(value, str):
+    if isinstance(value, six.binary_type):
         value = value.decode('utf-8')
 
     value = "<div>%s</div>" % value
@@ -316,7 +315,7 @@ class EionetStructureImporter(BrowserView):
 
         title = obj.title
 
-        if isinstance(title, str):
+        if isinstance(title, six.binary_type):
             title = title.decode('utf-8')
 
         title = title.strip()
@@ -373,7 +372,7 @@ class EionetDTMLReportImporter(EionetStructureImporter):
 
         title = obj.title
 
-        if isinstance(title, str):
+        if isinstance(title, six.binary_type):
             title = title.decode('utf-8')
 
         title = title.strip()

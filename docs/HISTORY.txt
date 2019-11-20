@@ -3,9 +3,15 @@ Changelog
 
 1.0.dev0 - (unreleased)
 -------------------
-- WIP Apply custom style for eionet
+
+* Feature: added support for Python 3 and Plone 5.2
+  [iulianpetchesi, alecghica refs #110155]
+  
+* Apply custom style for eionet
   [krisztina]
-- Add setup.py
+
+* Add setup.py
   [krisztina]
-- Initial commit
+
+* Initial commit
   [krisztina]
