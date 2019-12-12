@@ -2,7 +2,7 @@ import logging
 from datetime import date
 from html.parser import HTMLParser
 from time import mktime, strptime
-from urllib.parse import urlparse
+from six.moves.urllib.parse import urlparse
 from lxml.etree import fromstring as etree_fromstring
 from lxml.html import fragment_fromstring, fromstring, tostring
 from lxml.html.clean import clean_html
