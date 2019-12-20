@@ -98,7 +98,6 @@
                            i18n:translate="label_click_here_to_retrieve">we can send you a new one</a></span>.
                 </p>
             </span>
-            <a href="@@login-help" tal:attributes="href string:${portal_url}/@@login-help" i18n:translate="footer_login_link_get_help">Get help</a>.
           </p>
           <p tal:condition="python:view.self_registration_enabled()">
             <span i18n:translate="need_an_account" tal:omit-tag="">Need an account?</span>
