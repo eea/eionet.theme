@@ -48,6 +48,24 @@
     permission="zope2.View"
     />
 
+  <browser:page
+      name="login"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
+      permission="zope.Public"
+      class="Products.CMFPlone.browser.login.login.LoginForm"
+      layer="eionet.theme.interfaces.IEionetThemeLayer"
+      template="overrides/login.pt"
+      />
+
+  <browser:page
+      name="failsafe_login"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
+      permission="zope.Public"
+      class="Products.CMFPlone.browser.login.login.FailsafeLoginForm"
+      layer="eionet.theme.interfaces.IEionetThemeLayer"
+      template="overrides/login_failsafe.pt"
+      />
+
   <!-- Monkey patches -->
 
   <include package="collective.monkeypatcher" />
