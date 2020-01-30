@@ -9,7 +9,7 @@ var focusCountryNames = [   // Member countries
   "Iceland", "Ireland", "Italy", "Latvia", "Liechtenstein", "Lithuania",
   "Luxembourg", "Malta", "Netherlands", "Norway", "Poland", "Portugal",
   "Romania", "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland",
-  "Turkey", "United Kingdom",
+  "Turkey",
 ];
 var coopCountries = [
   "Albania", "Bosnia and Herzegovina", "Kosovo*", "North Macedonia",
