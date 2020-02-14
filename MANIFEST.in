@@ -1,5 +1,7 @@
-recursive-include eionet *
-include docs/*
+include *.md *.rst *.txt
+graft docs
+graft eionet
 global-exclude *pyc
-
+global-exclude *~
+global-exclude *.un~
 global-include *.mo
