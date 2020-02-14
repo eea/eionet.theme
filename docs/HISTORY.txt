@@ -5,9 +5,6 @@ Changelog
 ---------------------------
 * Change: Implement automatic release [valentinab25]
 
-1.0 - (2020-02-14)
--------------------
-
 * Feature: added support for Python 3 and Plone 5.2
   [iulianpetchesi, alecghica refs #110155]
   
