@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.0 - (2020-02-14)
+---------------------------
+* Change: Implement automatic release [valentinab25]
+
 1.0.dev0 - (unreleased)
 -------------------
 
