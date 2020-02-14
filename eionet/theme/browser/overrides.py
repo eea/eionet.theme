@@ -1,7 +1,6 @@
 import logging
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
-from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone.app.layout.viewlets.common import PathBarViewlet as ViewletBase
 from zope.component import getMultiAdapter

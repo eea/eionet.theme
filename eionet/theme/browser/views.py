@@ -4,7 +4,6 @@ from Products.CMFPlone.utils import safe_callable
 from Products.Five.browser import BrowserView
 from Products.MimetypesRegistry.interfaces import MimeTypeException
 from plone.app.contenttypes.behaviors.collection import ICollection
-from plone.app.contenttypes.browser.collection import CollectionView
 from plone.namedfile.interfaces import INamed
 from plone.registry.interfaces import IRegistry
 from zope.size import byteDisplay

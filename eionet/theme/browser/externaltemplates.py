@@ -1,7 +1,6 @@
 from plone import api
 from plone.app.theming.interfaces import IThemeSettings
 from plone.registry.interfaces import IRegistry
-from Products.Five.browser import BrowserView
 from zope.component import getUtility
 
 
