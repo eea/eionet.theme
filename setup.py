@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Installer for the eionet.theme package."""
 
-import os
+from os.path import join
 
 from setuptools import find_packages, setup
 
 NAME = 'eionet.theme'
 PATH = NAME.split('.') + ['version.txt']
-VERSION = open(os.path.join(*PATH)).read().strip()
+VERSION = open(join(*PATH)).read().strip()
 
 setup(
     name=NAME,
@@ -15,7 +15,7 @@ setup(
     description="Installable theme: eionet.theme",
     long_description_content_type="text/x-rst",
     long_description=open("README.rst").read() + "\n" +
-    open(os.path.join("docs", "HISTORY.txt")).read(),
+                     open(join("docs", "HISTORY.txt")).read(),
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         "Environment :: Web Environment",
