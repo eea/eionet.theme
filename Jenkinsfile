@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-        GIT_NAME = "eionet.plone.theme"
+        GIT_NAME = "eionet.theme"
         SONARQUBE_TAGS = "plone5demo.eionet.europa.eu"
         GIT_VERSIONFILE = "eionet/theme/version.txt"
     }
