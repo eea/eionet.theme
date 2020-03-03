@@ -1,5 +1,15 @@
 eionet.plone.theme
 ========================
+ 
+.. image:: https://ci.eionet.europa.eu/buildStatus/icon?job=Eionet/eionet.theme/develop&subject=develop
+  :target: https://ci.eionet.europa.eu/job/Eionet/job/eionet.theme/job/develop/display/redirect
+  :alt: Develop
+.. image:: https://ci.eionet.europa.eu/buildStatus/icon?job=Eionet/eionet.theme/master&subject=master
+  :target: https://ci.eionet.europa.eu/job/Eionet/job/eionet.theme/job/master/display/redirect
+  :alt: Master
+.. image:: https://img.shields.io/github/v/release/eea/eionet.theme
+  :target: https://eggrepo.eea.europa.eu/d/eionet.theme/
+  :alt: Release
 
 Theme package for eionet.europa.eu
 
