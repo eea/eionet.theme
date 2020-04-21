@@ -11,6 +11,7 @@ var focusCountryNames = [   // Member countries
   "Romania", "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland",
   "Turkey"
 ];
+
 var coopCountries = [
   "Albania", "Bosnia and Herzegovina", "Kosovo*", "North Macedonia",
   "Montenegro", "Serbia"
