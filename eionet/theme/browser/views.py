@@ -32,12 +32,14 @@ class CollectionHelperView(BrowserView):
         return fields
 
     def get_download_link(self, item_listing):
-        url = self.tabular_fielddata(item_listing, 'report_url').get('value', None)
+        url = self.tabular_fielddata(item_listing, 'report_url').get('value',
+                                                                     None)
         file = self.tabular_fielddata(item_listing, 'file').get('value', None)
 
         download_url = ''
         if file:
-            download_url = item_listing._brain.getURL() + '/@@download/file/' + file.filename
+            download_url = item_listing._brain.getURL() + \
+                '/@@download/file/' + file.filename
         if url:
             download_url = url
         return {
@@ -70,7 +72,8 @@ class CollectionHelperView(BrowserView):
         # Extra filter
         contentFilter = dict(self.request.get('contentFilter', {}))
         contentFilter.update(kwargs.get('contentFilter', {}))
-        contentFilter.update({'sort_on': 'publication_date', 'sort_order': 'descending'})
+        contentFilter.update(
+            {'sort_on': 'publication_date', 'sort_order': 'descending'})
         kwargs.setdefault('custom_query', contentFilter)
         kwargs.setdefault('batch', True)
         kwargs.setdefault('b_size', self.b_size)
@@ -82,7 +85,6 @@ class CollectionHelperView(BrowserView):
     def batch(self):
         # collection is already batched.
         return self.results()
-
 
     def tabular_fielddata(self, item, fieldname):
         value = getattr(item, fieldname, '')
@@ -120,7 +122,8 @@ class CollectionHelperView(BrowserView):
     @property
     def use_view_action(self):
         registry = getUtility(IRegistry)
-        types_used = registry.get('plone.types_use_view_action_in_listings', [])
+        types_used = registry.get('plone.types_use_view_action_in_listings',
+                                  [])
         return types_used
 
     @property
@@ -238,7 +241,8 @@ class FrontpageNewsHelperView(BrowserView):
     @property
     def use_view_action(self):
         registry = getUtility(IRegistry)
-        types_used = registry.get('plone.types_use_view_action_in_listings', [])
+        types_used = registry.get('plone.types_use_view_action_in_listings',
+                                  [])
         return types_used
 
     def normalizeString(self, text):
@@ -289,4 +293,5 @@ class ReportView(BrowserView):
 
 class GoPDB(BrowserView):
     def __call__(self):
-        import pdb;pdb.set_trace()
+        import pdb
+        pdb.set_trace()

@@ -35,7 +35,7 @@ def patched_toLocalizedTime(self, time, long_format=None, time_only=None):
 
     util = getToolByName(context, 'translation_service')
     loc_time = util.ulocalized_time(time, long_format, time_only,
-                                   context=context, domain='plonelocales',
-                                   request=self.request)
-    loc_time = loc_time.replace(',','')
+                                    context=context, domain='plonelocales',
+                                    request=self.request)
+    loc_time = loc_time.replace(',', '')
     return loc_time

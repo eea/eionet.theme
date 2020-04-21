@@ -15,7 +15,7 @@ setup(
     description="Installable theme: eionet.theme",
     long_description_content_type="text/x-rst",
     long_description=open("README.rst").read() + "\n" +
-                     open(join("docs", "HISTORY.txt")).read(),
+    open(join("docs", "HISTORY.txt")).read(),
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         "Environment :: Web Environment",
