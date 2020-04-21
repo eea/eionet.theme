@@ -34,7 +34,7 @@ $(document).ready(function() {
       window._world = world;
       window._flags = flags;
       initmap(window._world.features);
-      listCountryLinks(window._world.features)
+      listCountryLinks(window._world.features);
     });
   });
 });
@@ -126,7 +126,7 @@ function renderCountry(map, country, path, countries, x, y) {
 
 function renderCountryLabel(country, path, force) {
   var parent = d3.select('.svg-map-container svg');
-  var klass = force ? 'country-label maplet-label' : 'country-label'
+  var klass = force ? 'country-label maplet-label' : 'country-label';
   var g = parent
     .append('g')
     .attr('class', klass)
@@ -188,7 +188,7 @@ function renderCountryList(country) {
   }
 
   if (coopCountries.indexOf(name) > -1) {
-    var list = cc
+    var list = cc  // jshint ignore:line
     .append('li')
     .insert('a')
     .text(name)
@@ -378,7 +378,7 @@ function renderCountriesBox(opts) {
   renderGraticule(map, 'graticule', [20, 10], path);
   renderGraticule(map, 'semi-graticule', [5, 5], path);
 
-  setCountryFlags(countries.feature.features, window._flags)
+  setCountryFlags(countries.feature.features, window._flags);
 
   world.forEach(function (country) {
     renderCountry(map, country, path, countries, x, y);
@@ -396,10 +396,10 @@ function listCountryLinks(world) {
       'names': allCountries,
       'feature': focusCountriesFeature
     }
-  }
+  };
 
   var countries = opts.focusCountries;
-  var world = opts.world;
+  var world = opts.world; // jshint ignore:line
 
   world.forEach(function (country) {
     var available = countries.names.indexOf(country.properties.SHRT_ENGL) !== -1;
@@ -512,7 +512,7 @@ function drawCountries(world) {
       'feature': focusCountriesFeature
     },
     'zoom': 0.95
-  }
+  };
 
   renderCountriesBox(opts);
 
@@ -525,7 +525,7 @@ function drawCountries(world) {
     'side': 'left'
     // 'size': 80,
     // 'space': 6,
-  }
+  };
   drawMaplets(mo);
 
 }
@@ -575,11 +575,11 @@ function setCountryFlags(countries, flags) {
 
 
 function createTooltip(opts) {
-  var x = opts['coords'][0];
-  var y = opts['coords'][1];
-  var content = opts['content'][_selectedMapSection];
-  var name = opts['name'];
-  var url = opts['url'];
+  var x = opts.coords[0];
+  var y = opts.coords[1];
+  var content = opts.content[_selectedMapSection];
+  var name = opts.name;
+  var url = opts.url;
 
   $('#map-tooltip').remove();
   var style = 'top:' + x + 'px; left: ' + y + 'px';

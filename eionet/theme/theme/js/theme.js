@@ -19,14 +19,14 @@ $(document).ready(function() {
 
     if ($submenu.length > 0) {
       var subMenuLeftPos = $submenu.offset().left;
+      if (mainMenuWidth - (subMenuWidth + subMenuLeftPos) < 0) {
+        $submenu.css({
+          'right': 0,
+          'left': 'auto'
+        });
+      }
     }
 
-    if (mainMenuWidth - (subMenuWidth + subMenuLeftPos) < 0) {
-      $submenu.css({
-        'right': 0,
-        'left': 'auto'
-      });
-    }
   });
 
 
