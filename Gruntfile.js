@@ -1,3 +1,5 @@
+/* jslint:disable */
+
 module.exports = function (grunt) {
   'use strict';
   grunt.initConfig({

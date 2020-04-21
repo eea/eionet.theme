@@ -34,6 +34,263 @@ function filterCountriesByNames(countries, filterIds) {
 }
 
 
+// tooltip with country names on hover
+var countryNameTooltip = d3.select("body")
+    .append("div")
+    .attr('class', 'tooltip')
+    ;
+
+
+function showCountryPopup(country) {
+  var $container = $('.svg-map-container').append($("<div>"));
+  var $modal = $container.patPloneModal({
+    position: 'center middle',
+    width: '60%',
+    title: country.properties.SHRT_ENGL,
+    backdropOptions: {
+      closeOnEsc: false,
+      closeOnClick: false,
+      opacity: '0'
+    }
+  });
+  var modal = $modal.data('pattern-plone-modal');
+  modal.show();
+  var cId = country.properties.CNTR_ID;
+  var cName = country.properties.SHRT_ENGL;
+  var cooptype = coopCountries.indexOf(cName) > -1 ? 'cc' : 'mc';
+  var ctext = countryTpl
+    .replace(/ccode/g, cId.toLowerCase())
+    .replace(/CountryName/g, cName)
+    .replace(/ctype/g, cooptype)
+  ;
+
+  modal.$modal.find('.plone-modal-title').empty().append(cName);
+  modal.$modal.find('.plone-modal-body').empty().append(ctext);
+  modal.$modal.find('a.link-webpage').each(function() {
+    var $a = $(this);
+    var url = new RegExp('/' + window.location.host + '/');
+    $a.click(function() {
+      if (!url.test(this.href)) {
+        window.open($a.attr('href'));
+      } else {
+        window.location = $a.attr('href');
+      }
+    });
+  });
+
+  return false;
+}
+
+
+function renderCountryFlag(parent, country, bbox, cpId) {
+  var flag = parent
+    .append('image')
+    .attr('class', 'country-flag')
+    .attr('href', function() {
+      if (getIEVersion() > 0) {
+        // TODO: get the fallback svg?
+        return '++theme++climateadaptv2/static/images/fallback.svg';
+      } else {
+        return country.url;
+      }
+    })
+    .attr("preserveAspectRatio", "none")
+    .attr('opacity', '0')
+    .attr('clip-path', 'url(#' + cpId + ')')
+    .attr('x', bbox.x)
+    .attr('y', bbox.y)
+    .attr('height', bbox.height)
+    .attr('width', bbox.width)
+    .on('click', function (e) {
+      showCountryPopup(country);
+    })
+    .on('mouseover', function() {
+      var countryName = country.properties.SHRT_ENGL.toUpperCase();
+      d3.select(this).attr('opacity', 1);
+      return countryNameTooltip
+      .style("display", "block")
+      .html(countryName);
+    })
+    .on('mousemove', function() {
+      var countryName = country.properties.SHRT_ENGL.toUpperCase();
+      return countryNameTooltip
+      .style("display", "block")
+      .style("top", (d3.event.pageY) + "px")
+      .style("left", (d3.event.pageX + 10) + "px")
+      .html(countryName);
+    })
+    .on('mouseout', function() {
+      d3.select(this).attr('opacity', 0);
+      return countryNameTooltip
+      .style("display", "none");
+    })
+    ;
+  return flag;
+}
+
+
+function renderCountry(map, country, path, countries, x, y) {
+
+  var cprectid = makeid();    // unique id for this map drawing
+  var klass = getCountryClass(country, countries);
+  var cId = 'c-' + cprectid + '-' + country.properties.id;
+  var cpId = 'cp-' + cprectid + '-' + country.properties.id;
+
+  var available = countries.names.indexOf(country.properties.SHRT_ENGL) !== -1;
+
+  var parent = map
+    .append('g')
+    .attr('class', klass)
+    ;
+
+  parent       // define clipping path for this country
+    .append('defs')
+    .append('clipPath')
+    .attr('id', cpId)
+    .append('path')
+    .attr('d', path(country))
+    .attr('x', x)
+    .attr('y', y)
+    ;
+
+  var outline = parent       // this is the country fill and outline
+    .append('path')
+    .attr('id', cId)
+    .attr('x', x)
+    .attr('y', y)
+    .attr('d', path(country))
+    ;
+
+  if (available) {
+    var bbox = outline.node().getBBox();
+    renderCountryFlag(parent, country, bbox, cpId);
+    // renderCountryLabel(country, path);
+  }
+}
+
+
+function renderCountriesBox(opts) {
+  var coords = opts.coordinates;
+  var countries = opts.focusCountries;
+
+  var svg = opts.svg;
+  var world = opts.world;
+  var zoom = opts.zoom;
+  var cprectid = makeid();    // unique id for this map drawing
+
+  var globalMapProjection = d3.geoAzimuthalEqualArea();
+
+  globalMapProjection
+    .scale(1)
+    .translate([0, 0])
+    ;
+
+  // the path transformer
+  var path = d3.geoPath().projection(globalMapProjection);
+
+  var x = coords.x;
+  var y = coords.y;
+  var width = coords.width;
+  var height = coords.height;
+  // var extent = [[x + 20, y + 20], [x + coords.width - 20 , y + coords.height - 20]];
+  // globalMapProjection.fitExtent(extent, countries.feature);
+
+  var b = path.bounds(countries.feature);
+  var cwRatio = (b[1][0] - b[0][0]) / width;    // bounds to width ratio
+  var chRatio = (b[1][1] - b[0][1]) / height;   // bounds to height ratio
+  var s = zoom / Math.max(cwRatio, chRatio);
+  var t = [
+    (width - s * (b[1][0] + b[0][0])) / 2 + x,
+    (height - s * (b[0][1] + b[1][1])) / 2 + y
+  ];
+
+  globalMapProjection.scale(s).translate(t);
+
+  svg
+    .append('defs')    // rectangular clipping path for the whole drawn map
+    .append('clipPath')
+    .attr('id', cprectid)
+    .append('rect')
+    .attr('x', x)
+    .attr('y', y)
+    .attr('height', height)
+    .attr('width', width)
+    ;
+
+  var map = svg   // the map will be drawn in this group
+    .append('g')
+    .attr('clip-path', 'url(#' + cprectid + ')')
+    ;
+
+  map     // the world sphere, acts as ocean
+    .append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "sphere")
+    .attr("d", path)
+    ;
+
+  renderGraticule(map, 'graticule', [20, 10], path);
+  renderGraticule(map, 'semi-graticule', [5, 5], path);
+
+  setCountryFlags(countries.feature.features, window._flags);
+
+  world.forEach(function (country) {
+    renderCountry(map, country, path, countries, x, y);
+  });
+
+  return path;
+}
+
+function drawMaplets(opts) {
+  var svg = opts.svg;
+  var world = opts.world;
+  var viewport = opts.viewport;
+  var start = opts.start;
+  var side = opts.side;
+
+  var g = svg   // the map will be drawn in this group
+    .append('g')
+    .attr('class', 'maplet-container')
+    ;
+
+  var countries = opts.countries;
+
+  countries.forEach(function (name, index) {
+    var feature = filterCountriesByNames(world, [name]);
+    var boxw = 50;
+    var boxh = 50;
+    var space = 10;
+
+    var msp = getMapletStartingPoint(
+      viewport,
+      start,
+      index,
+      side,
+      space,
+      [boxw, boxh],
+      0
+    );
+
+    var zo = {
+      'world': world,
+      'svg': g,
+      'coordinates': {
+        'x': msp.x,
+        'y': msp.y,
+        'width': boxw,
+        'height': boxh
+      },
+      'focusCountries': {
+        'names': [name],
+        'feature': feature
+      },
+      'zoom': 0.5
+    };
+    drawMaplet(zo);
+  });
+}
+
+
 function drawCountries(world) {
   var svg = d3
     .select("body")
@@ -97,6 +354,36 @@ function initmap(world) {
   drawMap(width);
 
   $('.map-loader').fadeOut(600);
+}
+
+function renderCountryList(country) {
+  var mc = d3.select('.member-countries');
+  var cc = d3.select('.cooperating-countries');
+  var name = country.properties.SHRT_ENGL;
+
+  if (focusCountryNames.indexOf(name) > -1) {
+    var mc_list = mc
+    .append('li')
+    .insert('a')
+    .text(name)
+    .attr('class', 'c-blue')
+    .on('click', function() {
+      showCountryPopup(country);
+    })
+    ;
+  }
+
+  if (coopCountries.indexOf(name) > -1) {
+    var cc_list = cc
+    .append('li')
+    .insert('a')
+    .text(name)
+    .attr('class', 'c-green')
+    .on('click', function() {
+      showCountryPopup(country);
+    })
+    ;
+  }
 }
 
 function listCountryLinks(world) {
@@ -181,52 +468,32 @@ function getCountryClass(country, countries) {
   return k;
 }
 
-function showCountryPopup(country) {
-  var $container = $('.svg-map-container').append($("<div>"));
-  var $modal = $container.patPloneModal({
-    position: 'center middle',
-    width: '60%',
-    title: country.properties.SHRT_ENGL,
-    backdropOptions: {
-      closeOnEsc: false,
-      closeOnClick: false,
-      opacity: '0'
-    }
-  });
-  var modal = $modal.data('pattern-plone-modal');
-  modal.show();
-  var cId = country.properties.CNTR_ID;
-  var cName = country.properties.SHRT_ENGL;
-  var cooptype = coopCountries.indexOf(cName) > -1 ? 'cc' : 'mc';
-  var ctext = countryTpl
-    .replace(/ccode/g, cId.toLowerCase())
-    .replace(/CountryName/g, cName)
-    .replace(/ctype/g, cooptype)
-  ;
-
-  modal.$modal.find('.plone-modal-title').empty().append(cName);
-  modal.$modal.find('.plone-modal-body').empty().append(ctext);
-  modal.$modal.find('a.link-webpage').each(function() {
-    var $a = $(this);
-    var url = new RegExp('/' + window.location.host + '/');
-    $a.click(function() {
-      if (!url.test(this.href)) {
-        window.open($a.attr('href'));
-      } else {
-        window.location = $a.attr('href');
-      }
-    });
-  });
-
-  return false;
-}
-
-
-// tooltip with country names on hover
-var countryNameTooltip = d3.select("body")
-    .append("div")
-    .attr('class', 'tooltip')
-    ;
+var countryTpl = '' +
+'<ul class="urllist">' +
+'  <li>' +
+'    <i class="glyphicon link-external"></i>' +
+'    <a class="link-webpage" href="http://cdr.eionet.europa.eu/ccode">' +
+'      CDR Data Deliveries</a>' +
+'    List of files uploaded to the Central Data Repository (CDR)</li>' +
+'' +
+'  <li>' +
+'    <a class="link-webpage" href="/ldap-organisations?country=ccode">' +
+'      Eionet Organisations</a>' +
+'    List of organisations registered in the Eionet Directory</li>' +
+'' +
+'  <li>' +
+'    <a class="link-webpage" href="/ldap-roles/?role_id=eionet-nfp-ctype-ccode">NFP CountryName address</a></li>' +
+'' +
+'  <li>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=eionet-nrc-*-ctype-ccode">PCPs and NRCs</a>' +
+'    List of all Primary Contact Points and National Reference Centres</li>' +
+'' +
+'<li>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=reportnet-*-*-ccode">List of Reportnet users</a></li>' +
+'' +
+' <li>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=extranet-*-*-ccode">List of Extranet users</a></li>' +
+'</ul>';
 
 
 function getIEVersion() {
@@ -249,53 +516,6 @@ function getIEVersion() {
 }
 
 
-function renderCountryFlag(parent, country, bbox, cpId) {
-  var flag = parent
-    .append('image')
-    .attr('class', 'country-flag')
-    .attr('href', function() {
-      if (getIEVersion() > 0) {
-        // TODO: get the fallback svg?
-        return '++theme++climateadaptv2/static/images/fallback.svg';
-      } else {
-        return country.url;
-      }
-    })
-    .attr("preserveAspectRatio", "none")
-    .attr('opacity', '0')
-    .attr('clip-path', 'url(#' + cpId + ')')
-    .attr('x', bbox.x)
-    .attr('y', bbox.y)
-    .attr('height', bbox.height)
-    .attr('width', bbox.width)
-    .on('click', function (e) {
-      showCountryPopup(country);
-    })
-    .on('mouseover', function() {
-      var countryName = country.properties.SHRT_ENGL.toUpperCase();
-      d3.select(this).attr('opacity', 1);
-      return countryNameTooltip
-      .style("display", "block")
-      .html(countryName);
-    })
-    .on('mousemove', function() {
-      var countryName = country.properties.SHRT_ENGL.toUpperCase();
-      return countryNameTooltip
-      .style("display", "block")
-      .style("top", (d3.event.pageY) + "px")
-      .style("left", (d3.event.pageX + 10) + "px")
-      .html(countryName);
-    })
-    .on('mouseout', function() {
-      d3.select(this).attr('opacity', 0);
-      return countryNameTooltip
-      .style("display", "none");
-    })
-    ;
-  return flag;
-}
-
-
 function makeid() {
   var text = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -305,46 +525,6 @@ function makeid() {
   }
 
   return text;
-}
-
-
-function renderCountry(map, country, path, countries, x, y) {
-
-  var cprectid = makeid();    // unique id for this map drawing
-  var klass = getCountryClass(country, countries);
-  var cId = 'c-' + cprectid + '-' + country.properties.id;
-  var cpId = 'cp-' + cprectid + '-' + country.properties.id;
-
-  var available = countries.names.indexOf(country.properties.SHRT_ENGL) !== -1;
-
-  var parent = map
-    .append('g')
-    .attr('class', klass)
-    ;
-
-  parent       // define clipping path for this country
-    .append('defs')
-    .append('clipPath')
-    .attr('id', cpId)
-    .append('path')
-    .attr('d', path(country))
-    .attr('x', x)
-    .attr('y', y)
-    ;
-
-  var outline = parent       // this is the country fill and outline
-    .append('path')
-    .attr('id', cId)
-    .attr('x', x)
-    .attr('y', y)
-    .attr('d', path(country))
-    ;
-
-  if (available) {
-    var bbox = outline.node().getBBox();
-    renderCountryFlag(parent, country, bbox, cpId);
-    // renderCountryLabel(country, path);
-  }
 }
 
 
@@ -439,64 +619,6 @@ function renderCountryLabel(country, path, force) {
   passThruEvents(g);
 }
 
-function renderCountryList(country) {
-  var mc = d3.select('.member-countries');
-  var cc = d3.select('.cooperating-countries');
-  var name = country.properties.SHRT_ENGL;
-
-  if (focusCountryNames.indexOf(name) > -1) {
-    var mc_list = mc
-    .append('li')
-    .insert('a')
-    .text(name)
-    .attr('class', 'c-blue')
-    .on('click', function() {
-      showCountryPopup(country);
-    })
-    ;
-  }
-
-  if (coopCountries.indexOf(name) > -1) {
-    var cc_list = cc
-    .append('li')
-    .insert('a')
-    .text(name)
-    .attr('class', 'c-green')
-    .on('click', function() {
-      showCountryPopup(country);
-    })
-    ;
-  }
-}
-
-var countryTpl = '' +
-'<ul class="urllist">' +
-'  <li>' +
-'    <i class="glyphicon link-external"></i>' +
-'    <a class="link-webpage" href="http://cdr.eionet.europa.eu/ccode">' +
-'      CDR Data Deliveries</a>' +
-'    List of files uploaded to the Central Data Repository (CDR)</li>' +
-'' +
-'  <li>' +
-'    <a class="link-webpage" href="/ldap-organisations?country=ccode">' +
-'      Eionet Organisations</a>' +
-'    List of organisations registered in the Eionet Directory</li>' +
-'' +
-'  <li>' +
-'    <a class="link-webpage" href="/ldap-roles/?role_id=eionet-nfp-ctype-ccode">NFP CountryName address</a></li>' +
-'' +
-'  <li>' +
-'    <a class="link-webpage" href="/ldap-roles/filter?pattern=eionet-nrc-*-ctype-ccode">PCPs and NRCs</a>' +
-'    List of all Primary Contact Points and National Reference Centres</li>' +
-'' +
-'<li>' +
-'    <a class="link-webpage" href="/ldap-roles/filter?pattern=reportnet-*-*-ccode">List of Reportnet users</a></li>' +
-'' +
-' <li>' +
-'    <a class="link-webpage" href="/ldap-roles/filter?pattern=extranet-*-*-ccode">List of Extranet users</a></li>' +
-'</ul>';
-
-
 function setCountryFlags(countries, flags) {
   // annotates each country with its own flag property
   countries.forEach(function (c) {
@@ -524,78 +646,6 @@ function setCountryFlags(countries, flags) {
 }
 
 
-function renderCountriesBox(opts) {
-  var coords = opts.coordinates;
-  var countries = opts.focusCountries;
-
-  var svg = opts.svg;
-  var world = opts.world;
-  var zoom = opts.zoom;
-  var cprectid = makeid();    // unique id for this map drawing
-
-  var globalMapProjection = d3.geoAzimuthalEqualArea();
-
-  globalMapProjection
-    .scale(1)
-    .translate([0, 0])
-    ;
-
-  // the path transformer
-  var path = d3.geoPath().projection(globalMapProjection);
-
-  var x = coords.x;
-  var y = coords.y;
-  var width = coords.width;
-  var height = coords.height;
-  // var extent = [[x + 20, y + 20], [x + coords.width - 20 , y + coords.height - 20]];
-  // globalMapProjection.fitExtent(extent, countries.feature);
-
-  var b = path.bounds(countries.feature);
-  var cwRatio = (b[1][0] - b[0][0]) / width;    // bounds to width ratio
-  var chRatio = (b[1][1] - b[0][1]) / height;   // bounds to height ratio
-  var s = zoom / Math.max(cwRatio, chRatio);
-  var t = [
-    (width - s * (b[1][0] + b[0][0])) / 2 + x,
-    (height - s * (b[0][1] + b[1][1])) / 2 + y
-  ];
-
-  globalMapProjection.scale(s).translate(t);
-
-  svg
-    .append('defs')    // rectangular clipping path for the whole drawn map
-    .append('clipPath')
-    .attr('id', cprectid)
-    .append('rect')
-    .attr('x', x)
-    .attr('y', y)
-    .attr('height', height)
-    .attr('width', width)
-    ;
-
-  var map = svg   // the map will be drawn in this group
-    .append('g')
-    .attr('clip-path', 'url(#' + cprectid + ')')
-    ;
-
-  map     // the world sphere, acts as ocean
-    .append("path")
-    .datum({type: "Sphere"})
-    .attr("class", "sphere")
-    .attr("d", path)
-    ;
-
-  renderGraticule(map, 'graticule', [20, 10], path);
-  renderGraticule(map, 'semi-graticule', [5, 5], path);
-
-  setCountryFlags(countries.feature.features, window._flags);
-
-  world.forEach(function (country) {
-    renderCountry(map, country, path, countries, x, y);
-  });
-
-  return path;
-}
-
 function drawMaplet(opts) {
   var msp = opts.coordinates;
   var svg = opts.svg;
@@ -610,6 +660,27 @@ function drawMaplet(opts) {
 
   var path = renderCountriesBox(opts);
   renderCountryLabel(opts.focusCountries.feature.features[0], path, true);
+}
+
+
+function travelToOppositeMutator(start, viewport, delta) {
+  // point: the point we want to mutate
+  // start: starting point (the initial anchor point)
+  // viewport: array of width, height
+  // delta: array of dimensions to travel
+
+  var center = [viewport[0] / 2, viewport[1] / 2];
+
+  var dirx = start[0] > center[0] ? -1 : 1;
+  var diry = start[1] > center[1] ? -1 : 1;
+
+  return function (point) {
+    var res = [
+      point[0] + delta[0] * dirx,
+      point[1] + delta[1] * diry
+    ];
+    return res;
+  };
 }
 
 
@@ -661,56 +732,6 @@ function getMapletStartingPoint(
 }
 
 
-function drawMaplets(opts) {
-  var svg = opts.svg;
-  var world = opts.world;
-  var viewport = opts.viewport;
-  var start = opts.start;
-  var side = opts.side;
-
-  var g = svg   // the map will be drawn in this group
-    .append('g')
-    .attr('class', 'maplet-container')
-    ;
-
-  var countries = opts.countries;
-
-  countries.forEach(function (name, index) {
-    var feature = filterCountriesByNames(world, [name]);
-    var boxw = 50;
-    var boxh = 50;
-    var space = 10;
-
-    var msp = getMapletStartingPoint(
-      viewport,
-      start,
-      index,
-      side,
-      space,
-      [boxw, boxh],
-      0
-    );
-
-    var zo = {
-      'world': world,
-      'svg': g,
-      'coordinates': {
-        'x': msp.x,
-        'y': msp.y,
-        'width': boxw,
-        'height': boxh
-      },
-      'focusCountries': {
-        'names': [name],
-        'feature': feature
-      },
-      'zoom': 0.5
-    };
-    drawMaplet(zo);
-  });
-}
-
-
 function createTooltip(opts) {
   var x = opts.coords[0];
   var y = opts.coords[1];
@@ -741,25 +762,4 @@ function createTooltip(opts) {
     .append(content_div)
     ;
   $('body').append(tooltip);
-}
-
-
-function travelToOppositeMutator(start, viewport, delta) {
-  // point: the point we want to mutate
-  // start: starting point (the initial anchor point)
-  // viewport: array of width, height
-  // delta: array of dimensions to travel
-
-  var center = [viewport[0] / 2, viewport[1] / 2];
-
-  var dirx = start[0] > center[0] ? -1 : 1;
-  var diry = start[1] > center[1] ? -1 : 1;
-
-  return function (point) {
-    var res = [
-      point[0] + delta[0] * dirx,
-      point[1] + delta[1] * diry
-    ];
-    return res;
-  };
 }
