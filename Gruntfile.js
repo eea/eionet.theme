@@ -23,7 +23,7 @@ module.exports = function (grunt) {
         },
         files: {
           'less/theme-compiled.css': 'less/theme.local.less',
-          'less/critical-compiled.css': 'less/critical.less',
+          'less/critical-compiled.css': 'less/critical.less'
         }
       }
     },
@@ -31,7 +31,7 @@ module.exports = function (grunt) {
       options: {
         map: true,
         processors: [
-          require('autoprefixer')({
+          require('autoprefixer')({  // jshint ignore:line
             browsers: ['last 2 versions']
           })
         ]
@@ -48,7 +48,7 @@ module.exports = function (grunt) {
       target: {
         files: {
           'less/theme-compiled.css': ['less/theme-compiled.css'],
-          'less/critical-compiled.css': ['less/critical-compiled.css'],
+          'less/critical-compiled.css': ['less/critical-compiled.css']
         }
       }
     },
@@ -75,7 +75,7 @@ module.exports = function (grunt) {
           online: true,
           server: {
             baseDir: "."
-          },
+          }
         }
       },
       plone: {

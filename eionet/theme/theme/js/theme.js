@@ -72,8 +72,8 @@ $(document).ready(function() {
     var menuWidth = $('.navbar-nav').data('width');
 
     var availableSpace = headerWidth - (logoWidth + menuWidth);
-    var collapseHeader = availableSpace <= rightActionsWidth;
-    $header.toggleClass('collapse-header', collapseHeader);
+    var shouldCollapseHeader = availableSpace <= rightActionsWidth;
+    $header.toggleClass('collapse-header', shouldCollapseHeader);
 
     if ($header.hasClass('collapse-header')) {
       var navAvailableSpace;
