@@ -41,6 +41,34 @@ var countryNameTooltip = d3.select("body")
     ;
 
 
+var countryTpl = '' +
+'<ul class="urllist">' +
+'  <li>' +
+'    <i class="glyphicon link-external"></i>' +
+'    <a class="link-webpage" href="http://cdr.eionet.europa.eu/ccode">' +
+'      CDR Data Deliveries</a>' +
+'    List of files uploaded to the Central Data Repository (CDR)</li>' +
+'' +
+'  <li>' +
+'    <a class="link-webpage" href="/ldap-organisations?country=ccode">' +
+'      Eionet Organisations</a>' +
+'    List of organisations registered in the Eionet Directory</li>' +
+'' +
+'  <li>' +
+'    <a class="link-webpage" href="/ldap-roles/?role_id=eionet-nfp-ctype-ccode">NFP CountryName address</a></li>' +
+'' +
+'  <li>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=eionet-nrc-*-ctype-ccode">PCPs and NRCs</a>' +
+'    List of all Primary Contact Points and National Reference Centres</li>' +
+'' +
+'<li>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=reportnet-*-*-ccode">List of Reportnet users</a></li>' +
+'' +
+' <li>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=extranet-*-*-ccode">List of Extranet users</a></li>' +
+'</ul>';
+
+
 function showCountryPopup(country) {
   var $container = $('.svg-map-container').append($("<div>"));
   var $modal = $container.patPloneModal({
@@ -79,6 +107,26 @@ function showCountryPopup(country) {
   });
 
   return false;
+}
+
+
+function getIEVersion() {
+  var sAgent = window.navigator.userAgent;
+  var Idx = sAgent.indexOf("MSIE");
+
+  // If IE, return version number.
+  if (Idx > 0){
+    return parseInt(sAgent.substring(Idx+ 5, sAgent.indexOf(".", Idx)), 10);
+  }
+
+  // If IE 11 then look for Updated user agent string.
+  else if (!!navigator.userAgent.match(/Trident\/7\./)){
+    return 11;
+  }
+
+  else {
+    return 0; //It is not IE
+  }
 }
 
 
@@ -129,6 +177,33 @@ function renderCountryFlag(parent, country, bbox, cpId) {
 }
 
 
+function getCountryClass(country, countries) {
+  var k = 'country-outline';
+  var available = countries.names.indexOf(country.properties.SHRT_ENGL) !== -1;
+  if (available) {
+      k += ' country-available';
+  }
+
+  var name = country.properties.SHRT_ENGL;
+  if (coopCountries.indexOf(name) > -1) {
+    k += ' country-green';
+  }
+
+  return k;
+}
+
+function makeid() {
+  var text = '';
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+  for (var i = 0; i < 5; i++){
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+}
+
+
 function renderCountry(map, country, path, countries, x, y) {
 
   var cprectid = makeid();    // unique id for this map drawing
@@ -166,6 +241,45 @@ function renderCountry(map, country, path, countries, x, y) {
     renderCountryFlag(parent, country, bbox, cpId);
     // renderCountryLabel(country, path);
   }
+}
+
+
+function renderGraticule(container, klass, steps, pathTransformer) {
+  container     // draw primary graticule lines
+    .append('g')
+    .attr('class', klass)
+    .selectAll('path')
+    .data(d3.geoGraticule().step(steps).lines())
+    .enter()
+    .append('path')
+    .attr('d', pathTransformer)
+    ;
+}
+
+function setCountryFlags(countries, flags) {
+  // annotates each country with its own flag property
+  countries.forEach(function (c) {
+    var name = c.properties.SHRT_ENGL;
+    if (!name) {
+      // console.log('No flag for', c.properties);
+      return;
+    }
+    if (name == 'Czechia'){
+        name = 'Czech';
+    }
+    if (name == 'Kosovo*'){
+        name = 'Kosovo';
+    }
+    var cname = name.replace(' ', '_');
+    if (cname == 'Bosnia_and Herzegovina'){
+        cname = 'Bosnia_and_Herzegovina';
+    }
+    flags.forEach(function (f) {
+      if (f.url.indexOf(cname) > -1) {
+        c.url = f.url;
+      }
+    });
+  });
 }
 
 
@@ -240,6 +354,183 @@ function renderCountriesBox(opts) {
 
   return path;
 }
+
+function passThruEvents(g) {
+
+  function passThru(d) {
+    // console.log('passing through');
+    var e = d3.event;
+
+    var prev = this.style.pointerEvents;
+    this.style.pointerEvents = 'none';
+
+    var el = document.elementFromPoint(d3.event.x, d3.event.y);
+
+    var e2 = document.createEvent('MouseEvent');
+    e2.initMouseEvent(
+      e.type,
+      e.bubbles,
+      e.cancelable,
+      e.view,
+      e.detail,
+      e.screenX,
+      e.screenY,
+      e.clientX,
+      e.clientY,
+      e.ctrlKey,
+      e.altKey,
+      e.shiftKey,
+      e.metaKey,
+      e.button,
+      e.relatedTarget
+    );
+
+    el.dispatchEvent(e2);
+
+    this.style.pointerEvents = prev;
+  }
+
+  g
+    // .on('mousemove.passThru', passThru)
+    .on('mouseover', passThru)
+  // .on('mousedown.passThru', passThru)
+  ;
+
+}
+
+
+function renderCountryLabel(country, path, force) {
+  var parent = d3.select('.svg-map-container svg');
+  var klass = force ? 'country-label maplet-label' : 'country-label';
+  var g = parent
+    .append('g')
+    .attr('class', klass)
+    ;
+  if (
+    // these are very small countries that we will create a maplet for;
+    (
+      country.properties.SHRT_ENGL === 'Liechtenstein' ||
+      country.properties.SHRT_ENGL === 'Luxembourg' ||
+      country.properties.SHRT_ENGL === 'Malta'
+    ) && !force) {
+      return;
+    }
+
+  var delta = force ? 20 : 0;
+
+  var pId = 'pl-' + country.id;
+  var center = path.centroid(country);
+
+  var label = g
+    .append('text')
+    // .attr('class', 'place-label')
+    .attr('id', pId)
+    .attr('x', center[0])
+    .attr('y', center[1] + delta)
+    .attr('text-anchor', 'middle')
+    .text(country.properties.SHRT_ENGL.toUpperCase())
+    ;
+
+  var bbox = label.node().getBBox();
+
+  g
+    .append('rect')
+    // .attr('class', 'place-label-bg')
+    .attr('x', bbox.x - 1)
+    .attr('y', bbox.y - 1)
+    .attr('width', bbox.width + 2)
+    .attr('height', bbox.height + 2)
+    ;
+
+  label.raise();
+  passThruEvents(g);
+}
+
+function drawMaplet(opts) {
+  var msp = opts.coordinates;
+  var svg = opts.svg;
+  svg
+    .append('rect')
+    .attr('class', 'maplet-outline')
+    .attr('x', msp.x)
+    .attr('y', msp.y)
+    .attr('width', msp.width)
+    .attr('height', msp.height)
+    ;
+
+  var path = renderCountriesBox(opts);
+  renderCountryLabel(opts.focusCountries.feature.features[0], path, true);
+}
+
+
+function travelToOppositeMutator(start, viewport, delta) {
+  // point: the point we want to mutate
+  // start: starting point (the initial anchor point)
+  // viewport: array of width, height
+  // delta: array of dimensions to travel
+
+  var center = [viewport[0] / 2, viewport[1] / 2];
+
+  var dirx = start[0] > center[0] ? -1 : 1;
+  var diry = start[1] > center[1] ? -1 : 1;
+
+  return function (point) {
+    var res = [
+      point[0] + delta[0] * dirx,
+      point[1] + delta[1] * diry
+    ];
+    return res;
+  };
+}
+
+
+function getMapletStartingPoint(
+  viewport,   // an array of two integers, width and height
+  startPoint, // an array of two numbers, x, y for position in viewport
+  index,      // integer, position in layout
+  side,       // one of ['top', 'bottom', 'left', right']
+  spacer,     // integer with amount of space to leave between Maplets
+  boxDim,      // array of two numbers, box width and box height
+  titleHeight // height of title box
+) {
+
+  // return value is array of x,y
+  // x: horizontal coordinate
+  // y: vertical coordinate
+
+  var bws = boxDim[0] + spacer;   // box width including space to the right
+  var bhs = boxDim[1] + spacer + titleHeight;
+
+  var mutator = travelToOppositeMutator(startPoint, viewport, [bws, bhs]);
+
+  var mutPoint = [startPoint[0], startPoint[1]];
+
+  for (var i = 0; i < index; i++) {
+    mutPoint = mutator(mutPoint, index);
+  }
+
+  // TODO: this could be improved, there are many edge cases
+  switch (side) {
+    case 'top':
+      mutPoint[1] = startPoint[1];
+      break;
+    case 'bottom':
+      mutPoint[1] = startPoint[1] - bhs;
+      break;
+    case 'left':
+      mutPoint[0] = startPoint[0];
+      break;
+    case 'right':
+      mutPoint[0] = startPoint[0] - bws;
+      break;
+  }
+
+  return {
+    x: mutPoint[0],
+    y: mutPoint[1]
+  };
+}
+
 
 function drawMaplets(opts) {
   var svg = opts.svg;
@@ -440,297 +731,6 @@ $(document).ready(function() {
     });
   });
 });
-
-function renderGraticule(container, klass, steps, pathTransformer) {
-  container     // draw primary graticule lines
-    .append('g')
-    .attr('class', klass)
-    .selectAll('path')
-    .data(d3.geoGraticule().step(steps).lines())
-    .enter()
-    .append('path')
-    .attr('d', pathTransformer)
-    ;
-}
-
-function getCountryClass(country, countries) {
-  var k = 'country-outline';
-  var available = countries.names.indexOf(country.properties.SHRT_ENGL) !== -1;
-  if (available) {
-      k += ' country-available';
-  }
-
-  var name = country.properties.SHRT_ENGL;
-  if (coopCountries.indexOf(name) > -1) {
-    k += ' country-green';
-  }
-
-  return k;
-}
-
-var countryTpl = '' +
-'<ul class="urllist">' +
-'  <li>' +
-'    <i class="glyphicon link-external"></i>' +
-'    <a class="link-webpage" href="http://cdr.eionet.europa.eu/ccode">' +
-'      CDR Data Deliveries</a>' +
-'    List of files uploaded to the Central Data Repository (CDR)</li>' +
-'' +
-'  <li>' +
-'    <a class="link-webpage" href="/ldap-organisations?country=ccode">' +
-'      Eionet Organisations</a>' +
-'    List of organisations registered in the Eionet Directory</li>' +
-'' +
-'  <li>' +
-'    <a class="link-webpage" href="/ldap-roles/?role_id=eionet-nfp-ctype-ccode">NFP CountryName address</a></li>' +
-'' +
-'  <li>' +
-'    <a class="link-webpage" href="/ldap-roles/filter?pattern=eionet-nrc-*-ctype-ccode">PCPs and NRCs</a>' +
-'    List of all Primary Contact Points and National Reference Centres</li>' +
-'' +
-'<li>' +
-'    <a class="link-webpage" href="/ldap-roles/filter?pattern=reportnet-*-*-ccode">List of Reportnet users</a></li>' +
-'' +
-' <li>' +
-'    <a class="link-webpage" href="/ldap-roles/filter?pattern=extranet-*-*-ccode">List of Extranet users</a></li>' +
-'</ul>';
-
-
-function getIEVersion() {
-  var sAgent = window.navigator.userAgent;
-  var Idx = sAgent.indexOf("MSIE");
-
-  // If IE, return version number.
-  if (Idx > 0){
-    return parseInt(sAgent.substring(Idx+ 5, sAgent.indexOf(".", Idx)), 10);
-  }
-
-  // If IE 11 then look for Updated user agent string.
-  else if (!!navigator.userAgent.match(/Trident\/7\./)){
-    return 11;
-  }
-
-  else {
-    return 0; //It is not IE
-  }
-}
-
-
-function makeid() {
-  var text = '';
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-  for (var i = 0; i < 5; i++){
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-
-  return text;
-}
-
-
-function passThruEvents(g) {
-
-  function passThru(d) {
-    // console.log('passing through');
-    var e = d3.event;
-
-    var prev = this.style.pointerEvents;
-    this.style.pointerEvents = 'none';
-
-    var el = document.elementFromPoint(d3.event.x, d3.event.y);
-
-    var e2 = document.createEvent('MouseEvent');
-    e2.initMouseEvent(
-      e.type,
-      e.bubbles,
-      e.cancelable,
-      e.view,
-      e.detail,
-      e.screenX,
-      e.screenY,
-      e.clientX,
-      e.clientY,
-      e.ctrlKey,
-      e.altKey,
-      e.shiftKey,
-      e.metaKey,
-      e.button,
-      e.relatedTarget
-    );
-
-    el.dispatchEvent(e2);
-
-    this.style.pointerEvents = prev;
-  }
-
-  g
-    // .on('mousemove.passThru', passThru)
-    .on('mouseover', passThru)
-  // .on('mousedown.passThru', passThru)
-  ;
-
-}
-
-
-function renderCountryLabel(country, path, force) {
-  var parent = d3.select('.svg-map-container svg');
-  var klass = force ? 'country-label maplet-label' : 'country-label';
-  var g = parent
-    .append('g')
-    .attr('class', klass)
-    ;
-  if (
-    // these are very small countries that we will create a maplet for;
-    (
-      country.properties.SHRT_ENGL === 'Liechtenstein' ||
-      country.properties.SHRT_ENGL === 'Luxembourg' ||
-      country.properties.SHRT_ENGL === 'Malta'
-    ) && !force) {
-      return;
-    }
-
-  var delta = force ? 20 : 0;
-
-  var pId = 'pl-' + country.id;
-  var center = path.centroid(country);
-
-  var label = g
-    .append('text')
-    // .attr('class', 'place-label')
-    .attr('id', pId)
-    .attr('x', center[0])
-    .attr('y', center[1] + delta)
-    .attr('text-anchor', 'middle')
-    .text(country.properties.SHRT_ENGL.toUpperCase())
-    ;
-
-  var bbox = label.node().getBBox();
-
-  g
-    .append('rect')
-    // .attr('class', 'place-label-bg')
-    .attr('x', bbox.x - 1)
-    .attr('y', bbox.y - 1)
-    .attr('width', bbox.width + 2)
-    .attr('height', bbox.height + 2)
-    ;
-
-  label.raise();
-  passThruEvents(g);
-}
-
-function setCountryFlags(countries, flags) {
-  // annotates each country with its own flag property
-  countries.forEach(function (c) {
-    var name = c.properties.SHRT_ENGL;
-    if (!name) {
-      // console.log('No flag for', c.properties);
-      return;
-    }
-    if (name == 'Czechia'){
-        name = 'Czech';
-    }
-    if (name == 'Kosovo*'){
-        name = 'Kosovo';
-    }
-    var cname = name.replace(' ', '_');
-    if (cname == 'Bosnia_and Herzegovina'){
-        cname = 'Bosnia_and_Herzegovina';
-    }
-    flags.forEach(function (f) {
-      if (f.url.indexOf(cname) > -1) {
-        c.url = f.url;
-      }
-    });
-  });
-}
-
-
-function drawMaplet(opts) {
-  var msp = opts.coordinates;
-  var svg = opts.svg;
-  svg
-    .append('rect')
-    .attr('class', 'maplet-outline')
-    .attr('x', msp.x)
-    .attr('y', msp.y)
-    .attr('width', msp.width)
-    .attr('height', msp.height)
-    ;
-
-  var path = renderCountriesBox(opts);
-  renderCountryLabel(opts.focusCountries.feature.features[0], path, true);
-}
-
-
-function travelToOppositeMutator(start, viewport, delta) {
-  // point: the point we want to mutate
-  // start: starting point (the initial anchor point)
-  // viewport: array of width, height
-  // delta: array of dimensions to travel
-
-  var center = [viewport[0] / 2, viewport[1] / 2];
-
-  var dirx = start[0] > center[0] ? -1 : 1;
-  var diry = start[1] > center[1] ? -1 : 1;
-
-  return function (point) {
-    var res = [
-      point[0] + delta[0] * dirx,
-      point[1] + delta[1] * diry
-    ];
-    return res;
-  };
-}
-
-
-function getMapletStartingPoint(
-  viewport,   // an array of two integers, width and height
-  startPoint, // an array of two numbers, x, y for position in viewport
-  index,      // integer, position in layout
-  side,       // one of ['top', 'bottom', 'left', right']
-  spacer,     // integer with amount of space to leave between Maplets
-  boxDim,      // array of two numbers, box width and box height
-  titleHeight // height of title box
-) {
-
-  // return value is array of x,y
-  // x: horizontal coordinate
-  // y: vertical coordinate
-
-  var bws = boxDim[0] + spacer;   // box width including space to the right
-  var bhs = boxDim[1] + spacer + titleHeight;
-
-  var mutator = travelToOppositeMutator(startPoint, viewport, [bws, bhs]);
-
-  var mutPoint = [startPoint[0], startPoint[1]];
-
-  for (var i = 0; i < index; i++) {
-    mutPoint = mutator(mutPoint, index);
-  }
-
-  // TODO: this could be improved, there are many edge cases
-  switch (side) {
-    case 'top':
-      mutPoint[1] = startPoint[1];
-      break;
-    case 'bottom':
-      mutPoint[1] = startPoint[1] - bhs;
-      break;
-    case 'left':
-      mutPoint[0] = startPoint[0];
-      break;
-    case 'right':
-      mutPoint[0] = startPoint[0] - bws;
-      break;
-  }
-
-  return {
-    x: mutPoint[0],
-    y: mutPoint[1]
-  };
-}
-
 
 function createTooltip(opts) {
   var x = opts.coords[0];
