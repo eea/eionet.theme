@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """Setup tests for this package."""
+import unittest
 from eionet.theme.testing import EIONET_THEME_INTEGRATION_TESTING
 from Products.CMFPlone.utils import get_installer
-
-import unittest
 
 
 class TestSetup(unittest.TestCase):
@@ -30,6 +29,7 @@ class TestSetup(unittest.TestCase):
 
 
 class TestUninstall(unittest.TestCase):
+    """TestUninstall."""
 
     layer = EIONET_THEME_INTEGRATION_TESTING
 

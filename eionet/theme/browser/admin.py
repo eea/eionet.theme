@@ -1,13 +1,15 @@
+''' browser admin '''
+# pylint: disable=too-many-locals
 import logging
 from datetime import date
 from html.parser import HTMLParser
 from time import mktime, strptime
+import six
 from six.moves.urllib.parse import urlparse
 from lxml.etree import fromstring as etree_fromstring
 from lxml.html import fragment_fromstring, fromstring, tostring
 from lxml.html.clean import clean_html
 import transaction
-import six
 from DateTime import DateTime
 from plone.api.portal import get_tool
 from plone.app.textfield.value import RichTextValue
@@ -21,6 +23,10 @@ DEBUG = False
 
 
 def read_data(obj_file):
+    """read_data.
+
+    :param obj_file:
+    """
     ranges = []
     data = obj_file.data
 
@@ -34,6 +40,7 @@ def read_data(obj_file):
     return ''.join(ranges)
 
 
+# pylint: disable=no-init,old-style-class
 class DummyDict:
     """ A "request" substitute that renders all DTML vars as empty strings
     """
@@ -43,6 +50,10 @@ class DummyDict:
 
 
 def as_plain_text(value):
+    """as_plain_text.
+
+    :param value:
+    """
     value = HTMLParser().unescape(value)
 
     if isinstance(value, six.binary_type):
@@ -56,6 +67,10 @@ def as_plain_text(value):
 
 
 def as_richtext(value):
+    """as_richtext.
+
+    :param value:
+    """
     if value:
         value = clean_html(value)
 
@@ -63,6 +78,10 @@ def as_richtext(value):
 
 
 def as_acm_richtext(value):
+    """as_acm_richtext.
+
+    :param value:
+    """
     if value:
         value = clean_html(value)
 
@@ -78,10 +97,18 @@ def as_acm_richtext(value):
 
 
 def noop(value):
+    """noop.
+
+    :param value:
+    """
     return value
 
 
 def as_date(value):
+    """as_date.
+
+    :param value:
+    """
     return DateTime(value).asdatetime()
 
 
@@ -127,11 +154,17 @@ class EionetContentImporter(BrowserView):
         return "Imported %s objects" % count
 
     def import_etc_report(self, context, portal_type, tree):
+        """import_etc_report.
+
+        :param context:
+        :param portal_type:
+        :param tree:
+        """
         count = 0
 
         for node in tree.xpath('object'):
             url = node.get('url')
-            id = url.rsplit('/', 1)[-1]
+            r_id = url.rsplit('/', 1)[-1]
             props = {}
 
             for ep in node.findall('prop'):
@@ -146,10 +179,10 @@ class EionetContentImporter(BrowserView):
                 props[pname] = convert(text.strip())
 
             try:
-                obj = create(context, portal_type, id=id, **props)
+                obj = create(context, portal_type, id=r_id, **props)
             except ValueError:      # this is due to id error
                 obj = create(context, portal_type, **props)
-                logger.warning("Changed id for object: %s", id)
+                logger.warning("Changed id for object: %s", r_id)
 
             logger.info("Imported %s", obj.absolute_url())
             count += 1
@@ -158,8 +191,8 @@ class EionetContentImporter(BrowserView):
 
 
 class EionetACMImporter(EionetContentImporter):
-    """
-    """
+    """EionetACMImporter."""
+
     _map = {
         'teaser': ('abstract', as_acm_richtext),
         'releasedate': ('publication_date', as_date),
@@ -167,6 +200,10 @@ class EionetACMImporter(EionetContentImporter):
     }
 
     def handle_report_file(self, props):
+        """handle_report_file.
+
+        :param props:
+        """
         url = props['report_url']
 
         if url.startswith('http'):
@@ -198,11 +235,17 @@ class EionetACMImporter(EionetContentImporter):
         props['report_url'] = ''
 
     def import_etc_report(self, context, portal_type, tree):
+        """import_etc_report.
+
+        :param context:
+        :param portal_type:
+        :param tree:
+        """
         count = 0
 
         for node in tree.xpath('object'):
             url = node.get('url')
-            id = url.rsplit('/', 1)[-1]
+            r_id = url.rsplit('/', 1)[-1]
             props = {}
 
             for ep in node.findall('prop'):
@@ -219,10 +262,10 @@ class EionetACMImporter(EionetContentImporter):
             self.handle_report_file(props)
 
             try:
-                obj = create(context, portal_type, id=id, **props)
+                obj = create(context, portal_type, id=r_id, **props)
             except ValueError:      # this is due to id error
                 obj = create(context, portal_type, **props)
-                logger.warning("Changed id for object: %s", id)
+                logger.warning("Changed id for object: %s", r_id)
             transaction.commit()
 
             logger.info("Imported %s", obj.absolute_url())
@@ -232,6 +275,10 @@ class EionetACMImporter(EionetContentImporter):
 
 
 def blob_from_ofs_file(obj):
+    """blob_from_ofs_file.
+
+    :param obj:
+    """
     data = read_data(obj)
 
     ctype = obj.content_type
@@ -264,13 +311,17 @@ class EionetStructureImporter(BrowserView):
         return "Finished import: %s" % dest.absolute_url()
 
     def import_location(self, source, destination):
+        """import_location.
+
+        :param source:
+        :param destination:
+        """
         for obj in source.objectValues():
             metatype = obj.meta_type.replace(' ', '')
             handler = getattr(self, 'import_' + metatype, None)
 
             if handler is None:
-                logger.warning("Not importing: %s (%s)",
-                               (obj.getId(), metatype))
+                logger.warning("Not importing: %s (%s)", obj.getId(), metatype)
                 # raise ValueError('Not supported: %s (%s)' % (obj.getId(),
                 #                                              metatype))
 
@@ -283,6 +334,11 @@ class EionetStructureImporter(BrowserView):
         return destination
 
     def import_File(self, obj, destination):
+        """import_File.
+
+        :param obj:
+        :param destination:
+        """
         # if DEBUG:
         #     return
 
@@ -301,9 +357,19 @@ class EionetStructureImporter(BrowserView):
         return obj
 
     def import_Image(self, obj, destination):
+        """import_Image.
+
+        :param obj:
+        :param destination:
+        """
         return self.import_File(obj, destination)
 
     def import_Folder(self, obj, destination):
+        """import_Folder.
+
+        :param obj:
+        :param destination:
+        """
         folder = create(destination, 'Folder', id=obj.getId(),
                         title=as_plain_text(obj.title))
         logger.info("Created folder: %s", obj.absolute_url())
@@ -311,6 +377,11 @@ class EionetStructureImporter(BrowserView):
         return self.import_location(obj, folder)
 
     def import_DTMLDocument(self, obj, destination):
+        """import_DTMLDocument.
+
+        :param obj:
+        :param destination:
+        """
         text = obj(REQUEST=DummyDict())
 
         title = obj.title
@@ -329,9 +400,19 @@ class EionetStructureImporter(BrowserView):
         return page
 
     def import_DTMLMethod(self, obj, destination):
+        """import_DTMLMethod.
+
+        :param obj:
+        :param destination:
+        """
         return self.import_DTMLDocument(obj, destination)
 
     def _parse_page(self, title, html):
+        """_parse_page.
+
+        :param title:
+        :param html:
+        """
         if not html:
             return title, html
 
@@ -352,14 +433,26 @@ class EionetStructureImporter(BrowserView):
 
         return title, html
 
-    def _create_page(self, destination, id, title, html):
+    def _create_page(self, destination, p_id, title, html):
+        """_create_page.
+
+        :param destination:
+        :param id:
+        :param title:
+        :param html:
+        """
         title, html = self._parse_page(title, html)
 
         rt = RichTextValue(html, 'text/html', 'text/html')
 
-        return create(destination, 'Document', id=id, title=title, text=rt)
+        return create(destination, 'Document', id=p_id, title=title, text=rt)
 
     def import_SiteErrorLog(self, obj, destination):
+        """import_SiteErrorLog.
+
+        :param obj:
+        :param destination:
+        """
         return destination
 
 
@@ -368,6 +461,11 @@ class EionetDTMLReportImporter(EionetStructureImporter):
     """
 
     def import_DTMLDocument(self, obj, destination):
+        """import_DTMLDocument.
+
+        :param obj:
+        :param destination:
+        """
         text = obj(REQUEST=DummyDict())
 
         title = obj.title
@@ -404,9 +502,17 @@ class EionetDTMLReportImporter(EionetStructureImporter):
 
         return context.aq_inner
 
-    def _create_report(self, destination, id, title, html):
+    def _create_report(self, destination, r_id, title, html):
+        """_create_report.
+
+        :param destination:
+        :param id:
+        :param title:
+        :param html:
+        """
         # has 2 files:
-        # https://bd.eionet.europa.eu/Reports/ETCBDTechnicalWorkingpapers/Factsheets_Mediterranean_marine_hab_spec
+        # https://bd.eionet.europa.eu/Reports/ETCBDTechnicalWorkingpapers/
+        # Factsheets_Mediterranean_marine_hab_spec
         title, html = self._parse_page(title, html)
 
         e = fromstring(html)
@@ -448,7 +554,7 @@ class EionetDTMLReportImporter(EionetStructureImporter):
             _, f_field = blob_from_ofs_file(fobj)
 
         report = create(destination, 'etc_report',
-                        id=id, title=title, abstract=rt,
+                        id=r_id, title=title, abstract=rt,
                         publication_date=publication_date, file=f_field)
 
         logger.info("Created report: %s", report)
@@ -461,6 +567,13 @@ class EionetDTMLReportImporter(EionetStructureImporter):
 
         return report
 
+    # pylint: disable=arguments-differ
     def import_File(self, obj, destination, force=False):
+        """import_File.
+
+        :param obj:
+        :param destination:
+        :param force:
+        """
         if force:
             return EionetStructureImporter.import_File(self, obj, destination)
