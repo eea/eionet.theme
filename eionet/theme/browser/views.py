@@ -1,3 +1,4 @@
+''' views '''
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_callable
@@ -32,12 +33,19 @@ class CollectionHelperView(BrowserView):
         return fields
 
     def get_download_link(self, item_listing):
-        url = self.tabular_fielddata(item_listing, 'report_url').get('value', None)
-        file = self.tabular_fielddata(item_listing, 'file').get('value', None)
+        """get_download_link.
+
+        :param item_listing:
+        """
+        url = self.tabular_fielddata(item_listing, 'report_url').get('value',
+                                                                     None)
+        the_file = self.tabular_fielddata(item_listing, 'file').get('value',
+                                                                    None)
 
         download_url = ''
-        if file:
-            download_url = item_listing._brain.getURL() + '/@@download/file/' + file.filename
+        if the_file:
+            download_url = item_listing._brain.getURL() + \
+                '/@@download/file/' + the_file.filename
         if url:
             download_url = url
         return {
@@ -46,14 +54,17 @@ class CollectionHelperView(BrowserView):
 
     @property
     def collection_behavior(self):
+        """collection_behavior."""
         return ICollection(aq_inner(self.context))
 
     @property
     def b_size(self):
+        """b_size."""
         return getattr(self, '_b_size', self.collection_behavior.item_count)
 
     @property
     def b_start(self):
+        """b_start."""
         b_start = getattr(self.request, 'b_start', None) or 0
         return int(b_start)
 
@@ -70,7 +81,8 @@ class CollectionHelperView(BrowserView):
         # Extra filter
         contentFilter = dict(self.request.get('contentFilter', {}))
         contentFilter.update(kwargs.get('contentFilter', {}))
-        contentFilter.update({'sort_on': 'publication_date', 'sort_order': 'descending'})
+        contentFilter.update(
+            {'sort_on': 'publication_date', 'sort_order': 'descending'})
         kwargs.setdefault('custom_query', contentFilter)
         kwargs.setdefault('batch', True)
         kwargs.setdefault('b_size', self.b_size)
@@ -80,11 +92,15 @@ class CollectionHelperView(BrowserView):
         return results
 
     def batch(self):
-        # collection is already batched.
+        ''' collection is already batched.'''
         return self.results()
 
-
     def tabular_fielddata(self, item, fieldname):
+        """tabular_fielddata.
+
+        :param item:
+        :param fieldname:
+        """
         value = getattr(item, fieldname, '')
         if safe_callable(value):
             value = value()
@@ -110,6 +126,7 @@ class CollectionHelperView(BrowserView):
 
     @property
     def pas_member(self):
+        """pas_member."""
         if not self._pas_member:
             self._pas_member = getMultiAdapter(
                 (self.context, self.request),
@@ -119,12 +136,15 @@ class CollectionHelperView(BrowserView):
 
     @property
     def use_view_action(self):
+        """use_view_action."""
         registry = getUtility(IRegistry)
-        types_used = registry.get('plone.types_use_view_action_in_listings', [])
+        types_used = registry.get('plone.types_use_view_action_in_listings',
+                                  [])
         return types_used
 
     @property
     def plone_view(self):
+        """plone_view."""
         if not self._plone_view:
             self._plone_view = getMultiAdapter(
                 (self.context, self.request),
@@ -133,6 +153,10 @@ class CollectionHelperView(BrowserView):
         return self._plone_view
 
     def normalizeString(self, text):
+        """normalizeString.
+
+        :param text:
+        """
         return self.plone_view.normalizeString(text)
 
 
@@ -157,6 +181,7 @@ class FrontpageNewsHelperView(BrowserView):
 
     @property
     def plone_view(self):
+        """plone_view."""
         if not self._plone_view:
             self._plone_view = getMultiAdapter(
                 (self.context, self.request),
@@ -166,14 +191,17 @@ class FrontpageNewsHelperView(BrowserView):
 
     @property
     def collection_behavior(self):
+        """collection_behavior."""
         return ICollection(aq_inner(self.context))
 
     @property
     def b_size(self):
+        """b_size."""
         return getattr(self, '_b_size', self.collection_behavior.item_count)
 
     @property
     def b_start(self):
+        """b_start."""
         b_start = getattr(self.request, 'b_start', None) or 0
         return int(b_start)
 
@@ -199,10 +227,15 @@ class FrontpageNewsHelperView(BrowserView):
         return results
 
     def batch(self):
-        # collection is already batched.
+        ''' collection is already batched.'''
         return self.results()
 
     def tabular_fielddata(self, item, fieldname):
+        """tabular_fielddata.
+
+        :param item:
+        :param fieldname:
+        """
         value = getattr(item, fieldname, '')
         if safe_callable(value):
             value = value()
@@ -228,6 +261,7 @@ class FrontpageNewsHelperView(BrowserView):
 
     @property
     def pas_member(self):
+        """pas_member."""
         if not self._pas_member:
             self._pas_member = getMultiAdapter(
                 (self.context, self.request),
@@ -237,11 +271,17 @@ class FrontpageNewsHelperView(BrowserView):
 
     @property
     def use_view_action(self):
+        """use_view_action."""
         registry = getUtility(IRegistry)
-        types_used = registry.get('plone.types_use_view_action_in_listings', [])
+        types_used = registry.get('plone.types_use_view_action_in_listings',
+                                  [])
         return types_used
 
     def normalizeString(self, text):
+        """normalizeString.
+
+        :param text:
+        """
         return self.plone_view.normalizeString(text)
 
 
@@ -251,6 +291,7 @@ class ReportView(BrowserView):
 
     @property
     def _mimetype(self):
+        """_mimetype."""
         registry = getToolByName(self.context, 'mimetypes_registry', None)
         if not registry:
             return None
@@ -262,20 +303,20 @@ class ReportView(BrowserView):
         except MimeTypeException:
             return None
 
-        if len(mimetypes):
+        if mimetypes:
             return mimetypes[0]
-        else:
-            return None
+        return None
 
     @property
     def file_size(self):
+        """file_size."""
         if INamed.providedBy(self.context.file):
             return byteDisplay(self.context.file.getSize())
-        else:
-            return "0 KB"
+        return "0 KB"
 
     @property
     def file_icon(self):
+        """file_icon."""
         if not self.context.file:
             return None
 
@@ -283,10 +324,12 @@ class ReportView(BrowserView):
         if mimetype and mimetype.icon_path:
             return "%s/%s" % (getToolByName(getSite(), 'portal_url')(),
                               mimetype.icon_path)
-        else:
-            return None
+        return None
 
 
 class GoPDB(BrowserView):
+    """GoPDB."""
+
     def __call__(self):
-        import pdb;pdb.set_trace()
+        import pdb
+        pdb.set_trace()

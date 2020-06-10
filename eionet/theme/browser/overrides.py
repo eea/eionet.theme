@@ -1,3 +1,4 @@
+''' overrides module '''
 import logging
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
@@ -9,9 +10,12 @@ logger = logging.getLogger('eionet.theme.overrides')
 
 
 class PathBarViewlet(ViewletBase):
+    """PathBarViewlet."""
+
     index = ViewPageTemplateFile('overrides/path_bar.pt')
 
     def update(self):
+        """update."""
         super(PathBarViewlet, self).update()
 
         self.is_rtl = self.portal_state.is_rtl()
@@ -21,6 +25,7 @@ class PathBarViewlet(ViewletBase):
         self.breadcrumbs = breadcrumbs_view.breadcrumbs()
 
     def get_home(self):
+        """get_home."""
         tab_action = self.context.portal_actions.get('portal_tabs')
         return tab_action.index_html.title
 
@@ -35,7 +40,7 @@ def patched_toLocalizedTime(self, time, long_format=None, time_only=None):
 
     util = getToolByName(context, 'translation_service')
     loc_time = util.ulocalized_time(time, long_format, time_only,
-                                   context=context, domain='plonelocales',
-                                   request=self.request)
-    loc_time = loc_time.replace(',','')
+                                    context=context, domain='plonelocales',
+                                    request=self.request)
+    loc_time = loc_time.replace(',', '')
     return loc_time

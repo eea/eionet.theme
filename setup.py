@@ -15,7 +15,7 @@ setup(
     description="Installable theme: eionet.theme",
     long_description_content_type="text/x-rst",
     long_description=open("README.rst").read() + "\n" +
-                     open(join("docs", "HISTORY.txt")).read(),
+    open(join("docs", "HISTORY.txt")).read(),
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         "Environment :: Web Environment",
@@ -46,11 +46,9 @@ setup(
     ],
     extras_require={
         'test': [
+            'Products.CMFPlone',
             'plone.app.testing',
-            # Plone KGS does not use this version, because it would break
-            # Remove if your package shall be part of coredev.
-            # plone_coredev tests as of 2016-04-01.
-            'plone.testing>=5.0.0',
+            'plone.testing',
             'plone.app.contenttypes',
             'plone.app.robotframework[debug]',
         ],

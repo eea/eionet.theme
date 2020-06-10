@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """Setup tests for this package."""
-from plone import api
-from eionet.theme.testing import EIONET_THEME_INTEGRATION_TESTING  # noqa
-
 import unittest
+from eionet.theme.testing import EIONET_THEME_INTEGRATION_TESTING
+from Products.CMFPlone.utils import get_installer
 
 
 class TestSetup(unittest.TestCase):
@@ -14,7 +13,7 @@ class TestSetup(unittest.TestCase):
     def setUp(self):
         """Custom shared utility setup for tests."""
         self.portal = self.layer['portal']
-        self.installer = api.portal.get_tool('portal_quickinstaller')
+        self.installer = get_installer(self.portal)
 
     def test_product_installed(self):
         """Test if eionet.theme is installed."""
@@ -30,12 +29,13 @@ class TestSetup(unittest.TestCase):
 
 
 class TestUninstall(unittest.TestCase):
+    """TestUninstall."""
 
     layer = EIONET_THEME_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer['portal']
-        self.installer = api.portal.get_tool('portal_quickinstaller')
+        self.installer = get_installer(self.portal)
         self.installer.uninstallProducts(['eionet.theme'])
 
     def test_product_uninstalled(self):
