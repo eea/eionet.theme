@@ -2,6 +2,7 @@
   xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser"
   xmlns:plone="http://namespaces.plone.org/plone"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
   i18n_domain="eionet.theme">
 
   <include file="overrides.zcml" />
@@ -110,5 +111,71 @@
       template="pt/country-list.pt"
       permission="zope2.View"
       />
+
+<!--  <configure zcml:condition="installed collective.js.fulcallendar">-->
+
+      <include package="plone.app.contentmenu" />
+
+      <browser:page
+          class=".views.CalendarView"
+          for="*"
+          name="calendar_view"
+          menu="plone_displayviews"
+          title="Calendar view"
+          template="pt/calendarview.pt"
+          layer="eionet.theme.interfaces.ICalendarLayer"
+          permission="zope.Public"
+          />
+
+      <browser:page
+          for="*"
+          name="calendar_update"
+          class=".views.CalendarupdateView"
+          template="pt/calendarview.pt"
+          permission="zope.Public"
+          layer="eionet.theme.interfaces.ICalendarLayer"
+          />
+
+      <browser:page
+          for="*"
+          name="calendar_drop"
+          class=".views.CalendarDropView"
+          permission="zope.Public"
+          layer="eionet.theme.interfaces.ICalendarLayer"
+          />
+
+      <browser:page
+          for="*"
+          name="calendar_resize"
+          class=".views.CalendarResizeView"
+          permission="zope.Public"
+          layer="eionet.theme.interfaces.ICalendarLayer"
+          />
+
+      <browser:page
+          for="*"
+          name="calendar_add"
+          class=".views.CalendarAddView"
+          permission="zope.Public"
+          layer="eionet.theme.interfaces.ICalendarLayer"
+          />
+
+      <browser:page
+          for="*"
+          name="calendar_config.js"
+          class=".views.CalendarConfigView"
+          template="pt/calendar_config.pt"
+          permission="zope.Public"
+          layer="eionet.theme.interfaces.ICalendarLayer"
+          />
+
+      <!-- Adapter -->
+      <adapter
+        for="* *"
+        name="calendar_source"
+        provides="eionet.theme.interfaces.ICalendarJSONSourceProvider"
+        factory=".views.CalendarJSONSource"
+        />
+<!--    </configure>-->
 
 </configure>

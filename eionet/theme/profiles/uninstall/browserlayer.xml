@@ -4,4 +4,8 @@
       name="eionet.theme"
       remove="true"
       />
+  <layer
+      name="calendar"
+      remove="true"
+      />
 </layers>
