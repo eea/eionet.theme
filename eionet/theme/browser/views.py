@@ -444,7 +444,7 @@ class CalendarJSONSource(object):
         # 0.999.. day. This check will mark those events as all day.
         duration = brain.end - brain.start
         if isinstance(duration, timedelta):
-            duration = duration.seconds / 60. / 60.
+            duration = duration.seconds / 60. / 60. / 24.
         allday = duration > 0.99
 
         return {"id": "UID_%s" % (brain.UID),
