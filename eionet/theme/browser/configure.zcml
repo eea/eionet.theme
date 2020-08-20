@@ -116,6 +116,11 @@
 
       <include package="plone.app.contentmenu" />
 
+      <browser:resourceDirectory
+          name="eionet.theme"
+          directory="static"
+          />
+
       <browser:page
           class=".views.CalendarView"
           for="*"
