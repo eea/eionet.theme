@@ -19,6 +19,30 @@ from eionet.theme.interfaces import ICalendarEventCreator
 from eionet.theme.interfaces import ICalendarJSONSourceProvider
 
 
+CATEGORIES = [
+    ('blue', (
+        ('MB', 'MB and Bureau'),
+        # ('NFP', 'NFP/Eionet Group'),
+        # ('SC', 'Scientific Committee'),
+        # ('SOER', 'SOER 2020 country events'),
+        # ('Other events', 'Other events'),
+    )),
+    ('green', (
+        ('NFP', 'NFP/Eionet Group'),
+        ('NRC', 'NRC Meetings'),
+    )),
+    ('orange', (
+        ('Publication', 'Publication'),
+    )),
+    ('pink', (
+        ('Consultation', 'Consultation'),
+    )),
+    ('yellow', (
+        ('Eionet core data', 'Eionet data flows 2020 and 2019'),
+    )),
+]
+
+
 class CollectionHelperView(BrowserView):
     """ Custom class for collection helper view
     """
@@ -436,6 +460,13 @@ class CalendarJSONSource(object):
 
         event = brain.getObject()
         editable = api.user.has_permission('Edit', obj=event)
+        color = ''
+        for group_color, categories in CATEGORIES:
+            for cat_id, cat_title in categories:
+                for category in event.subject:
+                    if cat_id in category.strip():
+                        color = group_color
+                        break
 
         # The default source marks an event as all day if it is longer than
         # one day. Marking an event as all day in contentpage will set
@@ -453,6 +484,7 @@ class CalendarJSONSource(object):
                 "end": end,
                 "url": brain.getURL(),
                 "editable": editable,
+                "backgroundColor": color,
                 "allDay": allday,
                 "className": "state-" + str(brain.review_state) +
                 (editable and " editable" or ""),
