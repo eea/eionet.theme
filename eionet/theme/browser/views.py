@@ -20,24 +20,23 @@ from eionet.theme.interfaces import ICalendarJSONSourceProvider
 
 
 CATEGORIES = [
-    ('blue', (
+    ('#5893A9', (
         ('MB', 'MB and Bureau'),
-        # ('NFP', 'NFP/Eionet Group'),
-        # ('SC', 'Scientific Committee'),
-        # ('SOER', 'SOER 2020 country events'),
+        ('NFP', 'NFP/Eionet Group'),
+        ('SC', 'Scientific Committee'),
         # ('Other events', 'Other events'),
     )),
-    ('green', (
-        ('NFP', 'NFP/Eionet Group'),
+    ('#B5C132', (
         ('NRC', 'NRC Meetings'),
+        ('SOER', 'SOER 2020 country events'),
     )),
-    ('orange', (
+    ('#F6A800', (
         ('Publication', 'Publication'),
     )),
-    ('pink', (
+    ('#FAB9B9', (
         ('Consultation', 'Consultation'),
     )),
-    ('yellow', (
+    ('#FFE524', (
         ('Eionet core data', 'Eionet data flows 2020 and 2019'),
     )),
 ]
@@ -460,7 +459,7 @@ class CalendarJSONSource(object):
 
         event = brain.getObject()
         editable = api.user.has_permission('Edit', obj=event)
-        color = ''
+        color = 'grey'
         for group_color, categories in CATEGORIES:
             for cat_id, cat_title in categories:
                 for category in event.subject:

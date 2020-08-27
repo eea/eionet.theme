@@ -21,7 +21,8 @@ $(document).ready(function() {
       prevYear: '<<',
       nextYear: '>>'
     },
-    firstDay: 1,
+    firstDay: <span tal:replace="view/first_day">1</span>,
+    displayEventEnd: true,
   });
   calendar.render();
   /*$('#calendar').fullCalendar({
