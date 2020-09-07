@@ -15,29 +15,39 @@ from zope.size import byteDisplay
 from zope.component.hooks import getSite
 from zope.component import getUtility, getMultiAdapter, ComponentLookupError
 from zope.interface import implementer
+from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
 from eionet.theme.interfaces import ICalendarEventCreator
 from eionet.theme.interfaces import ICalendarJSONSourceProvider
 
 
 CATEGORIES = [
     ('#5893A9', (
-        ('MB', 'MB and Bureau'),
-        ('NFP', 'NFP/Eionet Group'),
-        ('SC', 'Scientific Committee'),
-        # ('Other events', 'Other events'),
-    )),
-    ('#B5C132', (
-        ('NRC', 'NRC Meetings'),
-        ('SOER', 'SOER 2020 country events'),
+        ('10', 'Event'),
+        ('mb', 'MB and Bureau'),
+        ('nfp-eionet', 'NFP/Eionet Group'),
+        ('sc', 'Scientific Committee'),
+        ('nrc', 'NRC Meetings'),
+        ('soer', 'SOER Events'),
     )),
     ('#F6A800', (
-        ('Publication', 'Publication'),
+        ('20', 'Publication'),
+        ('launch', 'Publication launch'),
+        ('publication-date-tbc', 'Publication date TBC'),
     )),
-    ('#FAB9B9', (
-        ('Consultation', 'Consultation'),
+    # ('#FAB9B9', (
+    ('#FF6969', (
+        ('30', 'Consultation'),
+        ('consult-start', 'Consultation start'),
+        ('consult-per', 'Consultation period'),
+        ('consult-start', 'Consultation start'),
+        ('consult-end', 'Consultation end'),
     )),
-    ('#FFE524', (
-        ('Eionet core data', 'Eionet data flows 2020 and 2019'),
+    # ('#FFE524', (
+    ('#EFDA1E', (
+        ('40', 'Reporting'),
+        ('eionet-core-data', 'Eionet data flows 2020 and 2019'),
+        ('report-obl', 'Reporting obligations'),
     )),
 ]
 
@@ -460,12 +470,20 @@ class CalendarJSONSource(object):
         event = brain.getObject()
         editable = api.user.has_permission('Edit', obj=event)
         color = 'grey'
-        for group_color, categories in CATEGORIES:
-            for cat_id, cat_title in categories:
-                for category in event.subject:
-                    if cat_id in category.strip():
+        if event.tag:
+            for group_color, categories in CATEGORIES:
+                for cat_id, cat_title in categories:
+                    if cat_id in event.tag:
                         color = group_color
                         break
+        else:
+            # for events imported from ICS
+            for group_color, categories in CATEGORIES:
+                for cat_id, cat_tile in categories:
+                    for tag in event.subject:
+                        if cat_id == tag.lower():
+                            color = group_color
+                            break
 
         # The default source marks an event as all day if it is longer than
         # one day. Marking an event as all day in contentpage will set
@@ -563,3 +581,13 @@ class CalendarAddView(BrowserView):
         event = eventCreator.createEvent(title, start_date)
 
         self.request.RESPONSE.redirect(event.absolute_url() + '/edit')
+
+
+class CategoriesVocabularyFactory(object):
+    """ CategoriesVocabularyFactory """
+
+    def __call__(self, context):
+
+        return SimpleVocabulary(
+            [SimpleTerm(value=cat[1][0][0], title=cat[1][0][1]) for
+                cat in CATEGORIES])

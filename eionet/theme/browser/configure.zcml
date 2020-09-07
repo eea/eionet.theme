@@ -181,6 +181,12 @@
         provides="eionet.theme.interfaces.ICalendarJSONSourceProvider"
         factory=".views.CalendarJSONSource"
         />
+
+      <utility
+        factory=".views.CategoriesVocabularyFactory"
+        name="eionet.fullcalendar.categories"
+        provides="zope.schema.interfaces.IVocabularyFactory"
+      />
 <!--    </configure>-->
 
 </configure>

@@ -13,7 +13,7 @@ $(document).ready(function() {
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,dayGridWeek,dayGridDay,listMonth,listYear'
+      right: '' //here we'll add categories custom views
     },
     buttonText: {
       prev: '<',
