@@ -22,7 +22,7 @@ from eionet.theme.interfaces import ICalendarJSONSourceProvider
 
 
 CATEGORIES = [
-    ('#5893A9', (
+    ('events', '#5893A9', (
         ('10', 'Event'),
         ('mb', 'MB and Bureau'),
         ('nfp-eionet', 'NFP/Eionet Group'),
@@ -30,13 +30,13 @@ CATEGORIES = [
         ('nrc', 'NRC Meetings'),
         ('soer', 'SOER Events'),
     )),
-    ('#F6A800', (
+    ('publications', '#F6A800', (
         ('20', 'Publication'),
         ('launch', 'Publication launch'),
         ('publication-date-tbc', 'Publication date TBC'),
     )),
     # ('#FAB9B9', (
-    ('#FF6969', (
+    ('consultations', '#FF6969', (
         ('30', 'Consultation'),
         ('consult-start', 'Consultation start'),
         ('consult-per', 'Consultation period'),
@@ -44,7 +44,7 @@ CATEGORIES = [
         ('consult-end', 'Consultation end'),
     )),
     # ('#FFE524', (
-    ('#EFDA1E', (
+    ('reporting', '#EFDA1E', (
         ('40', 'Reporting'),
         ('eionet-core-data', 'Eionet data flows 2020 and 2019'),
         ('report-obl', 'Reporting obligations'),
@@ -425,7 +425,22 @@ class CalendarJSONSource(object):
         result = []
 
         for brain in self.get_event_brains():
-            result.append(self.generate_source_dict_from_brain(brain))
+            event = brain.getObject()
+            view = self.request.get('view')
+            for view_id, color, categories in CATEGORIES:
+                if view == view_id:
+                    if event.tag and categories[0][0] not in event.tag:
+                        break
+                    # support for events import from ICS, but tag takes
+                    # precedence
+                    if event.subject:
+                        if not set(
+                            [subject.lower() for subject in event.subject]) & \
+                            set(category[0]
+                                for category in categories[1:]):
+                            break
+            else:
+                result.append(self.generate_source_dict_from_brain(brain))
 
         return json.dumps(result, sort_keys=True)
 
@@ -471,14 +486,14 @@ class CalendarJSONSource(object):
         editable = api.user.has_permission('Edit', obj=event)
         color = 'grey'
         if event.tag:
-            for group_color, categories in CATEGORIES:
+            for view_type, group_color, categories in CATEGORIES:
                 for cat_id, cat_title in categories:
                     if cat_id in event.tag:
                         color = group_color
                         break
         else:
             # for events imported from ICS
-            for group_color, categories in CATEGORIES:
+            for view_type, group_color, categories in CATEGORIES:
                 for cat_id, cat_tile in categories:
                     for tag in event.subject:
                         if cat_id == tag.lower():
@@ -589,5 +604,5 @@ class CategoriesVocabularyFactory(object):
     def __call__(self, context):
 
         return SimpleVocabulary(
-            [SimpleTerm(value=cat[1][0][0], title=cat[1][0][1]) for
+            [SimpleTerm(value=cat[2][0][0], title=cat[2][0][1]) for
                 cat in CATEGORIES])

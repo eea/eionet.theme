@@ -5,7 +5,10 @@
   <metal:javascriptslot fill-slot="javascript_head_slot">
     <script type="text/javascript"
         tal:attributes="src string:./calendar_config.js"></script>
+    <!--<script type="text/javascript"
+      src="++plone++eionet.theme/tooltip.min.js"></script>-->
   </metal:javascriptslot>
+
 <body>
     <div metal:fill-slot="main">
         <tal:main-macro metal:define-macro="main">

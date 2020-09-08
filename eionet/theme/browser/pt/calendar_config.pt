@@ -8,12 +8,30 @@ $(document).ready(function() {
     editable: false,
     selectable: true,
     events: {
-      url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update",
+      url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=dayGridMonth",
+    },
+    views: {
+      consultations: {
+        type: 'listYear',
+        buttonText: 'Consultations'
+      },
+      events: {
+        type: 'listYear',
+        buttonText: 'Events'
+      },
+      publications: {
+        type: 'listYear',
+        buttonText: 'Publications'
+      },
+      reporting: {
+        type: 'listYear',
+        buttonText: 'Reporting'
+      },
     },
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: '' //here we'll add categories custom views
+      right: 'dayGridMonth,events,publications,consultations,reporting'
     },
     buttonText: {
       prev: '<',
@@ -21,8 +39,24 @@ $(document).ready(function() {
       prevYear: '<<',
       nextYear: '>>'
     },
+    datesSet: function(info){
+      var source = info.view.calendar.getEventSources()[0]
+      if (source.url.indexOf('view=' + info.view.type) == -1){
+        info.view.calendar.getEventSources()[0].remove();
+        info.view.calendar.addEventSource(
+          ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=" + info.view.type);
+      }
+    },
     firstDay: <span tal:replace="view/first_day">1</span>,
     displayEventEnd: true,
+    /*eventDidMount: function(info) {
+      var tooltip = new Tooltip(info.el, {
+        title: info.event.extendedProps.description,
+        placement: 'top',
+        trigger: 'hover',
+        container: 'body'
+      });
+    },*/
   });
   calendar.render();
   /*$('#calendar').fullCalendar({
