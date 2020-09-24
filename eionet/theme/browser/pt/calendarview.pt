@@ -5,8 +5,9 @@
   <metal:javascriptslot fill-slot="javascript_head_slot">
     <script type="text/javascript"
         tal:attributes="src string:./calendar_config.js"></script>
-    <!--<script type="text/javascript"
-      src="++plone++eionet.theme/tooltip.min.js"></script>-->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.css" />
   </metal:javascriptslot>
 
 <body>

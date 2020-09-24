@@ -476,11 +476,6 @@ class CalendarJSONSource(object):
         description = brain.Description
         if callable(description):
             description = description()
-        start = brain.start
-        end = brain.end
-        iso = hasattr(start, 'isoformat') and 'isoformat' or 'ISO8601'
-        start = getattr(start, iso)()
-        end = getattr(end, iso)()
 
         event = brain.getObject()
         editable = api.user.has_permission('Edit', obj=event)
@@ -505,22 +500,35 @@ class CalendarJSONSource(object):
         # the times to 00:00 and 23:59. If those times are on the same
         # date they will not be recognised as all day because thats only a
         # 0.999.. day. This check will mark those events as all day.
+        start = brain.start
+        end = brain.end
         duration = brain.end - brain.start
         if isinstance(duration, timedelta):
-            duration = duration.seconds / 60. / 60. / 24.
-        allday = duration > 0.99
+            duration = duration.total_seconds() / 60. / 60. / 24.
+        allday = (duration > 0.99 or
+                  start == end or
+                  brain.start.date() != brain.end.date())
+        if allday:
+            end += timedelta(days=1)
+        iso = hasattr(start, 'isoformat') and 'isoformat' or 'ISO8601'
+        start = getattr(start, iso)()
+        end = getattr(end, iso)()
 
         return {"id": "UID_%s" % (brain.UID),
                 "title": title,
                 "start": start,
                 "end": end,
                 "url": brain.getURL(),
-                "editable": editable,
+                "can_edit": editable,
                 "backgroundColor": color,
                 "allDay": allday,
                 "className": "state-" + str(brain.review_state) +
                 (editable and " editable" or ""),
-                "description": description}
+                "description": description,
+                "location": event.location,
+                "realend": brain.end.strftime('%B %d'),
+                "oneday": brain.start.date() == brain.end.date()
+                }
 
 
 class CalendarupdateView(BrowserView):

@@ -32,13 +32,23 @@
     </value>
   </records>
 
+  <records prefix="plone.resources/eionetfullcalendar-tingle"
+           interface="Products.CMFPlone.interfaces.IResourceRegistry">
+    <value key="js">++resource++eionet.theme/tingle.js</value>
+    <value key="css">
+      <element>++resource++eionet.theme/tingle.css</element>
+    </value>
+  </records>
+
   <records prefix="plone.bundles/eionetfullcalendar"
            interface="Products.CMFPlone.interfaces.IBundleRegistry">
     <value key="resources">
       <element>eionetfullcalendar</element>
+      <element>eionetfullcalendar-tingle</element>
     </value>
     <value key="depends">jqueryui</value>
     <value key="csscompilation">++plone++static/eionetfullcalendar-compiled.css</value>
+    <value key="jscompilation">++plone++static/eionetfullcalendar-compiled.js</value>
     <value key="compile">False</value>
     <value key="enabled">True</value>
   </records>

@@ -119,7 +119,7 @@
       <browser:resourceDirectory
           name="eionet.theme"
           directory="static"
-          />
+      />
 
       <browser:page
           class=".views.CalendarView"

@@ -1,10 +1,37 @@
 <tal:script i18n:domain="eionet.theme"
     tal:define="set_mimetype python:request.response.setHeader('Content-Type', 'text/javascript');">
-
 $(document).ready(function() {
+  function time_from_date(date){
+    return calendar.formatDate(date, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  }
+  function date_from_date(date){
+    return calendar.formatDate(date, {
+      day: '2-digit',
+      month: 'long',
+      hour12: false,
+    });
+  }
+  function day_from_date(date){
+    return calendar.formatDate(date, {
+      'day': '2-digit'
+    });
+  }
+  function interval(start, end){
+    return start + ' - ' + end;
+  }
+  function weekday(date){
+    return calendar.formatDate(date, {
+      weekday: 'long'
+    });
+  }
   calendarEl = document.getElementById('calendar');
-  calendar = new FullCalendar.Calendar(calendarEl, {
+  var calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
+    timeZone: 'Europe/Copenhagen',
     editable: false,
     selectable: true,
     events: {
@@ -42,21 +69,67 @@ $(document).ready(function() {
     datesSet: function(info){
       var source = info.view.calendar.getEventSources()[0]
       if (source.url.indexOf('view=' + info.view.type) == -1){
-        info.view.calendar.getEventSources()[0].remove();
         info.view.calendar.addEventSource(
           ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=" + info.view.type);
+        info.view.calendar.getEventSources()[0].remove();
       }
     },
     firstDay: <span tal:replace="view/first_day">1</span>,
     displayEventEnd: true,
-    /*eventDidMount: function(info) {
-      var tooltip = new Tooltip(info.el, {
-        title: info.event.extendedProps.description,
-        placement: 'top',
-        trigger: 'hover',
-        container: 'body'
+    eventClick: function(info) {
+      info.jsEvent.preventDefault();
+      var modal = new tingle.modal({
+        footer: true,
+        stickyFooter: false,
+        closeMethods: ['overlay', 'button', 'escape'],
+        closeLabel: "Close",
+        cssClass: ['custom-class-1', 'custom-class-2'],
+        onOpen: function() {
+            console.log('modal open');
+        },
+        onClose: function() {
+            console.log('modal closed');
+        },
+        beforeClose: function() {
+            // here's goes some logic
+            // e.g. save content before closing the modal
+            return true; // close the modal
+            return false; // nothing happens
+        }
       });
-    },*/
+      // set content
+      var content = '<h1>' + info.event.title + '</h1>'
+      content += '<br><br>' + info.event.extendedProps.description;
+      if(info.event.allDay){
+        if(info.event.extendedProps.oneday){
+          content += '<br><br>' + '<strong>Full day event</strong>';
+        } else {
+          content += '<br><br>' + '<strong>Event duration: </strong>' + date_from_date(info.event.start) + ' - ' + info.event.extendedProps.realend;
+        };
+      } else {
+      content += '<br><br>' + '<strong>Time:</strong><br>' + '(' + weekday(info.event.start) + ') ' + interval(time_from_date(info.event.start), time_from_date(info.event.end));
+      }
+      if(info.event.extendedProps.location){
+        content += '<br><br>' + '<strong>Event location (address): </strong>' + info.event.extendedProps.location;
+      }
+      modal.setContent(content);
+
+      modal.addFooterBtn('Close', 'pat-plone-modal standalone', function() {
+        // here goes some logic
+        modal.close();
+      });
+
+      if(info.event.extendedProps.can_edit){
+        modal.addFooterBtn('Edit event', 'pat-plone-modal standalone', function() {
+        // here goes some logic
+          modal.close();
+          window.location.href = info.event.url + '/edit';
+        });
+      }
+
+      modal.open();
+      //modal.close();
+    },
   });
   calendar.render();
   /*$('#calendar').fullCalendar({
@@ -105,5 +178,4 @@ $(document).ready(function() {
 
   });*/
 });
-
 </tal:script>
