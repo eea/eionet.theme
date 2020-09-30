@@ -82,6 +82,10 @@
             url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=dayGridMonth",
           },
           views: {
+            calendar_view : {
+              type: 'dayGridMonth',
+              buttonText: 'Calendar'
+            ,}
             consultations: {
               type: 'listYear',
               buttonText: 'Consultations'
@@ -100,9 +104,9 @@
             },
           },
           headerToolbar: {
-            left: 'prev,next today',
+            left: 'calendar_view prev,next today',
             center: 'title',
-            right: 'dayGridMonth,events,publications,consultations,reporting'
+            right: 'events publications consultations reporting'
           },
           buttonText: {
             prev: '<',
