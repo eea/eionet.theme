@@ -85,7 +85,7 @@
             calendar_view : {
               type: 'dayGridMonth',
               buttonText: 'Calendar'
-            ,}
+            },
             consultations: {
               type: 'listYear',
               buttonText: 'Consultations'
