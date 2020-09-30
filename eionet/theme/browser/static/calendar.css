@@ -9,3 +9,12 @@
   white-space: nowrap;
   cursor: pointer;
 }
+.tooltip {
+  z-index: 12000;
+  position: absolute;
+  z-index: 10000;
+  color: white;
+  background-color: #069;
+  padding: 3px;
+  border-radius: 3px;
+}

@@ -3,11 +3,183 @@
       metal:use-macro="here/main_template/macros/master"
       i18n:domain="eionet.theme">
   <metal:javascriptslot fill-slot="javascript_head_slot">
-    <script type="text/javascript"
-        tal:attributes="src string:./calendar_config.js"></script>
-    <script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.css" />
+    <script type="text/javascript">
+      $(document).ready(function() {
+        function time_from_date(date){
+          return calendar.formatDate(date, {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          });
+        };
+        function date_from_date(date){
+          return calendar.formatDate(date, {
+            day: '2-digit',
+            month: 'long',
+            hour12: false,
+          });
+        };
+        function day_from_date(date){
+          return calendar.formatDate(date, {
+            'day': '2-digit'
+          });
+        };
+        function interval(start, end){
+          return start + ' - ' + end;
+        };
+        function weekday(date){
+          return calendar.formatDate(date, {
+            weekday: 'long'
+          });
+        };
+        function duration(event, version){
+          if(event.allDay){
+            if(event.extendedProps.oneday){
+              if(version == 'long'){
+                return '<br><br><strong>Full day event</strong>';
+              } else {
+                return '<br><strong>Full day event</strong>';
+              }
+            } else {
+              if(version == 'long'){
+                return '<br><br>' + '<strong>Event duration: </strong>' +
+                  date_from_date(event.start) + ' - ' +
+                  event.extendedProps.realend;
+              } else {
+                return '<br>' + '<strong>Event duration: </strong>' +
+                  date_from_date(event.start) + ' - ' +
+                  event.extendedProps.realend;
+              }
+            }
+          } else {
+            if(version == 'long'){
+              return '<br><br><strong>Time: </strong><br>(' +
+                weekday(event.start) + ') ' +
+                interval(time_from_date(event.start),
+                         time_from_date(event.end));
+            } else {
+              return '<br><strong>Time: </strong>' +
+                interval(time_from_date(event.start),
+                         time_from_date(event.end));
+            }
+          }
+        }
+        function event_location(event){
+          if(event.extendedProps.location){
+           return '<br><br><strong>Event location (address): </strong>' +
+              event.extendedProps.location;
+          }
+          return ''
+        }
+        calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          timeZone: 'Europe/Copenhagen',
+          editable: false,
+          selectable: true,
+          dayMaxEvents: true,
+          events: {
+            url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=dayGridMonth",
+          },
+          views: {
+            consultations: {
+              type: 'listYear',
+              buttonText: 'Consultations'
+            },
+            events: {
+              type: 'listYear',
+              buttonText: 'Events'
+            },
+            publications: {
+              type: 'listYear',
+              buttonText: 'Publications'
+            },
+            reporting: {
+              type: 'listYear',
+              buttonText: 'Reporting'
+            },
+          },
+          headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,events,publications,consultations,reporting'
+          },
+          buttonText: {
+            prev: '<',
+            next: '>',
+            prevYear: '<<',
+            nextYear: '>>'
+          },
+          datesSet: function(info){
+            var source = info.view.calendar.getEventSources()[0]
+            if (source.url.indexOf('view=' + info.view.type) == -1){
+              info.view.calendar.addEventSource(
+                ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=" + info.view.type);
+              info.view.calendar.getEventSources()[0].remove();
+            }
+          },
+          firstDay: <span tal:replace="view/first_day">1</span>,
+          displayEventEnd: true,
+          eventDidMount: function(info) {
+            /*var tooltip = new Tooltip(info.el, {
+              title: info.event.extendedProps.description,
+              placement: 'top',
+              trigger: 'hover',
+              container: 'body'
+            });*/
+            $(info.el).attr('data-toggle', 'tooltip');
+            $(info.el).attr('data-html', 'true');
+            $(info.el).attr('title', info.event.title + duration(info.event));
+            $(info.el).tooltip();
+          },
+          eventClick: function(info) {
+            info.jsEvent.preventDefault();
+            var modal = new tingle.modal({
+              footer: true,
+              stickyFooter: false,
+              closeMethods: ['overlay', 'button', 'escape'],
+              closeLabel: "Close",
+              cssClass: ['custom-class-1', 'custom-class-2'],
+              onOpen: function() {
+                  //console.log('modal open');
+              },
+              onClose: function() {
+                  //console.log('modal closed');
+              },
+              beforeClose: function() {
+                  // here's goes some logic
+                  // e.g. save content before closing the modal
+                  return true; // close the modal
+                  return false; // nothing happens
+              }
+            });
+            // set content
+            var content = '<h1>' + info.event.title + '</h1>'
+            content += '<br><br>' + info.event.extendedProps.description;
+            content += duration(info.event, 'long');
+            content += event_location(info.event);
+            modal.setContent(content);
+
+            modal.addFooterBtn('Close', 'pat-plone-modal standalone', function() {
+              // here goes some logic
+              modal.close();
+            });
+
+            if(info.event.extendedProps.can_edit){
+              modal.addFooterBtn('Edit event', 'pat-plone-modal standalone', function() {
+              // here goes some logic
+                modal.close();
+                window.location.href = info.event.url + '/edit';
+              });
+            }
+
+            modal.open();
+            //modal.close();
+          },
+        });
+        calendar.render();
+      });
+    </script>
   </metal:javascriptslot>
 
 <body>

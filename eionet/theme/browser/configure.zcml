@@ -165,15 +165,6 @@
           layer="eionet.theme.interfaces.ICalendarLayer"
           />
 
-      <browser:page
-          for="*"
-          name="calendar_config.js"
-          class=".views.CalendarConfigView"
-          template="pt/calendar_config.pt"
-          permission="zope.Public"
-          layer="eionet.theme.interfaces.ICalendarLayer"
-          />
-
       <!-- Adapter -->
       <adapter
         for="* *"

@@ -378,17 +378,6 @@ class GoPDB(BrowserView):
 class CalendarView(BrowserView):
     """ The class is needed to register a viewlet for this view.
     """
-
-
-class CalendarConfigView(BrowserView):
-    """
-    Calendar configuration view.
-    """
-
-    def __call__(self):
-        self.request.response.setHeader('X-Theme-Disabled', 'True')
-        return super(CalendarConfigView, self).__call__()
-
     def first_day(self):
         """
         Returns the first day of the week as an integer.
