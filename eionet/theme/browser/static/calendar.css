@@ -4,3 +4,8 @@
 .fc-button-active {
   color: #bf5900 !important;
 }
+.fc-event-title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}

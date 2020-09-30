@@ -474,6 +474,7 @@ class CalendarJSONSource(object):
         if callable(title):
             title = title()
         description = brain.Description
+
         if callable(description):
             description = description()
 

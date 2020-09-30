@@ -34,6 +34,7 @@ $(document).ready(function() {
     timeZone: 'Europe/Copenhagen',
     editable: false,
     selectable: true,
+    dayMaxEvents: true,
     events: {
       url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=dayGridMonth",
     },
@@ -132,50 +133,5 @@ $(document).ready(function() {
     },
   });
   calendar.render();
-  /*$('#calendar').fullCalendar({
-        <span tal:omit-tag="" tal:condition="view/can_add_content">
-        dayClick: function(date, allDay, jsEvent, view) {
-            var title = prompt('<tal:trans i18n:translate="insert_title_prompt">Please insert a title for the new event.</tal:trans>');
-            if (title == null || title.length == 0) return;
-
-            window.location.href = "./calendar_add?" + $.param({'title': title, 'startdate': Math.round(date.getTime() / 1000)})
-        },
-        </span>
-        eventDrop: function(event, dayDelta, minuteDelta) {
-            $.ajax({
-                type: 'POST',
-                url: './calendar_drop',
-                data: {
-                    'event': event.id,
-                    'dayDelta': dayDelta,
-                    'minuteDelta': minuteDelta
-                },
-                success: function(msg) {
-                }
-            });
-        },
-        eventResize: function(event, dayDelta, minuteDelta, revertFunc) {
-            $.ajax({
-                type: 'POST',
-                url: './calendar_resize',
-                data: {
-                    'event': event.id,
-                    'dayDelta': dayDelta,
-                    'minuteDelta': minuteDelta
-                },
-                success:   function(msg) {
-                },
-                error: revertFunc
-            });
-        },
-        loading: function(bool) {
-            if (bool) {
-                $('#kss-spinner').show();
-            } else {
-                $('#kss-spinner').hide();
-            }
-        }
-
-  });*/
 });
 </tal:script>
