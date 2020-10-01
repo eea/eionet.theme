@@ -5,25 +5,6 @@
   <metal:javascriptslot fill-slot="javascript_head_slot">
     <script type="text/javascript">
       $(document).ready(function() {
-        function time_from_date(date){
-          return calendar.formatDate(date, {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-          });
-        };
-        function date_from_date(date){
-          return calendar.formatDate(date, {
-            day: '2-digit',
-            month: 'long',
-            hour12: false,
-          });
-        };
-        function day_from_date(date){
-          return calendar.formatDate(date, {
-            'day': '2-digit'
-          });
-        };
         function interval(start, end){
           return start + ' - ' + end;
         };
@@ -33,7 +14,7 @@
           });
         };
         function duration(event, version){
-          if(event.allDay){
+          if(event.extendedProps.realAllDay){
             if(event.extendedProps.oneday){
               if(version == 'long'){
                 return '<br><br><strong>Full day event</strong>';
@@ -43,24 +24,24 @@
             } else {
               if(version == 'long'){
                 return '<br><br>' + '<strong>Event duration: </strong>' +
-                  date_from_date(event.start) + ' - ' +
-                  event.extendedProps.realend;
+                  event.extendedProps.realStartDate + ' - ' +
+                  event.extendedProps.realEndDate;
               } else {
                 return '<br>' + '<strong>Event duration: </strong>' +
-                  date_from_date(event.start) + ' - ' +
-                  event.extendedProps.realend;
+                  event.extendedProps.realStartDate + ' - ' +
+                  event.extendedProps.realEndDate;
               }
             }
           } else {
             if(version == 'long'){
               return '<br><br><strong>Time: </strong><br>(' +
                 weekday(event.start) + ') ' +
-                interval(time_from_date(event.start),
-                         time_from_date(event.end));
+                interval(event.extendedProps.realStartTime,
+                         event.extendedProps.realEndTime);
             } else {
               return '<br><strong>Time: </strong>' +
-                interval(time_from_date(event.start),
-                         time_from_date(event.end));
+                interval(event.extendedProps.realStartTime,
+                         event.extendedProps.realEndTime);
             }
           }
         }
@@ -78,6 +59,7 @@
           editable: false,
           selectable: true,
           dayMaxEvents: true,
+          //contentHeight: 'auto',
           events: {
             url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=dayGridMonth",
           },
@@ -123,18 +105,17 @@
             }
           },
           firstDay: <span tal:replace="view/first_day">1</span>,
-          displayEventEnd: true,
+          //displayEventEnd: true,
           eventDidMount: function(info) {
-            /*var tooltip = new Tooltip(info.el, {
-              title: info.event.extendedProps.description,
-              placement: 'top',
-              trigger: 'hover',
-              container: 'body'
-            });*/
-            $(info.el).attr('data-toggle', 'tooltip');
-            $(info.el).attr('data-html', 'true');
-            $(info.el).attr('title', info.event.title + duration(info.event));
-            $(info.el).tooltip();
+            var title_div = info.el.lastElementChild.lastElementChild.lastElementChild.lastElementChild
+            if (!info.el.parentElement.parentElement.className.includes('popover')
+               && !info.el.className.includes('fc-list') &&
+               title_div.offsetWidth < title_div.scrollWidth){
+              $(info.el).attr('data-toggle', 'tooltip');
+              $(info.el).attr('data-html', 'true');
+              $(info.el).attr('title', info.event.title + duration(info.event));
+              $(info.el).tooltip();
+            }
           },
           eventClick: function(info) {
             info.jsEvent.preventDefault();
@@ -182,6 +163,12 @@
           },
         });
         calendar.render();
+        // To remove right scrollbar. Can be also done with contentHeight: auto
+        // but this makes rows vary in heigth
+        setTimeout(remove_scrollbar, 1000);
+        function remove_scrollbar() {
+          $('.fc-scroller-liquid-absolute').removeClass('fc-scroller-liquid-absolute');
+        }
       });
     </script>
   </metal:javascriptslot>

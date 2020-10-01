@@ -10,11 +10,12 @@
   cursor: pointer;
 }
 .tooltip {
-  z-index: 12000;
+  z-index: 50000;
   position: absolute;
-  z-index: 10000;
   color: white;
-  background-color: #069;
-  padding: 3px;
-  border-radius: 3px;
+  background-color: #77828E;
+  border: 1px solid;
+  border-color: #2C3E50;
+  padding: 7px;
+  border-radius: 7px;
 }

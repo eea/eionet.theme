@@ -495,11 +495,16 @@ class CalendarJSONSource(object):
         duration = brain.end - brain.start
         if isinstance(duration, timedelta):
             duration = duration.total_seconds() / 60. / 60. / 24.
-        allday = (duration > 0.99 or
-                  start == end or
-                  brain.start.date() != brain.end.date())
+        # We set all events to all day because we don't show start and
+        # end times and we need the background color that only appears
+        # on full day events.
+        allday = True
         if allday:
             end += timedelta(days=1)
+        # also compute real all day for the tooltip information
+        real_allday = (duration > 0.99 or
+                       start == end or
+                       brain.start.date() != brain.end.date())
         iso = hasattr(start, 'isoformat') and 'isoformat' or 'ISO8601'
         start = getattr(start, iso)()
         end = getattr(end, iso)()
@@ -512,11 +517,15 @@ class CalendarJSONSource(object):
                 "can_edit": editable,
                 "backgroundColor": color,
                 "allDay": allday,
+                "realAllDay": real_allday,
                 "className": "state-" + str(brain.review_state) +
                 (editable and " editable" or ""),
                 "description": description,
                 "location": event.location,
-                "realend": brain.end.strftime('%B %d'),
+                "realStartTime": brain.start.strftime('%H:%M'),
+                "realEndTime": brain.end.strftime('%H:%M'),
+                "realStartDate": brain.start.strftime('%B %d'),
+                "realEndDate": brain.end.strftime('%B %d'),
                 "oneday": brain.start.date() == brain.end.date()
                 }
 
