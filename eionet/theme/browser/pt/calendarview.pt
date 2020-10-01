@@ -5,25 +5,6 @@
   <metal:javascriptslot fill-slot="javascript_head_slot">
     <script type="text/javascript">
       $(document).ready(function() {
-        function time_from_date(date){
-          return calendar.formatDate(date, {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-          });
-        };
-        function date_from_date(date){
-          return calendar.formatDate(date, {
-            day: '2-digit',
-            month: 'long',
-            hour12: false,
-          });
-        };
-        function day_from_date(date){
-          return calendar.formatDate(date, {
-            'day': '2-digit'
-          });
-        };
         function interval(start, end){
           return start + ' - ' + end;
         };
@@ -33,7 +14,7 @@
           });
         };
         function duration(event, version){
-          if(event.allDay){
+          if(event.extendedProps.realAllDay){
             if(event.extendedProps.oneday){
               if(version == 'long'){
                 return '<br><br><strong>Full day event</strong>';
@@ -43,24 +24,24 @@
             } else {
               if(version == 'long'){
                 return '<br><br>' + '<strong>Event duration: </strong>' +
-                  date_from_date(event.start) + ' - ' +
-                  event.extendedProps.realend;
+                  event.extendedProps.realStartDate + ' - ' +
+                  event.extendedProps.realEndDate;
               } else {
                 return '<br>' + '<strong>Event duration: </strong>' +
-                  date_from_date(event.start) + ' - ' +
-                  event.extendedProps.realend;
+                  event.extendedProps.realStartDate + ' - ' +
+                  event.extendedProps.realEndDate;
               }
             }
           } else {
             if(version == 'long'){
               return '<br><br><strong>Time: </strong><br>(' +
                 weekday(event.start) + ') ' +
-                interval(time_from_date(event.start),
-                         time_from_date(event.end));
+                interval(event.extendedProps.realStartTime,
+                         event.extendedProps.realEndTime);
             } else {
               return '<br><strong>Time: </strong>' +
-                interval(time_from_date(event.start),
-                         time_from_date(event.end));
+                interval(event.extendedProps.realStartTime,
+                         event.extendedProps.realEndTime);
             }
           }
         }
@@ -73,11 +54,12 @@
         }
         calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
+          initialView: 'calendar_view',
           timeZone: 'Europe/Copenhagen',
           editable: false,
           selectable: true,
-          dayMaxEvents: true,
+          dayMaxEvents: 4,
+          contentHeight: "auto",
           events: {
             url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=dayGridMonth",
           },
@@ -104,7 +86,7 @@
             },
           },
           headerToolbar: {
-            left: 'calendar_view prev,next today',
+            left: 'calendar_view prev,next',
             center: 'title',
             right: 'events publications consultations reporting'
           },
@@ -115,26 +97,40 @@
             nextYear: '>>'
           },
           datesSet: function(info){
+            /* if the source of events is not matching the current view
+               it means the view has just been changed and the source
+               needs to be updated */
             var source = info.view.calendar.getEventSources()[0]
-            if (source.url.indexOf('view=' + info.view.type) == -1){
+            if (!source.url.includes('view=' + info.view.type)){
+              $('#new_view').val(info.view.type);
+              info.view.calendar.getEventSources()[0].remove();
               info.view.calendar.addEventSource(
                 ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=" + info.view.type);
-              info.view.calendar.getEventSources()[0].remove();
             }
           },
           firstDay: <span tal:replace="view/first_day">1</span>,
-          displayEventEnd: true,
+          loading: function(isLoading, view){
+            if (isLoading && $('#new_view').val() !== ''){
+            //if (isLoading){
+              $('.loader-wrapper').removeClass('hide-loader');
+            } else if (!isLoading && !$('#new_view').val() == '' &&
+                calendar.getEventSources()[0].url.includes($('#new_view').val())) {
+            /*} else if (!isLoading) {*/
+              $('#new_view').val('')
+              $('.loader-wrapper').addClass('hide-loader');
+            }
+          },
           eventDidMount: function(info) {
-            /*var tooltip = new Tooltip(info.el, {
-              title: info.event.extendedProps.description,
-              placement: 'top',
-              trigger: 'hover',
-              container: 'body'
-            });*/
-            $(info.el).attr('data-toggle', 'tooltip');
-            $(info.el).attr('data-html', 'true');
-            $(info.el).attr('title', info.event.title + duration(info.event));
-            $(info.el).tooltip();
+            if(info.view.type == 'calendar_view'){
+              var title_div = info.el.lastElementChild.lastElementChild.lastElementChild.lastElementChild
+              if (title_div.offsetWidth < title_div.scrollWidth &&
+                  !info.el.parentElement.parentElement.className.includes('popover')){
+                $(info.el).attr('data-toggle', 'tooltip');
+                $(info.el).attr('data-html', 'true');
+                $(info.el).attr('title', info.event.title + duration(info.event));
+                $(info.el).tooltip();
+              }
+            }
           },
           eventClick: function(info) {
             info.jsEvent.preventDefault();
@@ -173,7 +169,8 @@
               modal.addFooterBtn('Edit event', 'pat-plone-modal standalone', function() {
               // here goes some logic
                 modal.close();
-                window.location.href = info.event.url + '/edit';
+                //window.location.href = info.event.url + '/edit';
+                window.open(info.event.url + '/edit', '_blank');
               });
             }
 
@@ -182,6 +179,12 @@
           },
         });
         calendar.render();
+        // To remove right scrollbar. Can be also done with contentHeight: auto
+        // but this makes rows vary in heigth
+        //setTimeout(remove_scrollbar, 1000);
+        function remove_scrollbar() {
+          $('.fc-scroller-liquid-absolute').removeClass('fc-scroller-liquid-absolute');
+        }
       });
     </script>
   </metal:javascriptslot>
@@ -197,6 +200,7 @@
                 <h1 class="documentFirstHeading" tal:content="context/Title">
                     Title
                 </h1>
+                <input type="text" id="new_view" />
 
                 <div tal:replace="structure provider:plone.belowcontenttitle" />
 
@@ -205,6 +209,10 @@
                 </p>
 
                 <div id="calendar"></div>
+                <div class="loader-wrapper hide-loader">
+                  <div class="loader">
+                  </div>
+                </div>
 
                 <div tal:replace="structure provider:plone.belowcontentbody" />
 
