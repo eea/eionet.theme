@@ -200,7 +200,7 @@
                 <h1 class="documentFirstHeading" tal:content="context/Title">
                     Title
                 </h1>
-                <input type="text" id="new_view" />
+                <input type="hidden" id="new_view" />
 
                 <div tal:replace="structure provider:plone.belowcontenttitle" />
 
