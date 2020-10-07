@@ -4,8 +4,9 @@ from Acquisition import aq_inner
 from icalendar.prop import vText
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from plone.api.portal import get_tool
 from plone.app.layout.viewlets.common import PathBarViewlet as ViewletBase
+from plone.app.textfield.value import RichTextValue
+from plone.app.textfield.interfaces import ITransformer
 from zope.component import getMultiAdapter, getUtility
 from zope.schema.interfaces import IVocabularyFactory
 
@@ -57,11 +58,17 @@ def apply_patched_property(scope, original, replacement):
 
 def description(self):
     """ Patch description to contain html to text from the text property """
-    transforms = get_tool('portal_transforms')
+    transformer = ITransformer(self.context)
     text = self.context.text or self.context.description
-    text = text.replace('<br>', '\n').replace('</p>', '\n')
-    return {'value': transforms.convertTo('text/plain', text,
-                                          mimetype='text/html')}
+    if isinstance(text, RichTextValue):
+        text = text.raw
+    text = text.replace('<br>', '\n').replace('</p>', '</p>\n')
+    if '<' in text:
+        rich = RichTextValue(text, 'text/html', 'text/html')
+    else:
+        rich = RichTextValue(text, 'text/plain', 'text/html')
+
+    return {'value': transformer(rich, 'text/plain')}
 
 
 patched_description = lambda: property(description)
