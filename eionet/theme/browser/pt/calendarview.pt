@@ -55,7 +55,7 @@
         calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'calendar_view',
-          timeZone: 'Europe/Copenhagen',
+//          timeZone: 'Europe/Copenhagen',
           editable: false,
           selectable: true,
           dayMaxEvents: 4,
@@ -204,15 +204,17 @@
 
                 <div tal:replace="structure provider:plone.belowcontenttitle" />
 
-                <p class="documentDescription" tal:content="context/Description">
-                    Description
-                </p>
+                <div tal:replace="structure context/calendar_header/output|nothing"
+                  class="documentDescription" />
 
                 <div id="calendar"></div>
                 <div class="loader-wrapper hide-loader">
                   <div class="loader">
                   </div>
                 </div>
+
+                <div tal:replace="structure context/calendar_footer/output|nothing"
+                  class="documentDescription" />
 
                 <div tal:replace="structure provider:plone.belowcontentbody" />
 

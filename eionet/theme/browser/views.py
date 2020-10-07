@@ -499,8 +499,8 @@ class CalendarJSONSource(object):
         # end times and we need the background color that only appears
         # on full day events.
         allday = True
-        if allday:
-            end += timedelta(days=1)
+        #if allday:
+        #    end += timedelta(days=1)
         # also compute real all day for the tooltip information
         real_allday = (duration > 0.99 or
                        start == end or
