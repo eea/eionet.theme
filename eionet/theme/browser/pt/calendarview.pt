@@ -55,7 +55,7 @@
         calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'calendar_view',
-//          timeZone: 'Europe/Copenhagen',
+          timeZone: 'Europe/Copenhagen',
           editable: false,
           selectable: true,
           dayMaxEvents: 4,
@@ -171,6 +171,12 @@
                 modal.close();
                 //window.location.href = info.event.url + '/edit';
                 window.open(info.event.url + '/edit', '_blank');
+              });
+              modal.addFooterBtn('Delete event', 'pat-plone-modal standalone', function() {
+              // here goes some logic
+                modal.close();
+                //window.location.href = info.event.url + '/edit';
+                window.open(info.event.url + '/delete_confirmation', '_blank');
               });
             }
 
