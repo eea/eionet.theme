@@ -45,7 +45,7 @@ button.fc-button:hover {
   border-color: #2C3E50;
   padding: 7px;
   border-radius: 7px;
-  min-width: 500px;
+  min-width: 350px;
 }
 .loader {
   border: 16px solid #f3f3f3;
@@ -78,4 +78,7 @@ button.fc-button:hover {
 }
 .hide-loader {
   display: none;
+}
+.fc-scroller-harness {
+    overflow: visible !important;
 }
