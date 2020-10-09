@@ -165,6 +165,15 @@
           layer="eionet.theme.interfaces.ICalendarLayer"
           />
 
+      <browser:page
+          name="planner_description2text"
+          for="*"
+          class=".views.EventsDescription2Text"
+          permission="cmf.ManagePortal"
+          layer="eionet.theme.interfaces.ICalendarLayer"
+          />
+
+
       <!-- Adapter -->
       <adapter
         for="* *"

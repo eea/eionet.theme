@@ -1,4 +1,5 @@
 ''' views '''
+import transaction
 from Acquisition import aq_inner
 from DateTime import DateTime
 from datetime import timedelta
@@ -7,8 +8,10 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_callable
 from Products.Five.browser import BrowserView
 from Products.MimetypesRegistry.interfaces import MimeTypeException
+from Products.statusmessages.interfaces import IStatusMessage
 from plone import api
 from plone.app.contenttypes.behaviors.collection import ICollection
+from plone.app.textfield.value import RichTextValue
 from plone.namedfile.interfaces import INamed
 from plone.registry.interfaces import IRegistry
 from zope.size import byteDisplay
@@ -468,6 +471,8 @@ class CalendarJSONSource(object):
             description = description()
 
         event = brain.getObject()
+        if event.text:
+            description = event.text.output
         editable = api.user.has_permission('Edit', obj=event)
         color = 'grey'
         if event.tag:
@@ -613,3 +618,28 @@ class CategoriesVocabularyFactory(object):
         return SimpleVocabulary(
             [SimpleTerm(value=cat[2][0][0], title=cat[2][0][1]) for
                 cat in CATEGORIES])
+
+
+class EventsDescription2Text(BrowserView):
+    """Move the text from description to the RichText text field"""
+
+    def __call__(self):
+        count = 0
+        REQUEST = self.request
+        transforms = getToolByName(getSite(), 'portal_transforms')
+        for event in self.context.objectValues():
+            if event.portal_type == 'Event' and event.description:
+                html = transforms.convertTo(
+                    'text/html', event.description,
+                    mimetype='text/structured').getData()
+                event.text = RichTextValue(html,
+                                           'text/html',
+                                           'text/html')
+                event.description = ''
+                event._p_changed
+                count += 1
+        if count:
+            transaction.commit()
+        IStatusMessage(REQUEST).add(
+            '%s events updated' % count, 'info')
+        REQUEST.RESPONSE.redirect(self.context.absolute_url())
