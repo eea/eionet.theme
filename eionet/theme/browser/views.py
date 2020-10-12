@@ -9,6 +9,7 @@ from Products.CMFPlone.utils import safe_callable
 from Products.Five.browser import BrowserView
 from Products.MimetypesRegistry.interfaces import MimeTypeException
 from Products.statusmessages.interfaces import IStatusMessage
+from Products.CMFPlone.interfaces.syndication import IFeedSettings
 from plone import api
 from plone.app.contenttypes.behaviors.collection import ICollection
 from plone.app.textfield.value import RichTextValue
@@ -643,3 +644,29 @@ class EventsDescription2Text(BrowserView):
         IStatusMessage(REQUEST).add(
             '%s events updated' % count, 'info')
         REQUEST.RESPONSE.redirect(self.context.absolute_url())
+
+
+class DisableRSS(BrowserView):
+    """ Disable the RSS link on the planner folder """
+
+    def __call__(self):
+        settings = IFeedSettings(self.context)
+        settings.enabled = False
+        settings._p_changed = True
+        transaction.commit()
+        IStatusMessage(self.request).add('RSS disabled on %s' %
+                                         self.context.getId())
+        self.request.RESPONSE.redirect(self.context.absolute_url())
+
+
+class EnableRSS(BrowserView):
+    """ Enable the RSS link on the planner folder """
+
+    def __call__(self):
+        settings = IFeedSettings(self.context)
+        settings.enabled = True
+        settings._p_changed = True
+        transaction.commit()
+        IStatusMessage(self.request).add('RSS enabled on %s' %
+                                         self.context.getId())
+        self.request.RESPONSE.redirect(self.context.absolute_url())

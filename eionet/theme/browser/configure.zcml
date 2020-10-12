@@ -173,6 +173,21 @@
           layer="eionet.theme.interfaces.ICalendarLayer"
           />
 
+      <browser:page
+          name="planner_enable_rss"
+          for="*"
+          class=".views.EnableRSS"
+          permission="cmf.ManagePortal"
+          layer="eionet.theme.interfaces.ICalendarLayer"
+          />
+
+      <browser:page
+          name="planner_disable_rss"
+          for="*"
+          class=".views.DisableRSS"
+          permission="cmf.ManagePortal"
+          layer="eionet.theme.interfaces.ICalendarLayer"
+          />
 
       <!-- Adapter -->
       <adapter
