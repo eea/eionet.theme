@@ -502,7 +502,7 @@ class CalendarJSONSource(object):
         # The default source marks an event as all day if it is longer than
         # one day. Marking an event as all day in contentpage will set
         # the times to 00:00 and 23:59. If those times are on the same
-        # date they will not be recognised as all day because thats only a
+        # date they will not be recognised as all day because that's only a
         # 0.999.. day. This check will mark those events as all day.
         start = brain.start
         end = brain.end
