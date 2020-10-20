@@ -1,26 +1,26 @@
 ''' views '''
-import transaction
-from Acquisition import aq_inner
-from DateTime import DateTime
 from datetime import timedelta
 import simplejson as json
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_callable
-from Products.Five.browser import BrowserView
-from Products.MimetypesRegistry.interfaces import MimeTypeException
-from Products.statusmessages.interfaces import IStatusMessage
-from Products.CMFPlone.interfaces.syndication import IFeedSettings
-from plone import api
-from plone.app.contenttypes.behaviors.collection import ICollection
-from plone.app.textfield.value import RichTextValue
-from plone.namedfile.interfaces import INamed
-from plone.registry.interfaces import IRegistry
 from zope.size import byteDisplay
 from zope.component.hooks import getSite
 from zope.component import getUtility, getMultiAdapter, ComponentLookupError
 from zope.interface import implementer
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
+import transaction
+from DateTime import DateTime
+from Acquisition import aq_inner
+from Products.CMFPlone.utils import safe_callable
+from Products.Five.browser import BrowserView
+from Products.MimetypesRegistry.interfaces import MimeTypeException
+from Products.statusmessages.interfaces import IStatusMessage
+from Products.CMFPlone.interfaces.syndication import IFeedSettings
+from Products.CMFCore.utils import getToolByName
+from plone import api
+from plone.app.contenttypes.behaviors.collection import ICollection
+from plone.app.textfield.value import RichTextValue
+from plone.namedfile.interfaces import INamed
+from plone.registry.interfaces import IRegistry
 from eionet.theme.interfaces import ICalendarEventCreator
 from eionet.theme.interfaces import ICalendarJSONSourceProvider
 
@@ -391,9 +391,11 @@ class CalendarView(BrowserView):
             first = calendar_tool.getFirstWeekDay()
         else:
             first = getSite().portal_registry['plone.first_weekday']
-        return (first < 6 and first + 1) or 0
+        return (first + 1) if first < 6 else 0
 
     def can_add_content(self):
+        """ check if there is an adapter defined for adding events from
+            the fullcalendar interface"""
         try:
             eventCreator = getMultiAdapter((self.context, self.request),
                                            ICalendarEventCreator)
@@ -405,7 +407,8 @@ class CalendarView(BrowserView):
 
 
 @implementer(ICalendarJSONSourceProvider)
-class CalendarJSONSource(object):
+class CalendarJSONSource():
+    """CalendarJSONSource"""
 
     def __init__(self, context, request):
         self.context = context
@@ -415,12 +418,13 @@ class CalendarJSONSource(object):
             self.context.portal_membership.getAuthenticatedMember().id
 
     def generate_json_calendar_source(self):
+        """generate json with events as calendar source."""
         result = []
 
         for brain in self.get_event_brains():
             event = brain.getObject()
             view = self.request.get('view')
-            for view_id, color, categories in CATEGORIES:
+            for view_id, _color, categories in CATEGORIES:
                 if view == view_id:
                     if event.tag and categories[0][0] not in event.tag:
                         break
@@ -438,6 +442,7 @@ class CalendarJSONSource(object):
         return json.dumps(result, sort_keys=True)
 
     def get_event_brains(self):
+        """get_event_brains."""
         args = {
             'start': {
                 'query': DateTime(self.request.get('end')), 'range': 'max'},
@@ -445,20 +450,23 @@ class CalendarJSONSource(object):
                 'query': DateTime(self.request.get('start')), 'range': 'min'}}
         if self.context.portal_type in ['Topic', 'Collection']:
             return self.context.aq_inner.queryCatalog(args)
-        else:
-            catalog = getToolByName(self.context, 'portal_catalog')
-            portal_calendar = getToolByName(self.context, 'portal_calendar',
-                                            None)
-            if portal_calendar:
-                args['portal_type'] = portal_calendar.getCalendarTypes()
+        catalog = getToolByName(self.context, 'portal_catalog')
+        portal_calendar = getToolByName(self.context, 'portal_calendar',
+                                        None)
+        if portal_calendar:
+            args['portal_type'] = portal_calendar.getCalendarTypes()
 
-            return catalog(
-                path={'depth': -1,
-                      'query': '/'.join(self.context.getPhysicalPath())},
-                **args
-            )
+        return catalog(
+            path={'depth': -1,
+                  'query': '/'.join(self.context.getPhysicalPath())},
+            **args
+        )
 
     def generate_source_dict_from_brain(self, brain):
+        """generate_source_dict_from_brain.
+
+        :param brain:
+        """
         #  plone 4-5 compat
         creator = brain.Creator
         if callable(creator):
@@ -477,15 +485,15 @@ class CalendarJSONSource(object):
         editable = api.user.has_permission('Edit', obj=event)
         color = 'grey'
         if event.tag:
-            for view_type, group_color, categories in CATEGORIES:
-                for cat_id, cat_title in categories:
+            for _view_type, group_color, categories in CATEGORIES:
+                for cat_id, _cat_title in categories:
                     if cat_id in event.tag:
                         color = group_color
                         break
         else:
             # for events imported from ICS
-            for view_type, group_color, categories in CATEGORIES:
-                for cat_id, cat_tile in categories:
+            for _view_type, group_color, categories in CATEGORIES:
+                for cat_id, _cat_tile in categories:
                     for tag in event.subject:
                         if cat_id == tag.lower():
                             color = group_color
@@ -511,7 +519,7 @@ class CalendarJSONSource(object):
         real_allday = (duration > 0.99 or
                        start == end or
                        brain.start.date() != brain.end.date())
-        iso = hasattr(start, 'isoformat') and 'isoformat' or 'ISO8601'
+        iso = 'isoformat' if hasattr(start, 'isoformat') else 'ISO8601'
         start = getattr(start, iso)()
         end = getattr(end, iso)()
 
@@ -553,6 +561,8 @@ class CalendarupdateView(BrowserView):
 
 
 class CalendarDropView(BrowserView):
+    """ view that handles moving events to another date in the callendar"""
+
     def __call__(self):
         request = self.context.REQUEST
 
@@ -577,6 +587,8 @@ class CalendarDropView(BrowserView):
 
 
 class CalendarResizeView(BrowserView):
+    """ view that handles changing the event duration from the calendar"""
+
     def __call__(self):
         request = self.context.REQUEST
         event_uid = request.get('event')
@@ -596,6 +608,8 @@ class CalendarResizeView(BrowserView):
 
 
 class CalendarAddView(BrowserView):
+    """ handle adding of events from the calendar interface"""
+
     def __call__(self):
         request = self.context.REQUEST
         title = request.get('title')
@@ -611,7 +625,7 @@ class CalendarAddView(BrowserView):
         self.request.RESPONSE.redirect(event.absolute_url() + '/edit')
 
 
-class CategoriesVocabularyFactory(object):
+class CategoriesVocabularyFactory():
     """ CategoriesVocabularyFactory """
 
     def __call__(self, context):
@@ -637,7 +651,7 @@ class EventsDescription2Text(BrowserView):
                                            'text/html',
                                            'text/html')
                 event.description = ''
-                event._p_changed
+                event._p_changed = True
                 count += 1
         if count:
             transaction.commit()

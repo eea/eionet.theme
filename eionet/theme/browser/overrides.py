@@ -1,5 +1,7 @@
 ''' overrides module '''
 import logging
+from zope.component import getMultiAdapter, getUtility
+from zope.schema.interfaces import IVocabularyFactory
 from Acquisition import aq_inner
 from icalendar.prop import vText
 from Products.CMFCore.utils import getToolByName
@@ -7,8 +9,6 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone.app.layout.viewlets.common import PathBarViewlet as ViewletBase
 from plone.app.textfield.value import RichTextValue
 from plone.app.textfield.interfaces import ITransformer
-from zope.component import getMultiAdapter, getUtility
-from zope.schema.interfaces import IVocabularyFactory
 
 logger = logging.getLogger('eionet.theme.overrides')
 
@@ -53,7 +53,6 @@ def patched_toLocalizedTime(self, time, long_format=None, time_only=None):
 def apply_patched_property(scope, original, replacement):
     """ Apply patched property """
     setattr(scope, original, replacement())
-    return
 
 
 def description(self):
@@ -86,6 +85,7 @@ def categories(self):
         ret.append(cat)
     if ret:
         return {'value': ret}
+    return None
 
 
 patched_categories = lambda: property(categories)
