@@ -37,6 +37,7 @@ class ICalendarJSONSourceProvider(Interface):
 
 
 class ICalendarEventCreator(Interface):
+    """ICalendarEventCreator."""
 
     def getEventType():
         """ Get the calendar event type name to be adden when
