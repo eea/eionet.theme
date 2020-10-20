@@ -8,7 +8,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone.app.layout.viewlets.common import PathBarViewlet as ViewletBase
 from plone.app.textfield.value import RichTextValue
-from plone.app.textfield.interfaces import ITransformer
 
 logger = logging.getLogger('eionet.theme.overrides')
 
@@ -55,25 +54,17 @@ def apply_patched_property(scope, original, replacement):
     setattr(scope, original, replacement())
 
 
-def description(self):
-    """ Patch description to contain html to text from the text property """
-    transformer = ITransformer(self.context)
+@property
+def patched_description(self):
+    """ Patch description to contain html from the text property """
     text = self.context.text or self.context.description
     if isinstance(text, RichTextValue):
-        text = text.raw
-    text = text.replace('<br>', '\n').replace('</p>', '</p>\n')
-    if '<' in text:
-        rich = RichTextValue(text, 'text/html', 'text/html')
-    else:
-        rich = RichTextValue(text, 'text/plain', 'text/html')
-
-    return {'value': transformer(rich, 'text/plain')}
+        return {'value': text.output}
+    return {'value': text}
 
 
-patched_description = lambda: property(description)  # noqa
-
-
-def categories(self):
+@property
+def patched_categories(self):
     """ Patch categories to include our custom tags values """
     ret = []
     if self.context.tag:
@@ -86,6 +77,3 @@ def categories(self):
     if ret:
         return {'value': ret}
     return None
-
-
-patched_categories = lambda: property(categories)  # noqa

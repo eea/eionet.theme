@@ -83,7 +83,6 @@
     class="plone.app.event.ical.exporter.ICalendarEventComponent"
     original="categories"
     replacement=".overrides.patched_categories"
-    handler=".overrides.apply_patched_property"
     />
 
   <monkey:patch
@@ -92,7 +91,6 @@
     class="plone.app.event.ical.exporter.ICalendarEventComponent"
     original="description"
     replacement=".overrides.patched_description"
-    handler=".overrides.apply_patched_property"
     />
 
 </configure>
