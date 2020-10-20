@@ -70,7 +70,7 @@ def description(self):
     return {'value': transformer(rich, 'text/plain')}
 
 
-patched_description = lambda: property(description)
+patched_description = lambda: property(description)  # noqa: E731
 
 
 def categories(self):
@@ -88,4 +88,4 @@ def categories(self):
     return None
 
 
-patched_categories = lambda: property(categories)
+patched_categories = lambda: property(categories)  # noqa: E731

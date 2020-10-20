@@ -407,7 +407,7 @@ class CalendarView(BrowserView):
 
 
 @implementer(ICalendarJSONSourceProvider)
-class CalendarJSONSource():
+class CalendarJSONSource(object):
     """CalendarJSONSource"""
 
     def __init__(self, context, request):
@@ -625,7 +625,7 @@ class CalendarAddView(BrowserView):
         self.request.RESPONSE.redirect(event.absolute_url() + '/edit')
 
 
-class CategoriesVocabularyFactory():
+class CategoriesVocabularyFactory(object):
     """ CategoriesVocabularyFactory """
 
     def __call__(self, context):
