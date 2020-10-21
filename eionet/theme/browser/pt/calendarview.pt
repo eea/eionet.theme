@@ -1,0 +1,231 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="eionet.theme">
+  <metal:javascriptslot fill-slot="javascript_head_slot">
+    <script type="text/javascript">
+      $(document).ready(function() {
+        function interval(start, end){
+          return start + ' - ' + end;
+        };
+        function weekday(date){
+          return calendar.formatDate(date, {
+            weekday: 'long'
+          });
+        };
+        function duration(event, version){
+          if(event.extendedProps.realAllDay){
+            if(event.extendedProps.oneday){
+              if(version == 'long'){
+                return '<br><br><strong>Full day event</strong>';
+              } else {
+                return '<br><strong>Full day event</strong>';
+              }
+            } else {
+              if(version == 'long'){
+                return '<br><br>' + '<strong>Event duration: </strong>' +
+                  event.extendedProps.realStartDate + ' - ' +
+                  event.extendedProps.realEndDate;
+              } else {
+                return '<br>' + '<strong>Event duration: </strong>' +
+                  event.extendedProps.realStartDate + ' - ' +
+                  event.extendedProps.realEndDate;
+              }
+            }
+          } else {
+            if(version == 'long'){
+              return '<br><br><strong>Time: </strong><br>(' +
+                weekday(event.start) + ') ' +
+                interval(event.extendedProps.realStartTime,
+                         event.extendedProps.realEndTime);
+            } else {
+              return '<br><strong>Time: </strong>' +
+                interval(event.extendedProps.realStartTime,
+                         event.extendedProps.realEndTime);
+            }
+          }
+        }
+        function event_location(event){
+          if(event.extendedProps.location){
+           return '<br><br><strong>Event location (address): </strong>' +
+              event.extendedProps.location;
+          }
+          return ''
+        }
+        calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'calendar_view',
+          timeZone: 'Europe/Copenhagen',
+          editable: false,
+          selectable: true,
+          dayMaxEvents: 4,
+          contentHeight: "auto",
+          events: {
+            url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=dayGridMonth",
+          },
+          views: {
+            calendar_view : {
+              type: 'dayGridMonth',
+              buttonText: 'Calendar'
+            },
+            consultations: {
+              type: 'listYear',
+              buttonText: 'Consultations'
+            },
+            events: {
+              type: 'listYear',
+              buttonText: 'Events'
+            },
+            publications: {
+              type: 'listYear',
+              buttonText: 'Publications'
+            },
+            reporting: {
+              type: 'listYear',
+              buttonText: 'Reporting'
+            },
+          },
+          headerToolbar: {
+            left: 'calendar_view prev,next',
+            center: 'title',
+            right: 'events publications consultations reporting'
+          },
+          buttonText: {
+            prev: '<',
+            next: '>',
+            prevYear: '<<',
+            nextYear: '>>'
+          },
+          datesSet: function(info){
+            /* if the source of events is not matching the current view
+               it means the view has just been changed and the source
+               needs to be updated */
+            var source = info.view.calendar.getEventSources()[0]
+            if (!source.url.includes('view=' + info.view.type)){
+              $('#new_view').val(info.view.type);
+              info.view.calendar.getEventSources()[0].remove();
+              info.view.calendar.addEventSource(
+                ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=" + info.view.type);
+            }
+          },
+          firstDay: <span tal:replace="view/first_day">1</span>,
+          loading: function(isLoading, view){
+            if (isLoading && $('#new_view').val() !== ''){
+            //if (isLoading){
+              $('.loader-wrapper').removeClass('hide-loader');
+            } else if (!isLoading && !$('#new_view').val() == '' &&
+                calendar.getEventSources()[0].url.includes($('#new_view').val())) {
+            /*} else if (!isLoading) {*/
+              $('#new_view').val('')
+              $('.loader-wrapper').addClass('hide-loader');
+            }
+          },
+          eventDidMount: function(info) {
+            if(info.view.type == 'calendar_view'){
+              var title_div = info.el.lastElementChild.lastElementChild.lastElementChild.lastElementChild
+              if (title_div.offsetWidth < title_div.scrollWidth &&
+                  !info.el.parentElement.parentElement.className.includes('popover')){
+                $(info.el).attr('data-toggle', 'tooltip');
+                $(info.el).attr('data-html', 'true');
+                $(info.el).attr('title', info.event.title + duration(info.event));
+                $(info.el).tooltip();
+              }
+            }
+          },
+          eventClick: function(info) {
+            info.jsEvent.preventDefault();
+            var modal = new tingle.modal({
+              footer: true,
+              stickyFooter: false,
+              closeMethods: ['overlay', 'button', 'escape'],
+              closeLabel: "Close",
+              cssClass: ['custom-class-1', 'custom-class-2'],
+              onOpen: function() {
+                  //console.log('modal open');
+              },
+              onClose: function() {
+                  //console.log('modal closed');
+              },
+              beforeClose: function() {
+                  // here's goes some logic
+                  // e.g. save content before closing the modal
+                  return true; // close the modal
+                  return false; // nothing happens
+              }
+            });
+            // set content
+            var content = '<h1>' + info.event.title + '</h1>'
+            content += '<br><br>' + info.event.extendedProps.description;
+            content += duration(info.event, 'long');
+            content += event_location(info.event);
+            modal.setContent(content);
+
+            modal.addFooterBtn('Close', 'pat-plone-modal standalone', function() {
+              // here goes some logic
+              modal.close();
+            });
+
+            if(info.event.extendedProps.can_edit){
+              modal.addFooterBtn('Edit event', 'pat-plone-modal standalone', function() {
+              // here goes some logic
+                modal.close();
+                //window.location.href = info.event.url + '/edit';
+                window.open(info.event.url + '/edit', '_blank');
+              });
+              modal.addFooterBtn('Delete event', 'pat-plone-modal standalone', function() {
+              // here goes some logic
+                modal.close();
+                //window.location.href = info.event.url + '/edit';
+                window.open(info.event.url + '/delete_confirmation', '_blank');
+              });
+            }
+
+            modal.open();
+            //modal.close();
+          },
+        });
+        calendar.render();
+        // To remove right scrollbar. Can be also done with contentHeight: auto
+        // but this makes rows vary in heigth
+        //setTimeout(remove_scrollbar, 1000);
+        function remove_scrollbar() {
+          $('.fc-scroller-liquid-absolute').removeClass('fc-scroller-liquid-absolute');
+        }
+      });
+    </script>
+  </metal:javascriptslot>
+
+<body>
+    <div metal:fill-slot="main">
+        <tal:main-macro metal:define-macro="main">
+            <metal:body define-macro="body_macro"
+                        tal:define="templateId template/getId">
+
+                <div tal:replace="structure provider:plone.abovecontenttitle" />
+
+                <h1 class="documentFirstHeading" tal:content="context/Title">
+                    Title
+                </h1>
+                <input type="hidden" id="new_view" />
+
+                <div tal:replace="structure provider:plone.belowcontenttitle" />
+
+                <div tal:replace="structure context/calendar_header/output|nothing"
+                  class="documentDescription" />
+
+                <div id="calendar"></div>
+                <div class="loader-wrapper hide-loader">
+                  <div class="loader">
+                  </div>
+                </div>
+
+                <div tal:replace="structure context/calendar_footer/output|nothing"
+                  class="documentDescription" />
+
+                <div tal:replace="structure provider:plone.belowcontentbody" />
+
+            </metal:body>
+        </tal:main-macro>
+    </div>
+</body>
+</html>

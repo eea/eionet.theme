@@ -10,6 +10,7 @@
   <includeDependencies package="." />
 
   <include package=".browser" />
+  <include package=".upgrades" />
 
   <plone:static
       directory="theme"

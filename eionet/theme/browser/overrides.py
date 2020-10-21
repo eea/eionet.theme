@@ -1,10 +1,13 @@
 ''' overrides module '''
 import logging
+from zope.component import getMultiAdapter, getUtility
+from zope.schema.interfaces import IVocabularyFactory
 from Acquisition import aq_inner
+from icalendar.prop import vText
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone.app.layout.viewlets.common import PathBarViewlet as ViewletBase
-from zope.component import getMultiAdapter
+from plone.app.textfield.value import RichTextValue
 
 logger = logging.getLogger('eionet.theme.overrides')
 
@@ -44,3 +47,33 @@ def patched_toLocalizedTime(self, time, long_format=None, time_only=None):
                                     request=self.request)
     loc_time = loc_time.replace(',', '')
     return loc_time
+
+
+def apply_patched_property(scope, original, replacement):
+    """ Apply patched property """
+    setattr(scope, original, replacement())
+
+
+@property
+def patched_description(self):
+    """ Patch description to contain html from the text property """
+    text = self.context.text or self.context.description
+    if isinstance(text, RichTextValue):
+        return {'value': text.output}
+    return {'value': text}
+
+
+@property
+def patched_categories(self):
+    """ Patch categories to include our custom tags values """
+    ret = []
+    if self.context.tag:
+        factory = getUtility(IVocabularyFactory,
+                             'eionet.fullcalendar.categories')
+        vocabulary = factory(self.context)
+        ret.append(vText(vocabulary.getTerm(self.context.tag).title))
+    for cat in self.event.subjects or []:
+        ret.append(cat)
+    if ret:
+        return {'value': ret}
+    return None

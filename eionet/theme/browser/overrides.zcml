@@ -77,4 +77,20 @@
     replacement=".overrides.patched_toLocalizedTime"
     />
 
+  <monkey:patch
+      description="Patch categories in ical exporter to include our custom
+      tags categories"
+    class="plone.app.event.ical.exporter.ICalendarEventComponent"
+    original="categories"
+    replacement=".overrides.patched_categories"
+    />
+
+  <monkey:patch
+      description="Patch description ical exporter to export html to text from
+      the RichText text field"
+    class="plone.app.event.ical.exporter.ICalendarEventComponent"
+    original="description"
+    replacement=".overrides.patched_description"
+    />
+
 </configure>

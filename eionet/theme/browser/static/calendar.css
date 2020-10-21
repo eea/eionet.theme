@@ -1,0 +1,85 @@
+.fc-button{
+  color: white !important;
+}
+button.fc-button:hover {
+  color: #BF5900 !important;
+}
+.fc-button-active {
+  color: #BF5900 !important;
+}
+.fc-header-toolbar div:nth-child(3) button:nth-child(1) {
+  background: #5893A9 !important;
+}
+.fc-header-toolbar div:nth-child(3) button:nth-child(2) {
+  background: #F6A800 !important;
+}
+.fc-header-toolbar div:nth-child(3) button:nth-child(3) {
+  background: #FF6969 !important;
+}
+.fc-header-toolbar div:nth-child(3) button:nth-child(4) {
+  background: #B5C132 !important;
+}
+.fc-header-toolbar div:nth-child(3) button.fc-button-active:nth-child(1) {
+  color: black !important;
+}
+.fc-header-toolbar div:nth-child(3) button.fc-button-active:nth-child(2) {
+  color: black !important;
+}
+.fc-header-toolbar div:nth-child(3) button.fc-button-active:nth-child(3) {
+  color: black !important;
+}
+.fc-header-toolbar div:nth-child(3) button.fc-button-active:nth-child(4) {
+  color: black !important;
+}
+.fc-event-title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tooltip {
+  z-index: 50000;
+  position: absolute;
+  color: white;
+  background-color: #77828E;
+  border: 1px solid;
+  border-color: #2C3E50;
+  padding: 7px;
+  border-radius: 7px;
+  min-width: 350px;
+  max-width: 400px;
+}
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 1s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
+  margin-top: 100px;
+}/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.loader-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+}
+.hide-loader {
+  display: none;
+}
+.fc-scroller-harness {
+    overflow: visible !important;
+}
