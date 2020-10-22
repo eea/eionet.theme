@@ -129,7 +129,7 @@
           title="Calendar view"
           template="pt/calendarview.pt"
           layer="eionet.theme.interfaces.ICalendarLayer"
-          permission="zope.Public"
+          permission="zope2.View"
           />
 
       <browser:page
