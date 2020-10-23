@@ -172,6 +172,8 @@
                 //window.location.href = info.event.url + '/edit';
                 window.open(info.event.url + '/edit', '_blank');
               });
+            }
+            if(info.event.extendedProps.can_delete){
               modal.addFooterBtn('Delete event', 'pat-plone-modal standalone', function() {
               // here goes some logic
                 modal.close();
