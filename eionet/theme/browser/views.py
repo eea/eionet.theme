@@ -482,7 +482,8 @@ class CalendarJSONSource(object):
         event = brain.getObject()
         if event.text:
             description = event.text.output
-        editable = api.user.has_permission('Edit', obj=event)
+        editable = api.user.has_permission('Modify portal content', obj=event)
+        deletable = api.user.has_permission('Delete objects', obj=event)
         color = 'grey'
         if event.tag:
             for _view_type, group_color, categories in CATEGORIES:
@@ -529,6 +530,7 @@ class CalendarJSONSource(object):
                 "end": end,
                 "url": brain.getURL(),
                 "can_edit": editable,
+                "can_delete": deletable,
                 "backgroundColor": color,
                 "allDay": allday,
                 "realAllDay": real_allday,
