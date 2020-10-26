@@ -1,6 +1,9 @@
 Changelog
 =========
 
+1.7-dev0 - (unreleased)
+---------------------------
+
 1.6 - (2020-10-23)
 ---------------------------
 * Change: Fix checking edit and delete permissions on the eionet planner calendar
