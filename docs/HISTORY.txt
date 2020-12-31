@@ -3,6 +3,8 @@ Changelog
 
 1.7-dev0 - (unreleased)
 ---------------------------
+* Bugfix: Only show events with no tag or subject in the main view
+  [valipod refs #125896]
 
 1.6 - (2020-10-23)
 ---------------------------

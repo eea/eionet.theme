@@ -424,6 +424,9 @@ class CalendarJSONSource(object):
         for brain in self.get_event_brains():
             event = brain.getObject()
             view = self.request.get('view')
+            if view != 'calendar_view' and not (event.tag or event.subject):
+                # events with no tag or subject belong only on the main view
+                continue
             for view_id, _color, categories in CATEGORIES:
                 if view == view_id:
                     if event.tag and categories[0][0] not in event.tag:
