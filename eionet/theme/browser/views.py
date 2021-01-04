@@ -17,10 +17,12 @@ from Products.statusmessages.interfaces import IStatusMessage
 from Products.CMFPlone.interfaces.syndication import IFeedSettings
 from Products.CMFCore.utils import getToolByName
 from plone import api
+from plone.api.content import get_state
 from plone.app.contenttypes.behaviors.collection import ICollection
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.interfaces import INamed
 from plone.registry.interfaces import IRegistry
+from plone.event.interfaces import IRecurrenceSupport
 from eionet.theme.interfaces import ICalendarEventCreator
 from eionet.theme.interfaces import ICalendarJSONSourceProvider
 
@@ -440,7 +442,7 @@ class CalendarJSONSource(object):
                                 for category in categories[1:]):
                             break
             else:
-                result.append(self.generate_source_dict_from_brain(brain))
+                result.extend(self.generate_source_dict_from_event(event))
 
         return json.dumps(result, sort_keys=True)
 
@@ -465,24 +467,15 @@ class CalendarJSONSource(object):
             **args
         )
 
-    def generate_source_dict_from_brain(self, brain):
-        """generate_source_dict_from_brain.
+    def generate_source_dict_from_event(self, event):
+        """generate_source_dict_from_event.
 
-        :param brain:
+        :param event:
         """
-        #  plone 4-5 compat
-        creator = brain.Creator
-        if callable(creator):
-            creator = creator()
-        title = brain.Title
-        if callable(title):
-            title = title()
-        description = brain.Description
+        ret = []
+        title = event.Title()
+        description = event.Description()
 
-        if callable(description):
-            description = description()
-
-        event = brain.getObject()
         if event.text:
             description = event.text.output
         editable = api.user.has_permission('Modify portal content', obj=event)
@@ -503,50 +496,59 @@ class CalendarJSONSource(object):
                             color = group_color
                             break
 
-        # The default source marks an event as all day if it is longer than
-        # one day. Marking an event as all day in contentpage will set
-        # the times to 00:00 and 23:59. If those times are on the same
-        # date they will not be recognised as all day because that's only a
-        # 0.999.. day. This check will mark those events as all day.
-        start = brain.start
-        end = brain.end
-        duration = brain.end - brain.start
-        if isinstance(duration, timedelta):
-            duration = duration.total_seconds() / 60. / 60. / 24.
-        # We set all events to all day because we don't show start and
-        # end times and we need the background color that only appears
-        # on full day events.
-        allday = True
-        if allday:
-            end += timedelta(days=1)
-        # also compute real all day for the tooltip information
-        real_allday = (duration > 0.99 or
-                       start == end or
-                       brain.start.date() != brain.end.date())
-        iso = 'isoformat' if hasattr(start, 'isoformat') else 'ISO8601'
-        start = getattr(start, iso)()
-        end = getattr(end, iso)()
+        adapter = IRecurrenceSupport(event)
+        # get all occurrences of the current event (if not recurrent,
+        # the generator will only produce the event itself) and create a
+        # results entry for each one
+        for occurrence in adapter.occurrences(
+                range_start=DateTime(self.request.get('start')),
+                range_end=DateTime(self.request.get('end'))):
+            # The default source marks an event as all day if it is longer than
+            # one day. Marking an event as all day in contentpage will set
+            # the times to 00:00 and 23:59. If those times are on the same
+            # date they will not be recognised as all day because that's only a
+            # 0.999.. day. This check will mark those events as all day.
+            start = occurrence.start
+            end = occurrence.end
+            duration = occurrence.end - occurrence.start
+            if isinstance(duration, timedelta):
+                duration = duration.total_seconds() / 60. / 60. / 24.
+            # We set all events to all day because we don't show start and
+            # end times and we need the background color that only appears
+            # on full day events.
+            allday = True
+            if allday:
+                end += timedelta(days=1)
+            # also compute real all day for the tooltip information
+            real_allday = (duration > 0.99 or
+                           start == end or
+                           occurrence.start.date() != occurrence.end.date())
+            iso = 'isoformat' if hasattr(start, 'isoformat') else 'ISO8601'
+            start = getattr(start, iso)()
+            end = getattr(end, iso)()
 
-        return {"id": "UID_%s" % (brain.UID),
+            ret.append({
+                "id": "UID_%s" % (event.UID()),
                 "title": title,
                 "start": start,
                 "end": end,
-                "url": brain.getURL(),
+                "url": event.absolute_url(),
                 "can_edit": editable,
                 "can_delete": deletable,
                 "backgroundColor": color,
                 "allDay": allday,
                 "realAllDay": real_allday,
-                "className": "state-" + str(brain.review_state) +
+                "className": "state-" + str(get_state(event)) +
                 (editable and " editable" or ""),
                 "description": description,
                 "location": event.location,
-                "realStartTime": brain.start.strftime('%H:%M'),
-                "realEndTime": brain.end.strftime('%H:%M'),
-                "realStartDate": brain.start.strftime('%B %d'),
-                "realEndDate": brain.end.strftime('%B %d'),
-                "oneday": brain.start.date() == brain.end.date()
-                }
+                "realStartTime": occurrence.start.strftime('%H:%M'),
+                "realEndTime": occurrence.end.strftime('%H:%M'),
+                "realStartDate": occurrence.start.strftime('%B %d'),
+                "realEndDate": occurrence.end.strftime('%B %d'),
+                "oneday": occurrence.start.date() == occurrence.end.date()
+            })
+        return ret
 
 
 class CalendarupdateView(BrowserView):
