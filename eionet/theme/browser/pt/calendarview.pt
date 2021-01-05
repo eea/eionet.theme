@@ -61,7 +61,7 @@
           dayMaxEvents: 4,
           contentHeight: "auto",
           events: {
-            url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=dayGridMonth",
+            url: ($('base').attr('href') || $('body').data('base-url')) + "/calendar_update?view=calendar_view",
           },
           views: {
             calendar_view : {

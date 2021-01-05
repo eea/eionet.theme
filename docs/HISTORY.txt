@@ -1,5 +1,11 @@
 Changelog
 =========
+1.7 - (2021-01-05)
+---------------------------
+* Feature: Support recurring events in the fullcalendar view
+  [valipod refs #125898]
+* Bugfix: Only show events with no tag or subject in the main view
+  [valipod refs #125896]
 
 1.6 - (2020-10-23)
 ---------------------------
