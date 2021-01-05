@@ -1,6 +1,6 @@
 Changelog
 =========
-1.7-dev0 - (unreleased)
+1.7 - (2021-01-05)
 ---------------------------
 * Feature: Support recurring events in the fullcalendar view
   [valipod refs #125898]
