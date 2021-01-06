@@ -28,4 +28,16 @@
 
   </genericsetup:upgradeSteps>
 
+  <genericsetup:upgradeSteps
+    source="1002"
+    destination="1003"
+    profile="eionet.theme:default">
+
+    <genericsetup:upgradeDepends
+       title="Import all steps from eionet.theme default profile"
+       import_profile="eionet.theme:default"
+      />
+
+  </genericsetup:upgradeSteps>
+
 </configure>
