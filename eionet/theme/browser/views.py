@@ -472,6 +472,7 @@ class CalendarJSONSource(object):
 
         :param event:
         """
+        view = self.request.get('view')
         ret = []
         title = event.Title()
         description = event.Description()
@@ -513,16 +514,19 @@ class CalendarJSONSource(object):
             duration = occurrence.end - occurrence.start
             if isinstance(duration, timedelta):
                 duration = duration.total_seconds() / 60. / 60. / 24.
-            # We set all events to all day because we don't show start and
-            # end times and we need the background color that only appears
-            # on full day events.
-            allday = True
-            if allday:
-                end += timedelta(days=1)
-            # also compute real all day for the tooltip information
+            # compute real all day for the tooltip information
             real_allday = (duration > 0.99 or
                            start == end or
                            occurrence.start.date() != occurrence.end.date())
+            # For the main calendar_view we set all events to allday because we
+            # don't show start and end times anyway and we need the background
+            # color that only appears on full day events.
+            if view == 'calendar_view':
+                allday = True
+                end += timedelta(days=1)
+            else:
+                # on all other views we need the allday to be correct
+                allday = real_allday
             iso = 'isoformat' if hasattr(start, 'isoformat') else 'ISO8601'
             start = getattr(start, iso)()
             end = getattr(end, iso)()

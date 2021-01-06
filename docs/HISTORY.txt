@@ -1,5 +1,11 @@
 Changelog
 =========
+
+1.8 - (2021-01-06)
+---------------------------
+* Bugfix: Show start/end times in list views instead of all day
+  [dumitval]
+
 1.7 - (2021-01-05)
 ---------------------------
 * Feature: Support recurring events in the fullcalendar view
