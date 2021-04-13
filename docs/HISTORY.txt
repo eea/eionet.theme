@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.9 - (2021-04-13)
+---------------------------
+* Change: Fix failed release [valentinab25]
+
 1.9-dev0 - (unreleased)
 ---------------------------
 * fix Greece country code for use in countries/eionet-countries
