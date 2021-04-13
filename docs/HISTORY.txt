@@ -3,6 +3,8 @@ Changelog
 
 1.9-dev0 - (unreleased)
 ---------------------------
+* fix Greece country code for use in countries/eionet-countries
+  [dumitval]
 
 1.8 - (2021-01-06)
 ---------------------------
