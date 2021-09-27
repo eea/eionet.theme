@@ -5,7 +5,7 @@ from datetime import date
 from html.parser import HTMLParser
 from time import mktime, strptime
 import six
-from six.moves.urllib.parse import urlparse
+import six.moves.urllib.parse as urlparse
 from lxml.etree import fromstring as etree_fromstring
 from lxml.html import fragment_fromstring, fromstring, tostring
 from lxml.html.clean import clean_html
@@ -577,3 +577,4 @@ class EionetDTMLReportImporter(EionetStructureImporter):
         """
         if force:
             return EionetStructureImporter.import_File(self, obj, destination)
+        return None
