@@ -19,7 +19,7 @@ class PathBarViewlet(ViewletBase):
 
     def update(self):
         """update."""
-        super(PathBarViewlet, self).update()
+        super().update()
 
         self.is_rtl = self.portal_state.is_rtl()
 

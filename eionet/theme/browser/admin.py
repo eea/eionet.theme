@@ -40,7 +40,7 @@ def read_data(obj_file):
     return ''.join(ranges)
 
 
-# pylint: disable=no-init,old-style-class
+# pylint: disable=no-init
 class DummyDict:
     """ A "request" substitute that renders all DTML vars as empty strings
     """
