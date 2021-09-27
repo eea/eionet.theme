@@ -8,7 +8,7 @@ from setuptools import find_packages, setup
 NAME = 'eionet.theme'
 PATH = NAME.split('.') + ['version.txt']
 with open(join(*PATH)) as version, open("README.rst") as readme, \
-        open(join("docks", "HISTORY.txt")) as history:
+        open(join("docs", "HISTORY.txt")) as history:
     VERSION = version.read().strip()
 
     setup(
