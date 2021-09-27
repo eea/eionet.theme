@@ -515,7 +515,8 @@ class CalendarJSONSource(object):
             if isinstance(duration, timedelta):
                 duration = duration.total_seconds() / 60. / 60. / 24.
             # compute real all day for the tooltip information
-            real_allday = (duration > 0.99 or
+            real_allday = (event.whole_day or
+                           duration > 0.99 or
                            start == end or
                            occurrence.start.date() != occurrence.end.date())
             # For the main calendar_view we set all events to allday because we
