@@ -5,7 +5,7 @@ from zope.interface import implementer
 
 
 @implementer(INonInstallable)
-class HiddenProfiles(object):
+class HiddenProfiles():
     """HiddenProfiles."""
 
     def getNonInstallableProfiles(self):

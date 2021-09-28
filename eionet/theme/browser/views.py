@@ -1,4 +1,5 @@
 ''' views '''
+import pdb
 from datetime import timedelta
 import simplejson as json
 from zope.size import byteDisplay
@@ -377,7 +378,6 @@ class GoPDB(BrowserView):
     """GoPDB."""
 
     def __call__(self):
-        import pdb
         pdb.set_trace()
 
 
@@ -409,7 +409,7 @@ class CalendarView(BrowserView):
 
 
 @implementer(ICalendarJSONSourceProvider)
-class CalendarJSONSource(object):
+class CalendarJSONSource():
     """CalendarJSONSource"""
 
     def __init__(self, context, request):
@@ -436,10 +436,8 @@ class CalendarJSONSource(object):
                     # support for events import from ICS, but tag takes
                     # precedence
                     if event.subject:
-                        if not set(
-                            [subject.lower() for subject in event.subject]) & \
-                            set(category[0]
-                                for category in categories[1:]):
+                        if not {subject.lower() for subject in event.subject} \
+                                & {category[0] for category in categories[1:]}:
                             break
             else:
                 result.extend(self.generate_source_dict_from_event(event))
@@ -515,7 +513,8 @@ class CalendarJSONSource(object):
             if isinstance(duration, timedelta):
                 duration = duration.total_seconds() / 60. / 60. / 24.
             # compute real all day for the tooltip information
-            real_allday = (duration > 0.99 or
+            real_allday = (event.whole_day or
+                           duration > 0.99 or
                            start == end or
                            occurrence.start.date() != occurrence.end.date())
             # For the main calendar_view we set all events to allday because we
@@ -636,7 +635,7 @@ class CalendarAddView(BrowserView):
         self.request.RESPONSE.redirect(event.absolute_url() + '/edit')
 
 
-class CategoriesVocabularyFactory(object):
+class CategoriesVocabularyFactory():
     """ CategoriesVocabularyFactory """
 
     def __call__(self, context):

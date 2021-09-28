@@ -19,7 +19,7 @@ class PathBarViewlet(ViewletBase):
 
     def update(self):
         """update."""
-        super(PathBarViewlet, self).update()
+        super().update()
 
         self.is_rtl = self.portal_state.is_rtl()
 
@@ -45,7 +45,8 @@ def patched_toLocalizedTime(self, time, long_format=None, time_only=None):
     loc_time = util.ulocalized_time(time, long_format, time_only,
                                     context=context, domain='plonelocales',
                                     request=self.request)
-    loc_time = loc_time.replace(',', '')
+    if loc_time:
+        loc_time = loc_time.replace(',', '')
     return loc_time
 
 

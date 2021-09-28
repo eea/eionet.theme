@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Setup tests for this package."""
 import unittest
-from eionet.theme.testing import EIONET_THEME_INTEGRATION_TESTING
 from Products.CMFPlone.utils import get_installer
+from plone.browserlayer import utils
+from eionet.theme.testing import EIONET_THEME_INTEGRATION_TESTING
+from eionet.theme.interfaces import IEionetThemeLayer
 
 
 class TestSetup(unittest.TestCase):
@@ -22,9 +24,6 @@ class TestSetup(unittest.TestCase):
 
     def test_browserlayer(self):
         """Test that IEionetThemeLayer is registered."""
-        from eionet.theme.interfaces import (
-            IEionetThemeLayer)
-        from plone.browserlayer import utils
         self.assertIn(IEionetThemeLayer, utils.registered_layers())
 
 
@@ -45,7 +44,4 @@ class TestUninstall(unittest.TestCase):
 
     def test_browserlayer_removed(self):
         """Test that IEionetThemeLayer is removed."""
-        from eionet.theme.interfaces import \
-            IEionetThemeLayer
-        from plone.browserlayer import utils
         self.assertNotIn(IEionetThemeLayer, utils.registered_layers())

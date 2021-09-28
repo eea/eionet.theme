@@ -5,7 +5,7 @@ from plone.registry.interfaces import IRegistry
 from zope.component import getUtility
 
 
-class ExternalTemplateHeader(object):
+class ExternalTemplateHeader():
     """ExternalTemplateHeader."""
 
     def theme_base_url(self):

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.0-dev0 - (unreleased)
+---------------------------
+* check whole_day status, aside from duration computation
+ [valipod refs #139752]
+
 1.9 - (2021-04-13)
 ---------------------------
 * fix Greece country code for use in countries/eionet-countries
