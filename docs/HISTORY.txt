@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.1-dev0 - (unreleased)
+2.1 - (2021-12-16)
 ---------------------------
 * Feature: update country popup link to new NRC role structure
   [valipod refs #142812]
