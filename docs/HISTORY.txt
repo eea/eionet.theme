@@ -4,12 +4,12 @@ Changelog
 2.1-dev0 - (unreleased)
 ---------------------------
 * Feature: update country popup link to new NRC role structure
- [valipod refs #142812]
+  [valipod refs #142812]
 
 2.0 - (2021-09-28)
 ---------------------------
 * Bugfix: check whole_day status, aside from duration computation
- [valipod refs #139752]
+  [valipod refs #139752]
 
 1.9 - (2021-04-13)
 ---------------------------
