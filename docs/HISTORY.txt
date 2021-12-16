@@ -1,6 +1,9 @@
 Changelog
 =========
 
+2.2-dev0 - (unreleased)
+---------------------------
+
 2.1 - (2021-12-16)
 ---------------------------
 * Feature: update country popup link to new NRC role structure
@@ -69,4 +72,3 @@ Changelog
   [krisztina]
 * Initial commit
   [krisztina]
-
