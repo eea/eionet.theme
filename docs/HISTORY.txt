@@ -1,14 +1,19 @@
 Changelog
 =========
 
-2.0-dev0 - (unreleased)
+2.1 - (2021-12-16)
 ---------------------------
-* check whole_day status, aside from duration computation
- [valipod refs #139752]
+* Feature: update country popup link to new NRC role structure
+  [valipod refs #142812]
+
+2.0 - (2021-09-28)
+---------------------------
+* Bugfix: check whole_day status, aside from duration computation
+  [valipod refs #139752]
 
 1.9 - (2021-04-13)
 ---------------------------
-* fix Greece country code for use in countries/eionet-countries
+* Bugfix Greece country code for use in countries/eionet-countries
   [dumitval]
 
 1.8 - (2021-01-06)
@@ -25,7 +30,8 @@ Changelog
 
 1.6 - (2020-10-23)
 ---------------------------
-* Change: Fix checking edit and delete permissions on the eionet planner calendar
+* Change: Fix checking edit and delete permissions on the eionet planner
+  calendar
   [valipod]
 
 1.5 - (2020-10-22)
@@ -55,15 +61,12 @@ Changelog
 1.0 - (2020-02-14)
 ---------------------------
 * Change: Implement automatic release [valentinab25]
-
 * Feature: added support for Python 3 and Plone 5.2
   [iulianpetchesi, alecghica refs #110155]
-  
 * Apply custom style for eionet
   [krisztina]
-
 * Add setup.py
   [krisztina]
-
 * Initial commit
   [krisztina]
+

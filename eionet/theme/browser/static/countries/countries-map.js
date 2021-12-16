@@ -59,8 +59,8 @@ var countryTpl = '' +
 '    <a class="link-webpage" href="/ldap-roles/?role_id=eionet-nfp-ctype-ccode">NFP CountryName address</a></li>' +
 '' +
 '  <li>' +
-'    <a class="link-webpage" href="/ldap-roles/filter?pattern=eionet-nrc-*-ctype-ccode">PCPs and NRCs</a>' +
-'    List of all Primary Contact Points and National Reference Centres</li>' +
+'    <a class="link-webpage" href="/ldap-roles/filter?pattern=eionet-*-ccode">List of members</a>' +
+'    in Eionet groups, Thematic groups and Working groups</li>' +
 '' +
 '<li>' +
 '    <a class="link-webpage" href="/ldap-roles/filter?pattern=reportnet-*-*-ccode">List of Reportnet users</a></li>' +
