@@ -3,6 +3,8 @@ Changelog
 
 2.2-dev0 - (unreleased)
 ---------------------------
+* Feature: add 'creators' to the tabular fields in ETC reports view
+  [valipod refs #149796]
 
 2.1 - (2021-12-16)
 ---------------------------
