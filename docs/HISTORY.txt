@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.2 - (2022-05-27)
+---------------------------
+* Feature: add 'creators' to the tabular fields in ETC reports view
+  [valipod refs #149796]
+
 2.1 - (2021-12-16)
 ---------------------------
 * Feature: update country popup link to new NRC role structure
@@ -69,4 +74,3 @@ Changelog
   [krisztina]
 * Initial commit
   [krisztina]
-

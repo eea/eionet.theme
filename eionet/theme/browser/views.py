@@ -77,6 +77,7 @@ class CollectionHelperView(BrowserView):
         fields = [field[0] for field in fields]
 
         fields.append('report_url')
+        fields.append('creators')
         return fields
 
     def get_download_link(self, item_listing):
