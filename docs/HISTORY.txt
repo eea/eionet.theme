@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.3 - (2022-07-01)
+---------------------------
+* Wording change on eionet countries popup
+  [valipod refs #150324]
+
 2.2 - (2022-05-27)
 ---------------------------
 * Feature: add 'creators' to the tabular fields in ETC reports view
