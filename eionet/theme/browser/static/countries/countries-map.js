@@ -52,7 +52,7 @@ var countryTpl = '' +
 '' +
 '  <li>' +
 '    <a class="link-webpage" href="/ldap-organisations?country=ccode">' +
-'      Eionet Organisations</a>' +
+'      List of organisations</a>' +
 '    List of organisations registered in the Eionet Directory</li>' +
 '' +
 '  <li>' +
