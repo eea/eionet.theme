@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.3-dev0 - (unreleased)
+2.3 - (2022-07-01)
 ---------------------------
 * Wording change on eionet countries popup
   [valipod refs #150324]
